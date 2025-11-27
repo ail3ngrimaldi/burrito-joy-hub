@@ -21,7 +21,7 @@ const HeroSection = () => {
           {/* Text content */}
           <div className="text-center lg:text-left animate-fade-in">
             <span className="inline-block px-4 py-2 bg-secondary/50 text-secondary-foreground rounded-full text-sm font-medium mb-6">
-              🔥 Congelados que te salvan la vida
+              🔥 Ricos, abundantes y nutritivos
             </span>
             
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
