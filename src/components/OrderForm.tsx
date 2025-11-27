@@ -17,9 +17,24 @@ const products = [
   { id: "bondiola", name: "Bondiola Desmechada", price: 4000 },
 ];
 
+const allowedPostalCodes = [
+  { code: "B1606", name: "Carapachay" },
+  { code: "B1602", name: "Florida" },
+  { code: "B1604", name: "Florida Oeste" },
+  { code: "B1637", name: "La Lucila" },
+  { code: "B1605", name: "Munro" },
+  { code: "B1636", name: "Olivos" },
+  { code: "B1638", name: "Vicente López" },
+  { code: "B1603", name: "Villa Martelli" },
+  { code: "B1641", name: "Acassuso" },
+  { code: "B1640", name: "Martinez" },
+  { code: "B1642", name: "San Isidro" },
+];
+
 const OrderForm = ({ isOpen, onClose, quantities }: OrderFormProps) => {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [comments, setComments] = useState("");
   const { toast } = useToast();
 
   if (!isOpen) return null;
@@ -30,13 +45,38 @@ const OrderForm = ({ isOpen, onClose, quantities }: OrderFormProps) => {
     0
   );
 
+  const deliveryPrice = 2000;
+  const totalWithDelivery = totalPrice + deliveryPrice;
+
+  const isValidPostalCode = allowedPostalCodes.some(
+    (pc) => pc.code.toLowerCase() === postalCode.trim().toLowerCase()
+  );
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name.trim() || !phone.trim()) {
+    if (!name.trim()) {
       toast({
-        title: "Completá los datos",
-        description: "Necesitamos tu nombre y teléfono para coordinar el pedido.",
+        title: "Completá tu nombre",
+        description: "Necesitamos saber cómo te llamás.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!postalCode.trim()) {
+      toast({
+        title: "Completá tu código postal",
+        description: "Necesitamos tu CP para verificar si llegamos a tu zona.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!isValidPostalCode) {
+      toast({
+        title: "Zona no disponible",
+        description: "Por ahora no llegamos a tu zona. ¡Pero estamos expandiéndonos pronto!",
         variant: "destructive",
       });
       return;
@@ -47,15 +87,21 @@ const OrderForm = ({ isOpen, onClose, quantities }: OrderFormProps) => {
       .map((p) => `• ${quantities[p.id]}x ${p.name} ($${(p.price * quantities[p.id]).toLocaleString("es-AR")})`)
       .join("\n");
 
+    const commentsSection = comments.trim() 
+      ? `\n💬 Comentarios: ${comments}` 
+      : "";
+
     const message = `¡Hola! 🌯 Quiero hacer un pedido:
 
 ${orderLines}
 
-*Total: $${totalPrice.toLocaleString("es-AR")}*
+*Subtotal: $${totalPrice.toLocaleString("es-AR")}*
+*Envío: $${deliveryPrice.toLocaleString("es-AR")}*
+*Total: $${totalWithDelivery.toLocaleString("es-AR")}*
 
 Mis datos:
 📛 Nombre: ${name}
-📱 Teléfono: ${phone}
+📍 Código Postal: ${postalCode.toUpperCase()}${commentsSection}
 
 ¡Gracias!`;
 
@@ -101,10 +147,16 @@ Mis datos:
               </div>
             ))}
           </div>
-          <div className="flex justify-between mt-4 pt-4 border-t border-border">
+          <div className="flex justify-between mt-3 pt-3 border-t border-border text-sm">
+            <span className="text-muted-foreground">Envío</span>
+            <span className="font-medium text-foreground">
+              ${deliveryPrice.toLocaleString("es-AR")}
+            </span>
+          </div>
+          <div className="flex justify-between mt-2 pt-2 border-t border-border">
             <span className="font-bold text-foreground">Total</span>
             <span className="font-display text-xl font-bold text-primary">
-              ${totalPrice.toLocaleString("es-AR")}
+              ${totalWithDelivery.toLocaleString("es-AR")}
             </span>
           </div>
         </div>
@@ -123,14 +175,30 @@ Mis datos:
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-foreground">Teléfono</Label>
+            <Label htmlFor="postalCode" className="text-foreground">Código Postal</Label>
             <Input
-              id="phone"
-              type="tel"
-              placeholder="11 1234-5678"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="bg-background"
+              id="postalCode"
+              placeholder="Ej: B1636"
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value)}
+              className={`bg-background ${postalCode && !isValidPostalCode ? "border-destructive" : ""}`}
+            />
+            {postalCode && !isValidPostalCode && (
+              <p className="text-xs text-destructive">
+                Por ahora solo llegamos a: {allowedPostalCodes.map(pc => pc.name).join(", ")}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="comments" className="text-foreground">Comentarios adicionales (opcional)</Label>
+            <textarea
+              id="comments"
+              placeholder="Ej: No puedo comer picante, soy alérgico a X ingrediente..."
+              value={comments}
+              onChange={(e) => setComments(e.target.value)}
+              className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              rows={3}
             />
           </div>
 
@@ -140,7 +208,7 @@ Mis datos:
           </Button>
 
           <p className="text-xs text-center text-muted-foreground">
-            Te contactamos para coordinar entrega y pago 💬
+            Coordinamos por WhatsApp la entrega y el pago 💬
           </p>
         </form>
       </div>

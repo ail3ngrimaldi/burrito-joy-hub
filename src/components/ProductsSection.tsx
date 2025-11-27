@@ -74,7 +74,7 @@ const ProductsSection = ({ onOrderClick }: ProductsSectionProps) => {
             Elegí los que más te tientan
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Todos nuestros burritos pesan más de 500g y están pensados para que comas bien de verdad. 
+            Todos nuestros burritos pesan 350g y están pensados para que comas bien de verdad. 
             Nada de porciones de juguete.
           </p>
         </div>
@@ -104,9 +104,12 @@ const ProductsSection = ({ onOrderClick }: ProductsSectionProps) => {
                 <span className="text-muted-foreground">
                   <span className="font-bold text-foreground">{totalItems}</span> burrito{totalItems !== 1 ? "s" : ""} seleccionado{totalItems !== 1 ? "s" : ""}
                 </span>
-                <span className="text-2xl font-display font-bold text-primary">
-                  ${totalPrice.toLocaleString("es-AR")}
-                </span>
+                <div className="text-right">
+                  <span className="text-2xl font-display font-bold text-primary">
+                    ${totalPrice.toLocaleString("es-AR")}
+                  </span>
+                  <span className="text-xs text-muted-foreground block">+ $2.000 envío</span>
+                </div>
               </div>
               <Button variant="hero" size="lg" onClick={handleOrder}>
                 Hacer pedido ahora →
