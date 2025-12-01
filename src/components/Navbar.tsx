@@ -18,7 +18,7 @@ const Navbar = () => {
           <a href="/" className="flex items-center gap-2 group">
             <span className="text-2xl group-hover:animate-wiggle">🌯</span>
             <span className="font-display font-bold text-lg text-foreground">
-              {"{{NOMBRE_EMPRENDIMIENTO}}"}
+              {Burritos}
             </span>
           </a>
 
