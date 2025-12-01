@@ -18,17 +18,17 @@ const products = [
 ];
 
 const allowedPostalCodes = [
-  { code: "B1606", name: "Carapachay" },
-  { code: "B1602", name: "Florida" },
-  { code: "B1604", name: "Florida Oeste" },
-  { code: "B1637", name: "La Lucila" },
-  { code: "B1605", name: "Munro" },
-  { code: "B1636", name: "Olivos" },
-  { code: "B1638", name: "Vicente López" },
-  { code: "B1603", name: "Villa Martelli" },
-  { code: "B1641", name: "Acassuso" },
-  { code: "B1640", name: "Martinez" },
-  { code: "B1642", name: "San Isidro" },
+  { code: "1606", name: "Carapachay" },
+  { code: "1602", name: "Florida" },
+  { code: "1604", name: "Florida Oeste" },
+  { code: "1637", name: "La Lucila" },
+  { code: "1605", name: "Munro" },
+  { code: "1636", name: "Olivos" },
+  { code: "1638", name: "Vicente López" },
+  { code: "1603", name: "Villa Martelli" },
+  { code: "1641", name: "Acassuso" },
+  { code: "1640", name: "Martinez" },
+  { code: "1642", name: "San Isidro" },
 ];
 
 const OrderForm = ({ isOpen, onClose, quantities }: OrderFormProps) => {
