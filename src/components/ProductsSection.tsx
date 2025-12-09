@@ -18,21 +18,21 @@ const products: Product[] = [
     id: "bolognesa",
     name: "Bolognesa",
     description: "Carne picada con salsa de tomate casera, queso fundido y especias italianas. Un clásico que nunca falla.",
-    price: 3500,
+    price: 12500,
     image: burritoBolognesa,
   },
   {
     id: "cesar",
     name: "César",
     description: "Pollo grillado, lechuga crocante, parmesano y nuestra salsa césar especial. Fresco y contundente.",
-    price: 3500,
+    price: 12500,
     image: burritoCesar,
   },
   {
     id: "bondiola",
     name: "Bondiola Desmechada",
     description: "Bondiola cocinada 8 horas, desmechada y combinada con mezcla de quesos. Para los que van en serio.",
-    price: 4000,
+    price: 12500,
     image: burritoBondiola,
   },
 ];
@@ -53,10 +53,11 @@ const ProductsSection = ({ onOrderClick }: ProductsSectionProps) => {
   };
 
   const totalItems = Object.values(quantities).reduce((sum, qty) => sum + qty, 0);
-  const totalPrice = products.reduce(
-    (sum, product) => sum + product.price * (quantities[product.id] || 0),
-    0
-  );
+  
+  // Calcular precio con promoción: cada 5 burritos, 1 gratis
+  const freeBurritos = Math.floor(totalItems / 5);
+  const paidBurritos = totalItems - freeBurritos;
+  const totalPrice = paidBurritos * 12500;
 
   const handleOrder = () => {
     onOrderClick(quantities);
@@ -73,10 +74,13 @@ const ProductsSection = ({ onOrderClick }: ProductsSectionProps) => {
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
             Elegí los que más te tientan
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Todos nuestros burritos pesan 350g y están pensados para que comas bien de verdad. 
-            Nada de porciones de juguete.
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-4">
+            Todos nuestros burritos pesan 350g y tienen la masa más liviana del mercado. 
+            Desarrollamos una receta única que nos permite hacer masas super finas, pero ricas y grandes.
           </p>
+          <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold">
+            🎁 ¡Llevá 5 y el 6to es GRATIS!
+          </div>
         </div>
 
         {/* Products grid */}
@@ -101,9 +105,16 @@ const ProductsSection = ({ onOrderClick }: ProductsSectionProps) => {
           <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-2xl p-4 z-50 animate-slide-up">
             <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <span className="text-muted-foreground">
-                  <span className="font-bold text-foreground">{totalItems}</span> burrito{totalItems !== 1 ? "s" : ""} seleccionado{totalItems !== 1 ? "s" : ""}
-                </span>
+                <div>
+                  <span className="text-muted-foreground">
+                    <span className="font-bold text-foreground">{totalItems}</span> burrito{totalItems !== 1 ? "s" : ""} seleccionado{totalItems !== 1 ? "s" : ""}
+                  </span>
+                  {freeBurritos > 0 && (
+                    <span className="ml-2 text-xs text-primary font-bold bg-primary/10 px-2 py-1 rounded-full">
+                      🎁 {freeBurritos} gratis
+                    </span>
+                  )}
+                </div>
                 <div className="text-right">
                   <span className="text-2xl font-display font-bold text-primary">
                     ${totalPrice.toLocaleString("es-AR")}

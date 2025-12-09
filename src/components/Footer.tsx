@@ -7,7 +7,7 @@ const Footer = () => {
           <div className="flex items-center gap-2">
             <span className="text-2xl">🌯</span>
             <span className="font-display font-bold text-lg">
-              {"{{NOMBRE_EMPRENDIMIENTO}}"}
+              BurritoLab
             </span>
           </div>
 

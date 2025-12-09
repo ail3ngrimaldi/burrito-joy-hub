@@ -25,7 +25,8 @@ const Index = () => {
         <HeroSection />
         <ProductsSection onOrderClick={handleOrderClick} />
         <ValueProposition />
-        <ComingSoonSection />
+        {/* ComingSoonSection oculta temporalmente */}
+        {/* <ComingSoonSection /> */}
         <ContactSection />
       </main>
       
