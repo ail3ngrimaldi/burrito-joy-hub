@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero-burrito.jpg";
+import heroImage from "@/assets/hero-burrito-new.png";
 
 const HeroSection = () => {
   const scrollToProducts = () => {
@@ -78,23 +78,23 @@ const HeroSection = () => {
               <img
                 src={heroImage}
                 alt="Delicioso burrito casero cortado a la mitad mostrando su relleno"
-                className="relative rounded-3xl shadow-2xl w-full object-cover animate-float"
+                className="relative rounded-3xl shadow-2xl w-full object-cover object-bottom aspect-square animate-float"
               />
               
-              {/* Floating badge */}
+              {/* Floating badge - masa liviana */}
               <div className="absolute -bottom-4 -left-4 bg-card rounded-2xl p-4 shadow-xl animate-slide-up">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl">🌯</span>
+                  <span className="text-3xl">✨</span>
                   <div>
-                    <p className="font-display font-bold text-foreground">+500g</p>
-                    <p className="text-xs text-muted-foreground">de pura satisfacción</p>
+                    <p className="font-display font-bold text-foreground">Masa ultra fina</p>
+                    <p className="text-xs text-muted-foreground">La más liviana del mercado</p>
                   </div>
                 </div>
               </div>
               
-              {/* Another floating badge */}
+              {/* Promo badge */}
               <div className="absolute -top-4 -right-4 bg-primary text-primary-foreground rounded-2xl px-4 py-2 shadow-xl animate-slide-up">
-                <p className="font-display font-bold">¡Nuevo!</p>
+                <p className="font-display font-bold">5 + 1 gratis</p>
               </div>
             </div>
           </div>
