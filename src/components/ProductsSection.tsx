@@ -1,9 +1,10 @@
 import { useState } from "react";
 import ProductCard from "./ProductCard";
 import { Button } from "@/components/ui/button";
-import burritoBolognesa from "@/assets/burrito-bolognesa.jpg";
+import burritoBondiocheddar from "@/assets/burrito-bondiocheddar.jpg";
 import burritoCesar from "@/assets/burrito-cesar.jpg";
 import burritoBondiola from "@/assets/burrito-bondiola.jpg";
+import burritoBolognesa from "@/assets/burrito-bolognesa.jpg";
 
 interface Product {
   id: string;
@@ -15,25 +16,32 @@ interface Product {
 
 const products: Product[] = [
   {
-    id: "bolognesa",
-    name: "Bolognesa",
-    description: "Carne picada con salsa de tomate casera, queso fundido y especias italianas. Un clásico que nunca falla.",
+    id: "bondiocheddar",
+    name: "Bondiocheddar",
+    description: "Bondiola desmechada cocinada a fuego lento, bañada en cheddar fundido. Simple, contundente, irresistible.",
     price: 12500,
-    image: burritoBolognesa,
+    image: burritoBondiocheddar,
   },
   {
-    id: "cesar",
-    name: "César",
-    description: "Pollo grillado, lechuga crocante, parmesano y nuestra salsa césar especial. Fresco y contundente.",
+    id: "chavo-pollo",
+    name: "El Chavo del Pollo",
+    description: "Pollo desmechado con cebolla y morrón salteados, palta fresca y cheddar fundido. Fresco y sabroso.",
     price: 12500,
     image: burritoCesar,
   },
   {
-    id: "bondiola",
-    name: "Bondiola Desmechada",
-    description: "Bondiola cocinada 8 horas, desmechada y combinada con mezcla de quesos. Para los que van en serio.",
+    id: "plata-dulce",
+    name: "Plata Dulce",
+    description: "Pollo en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
     price: 12500,
     image: burritoBondiola,
+  },
+  {
+    id: "verdeo-citrus",
+    name: "Verdeo Citrus",
+    description: "Pollo desmechado, cherrys asados, cebolla caramelizada, queso crema con limón y verdeo, más cheddar. Fresco y único.",
+    price: 12500,
+    image: burritoBolognesa,
   },
 ];
 
@@ -42,10 +50,11 @@ interface ProductsSectionProps {
 }
 
 const ProductsSection = ({ onOrderClick }: ProductsSectionProps) => {
-  const [quantities, setQuantities] = useState<Record<string, number>>({
-    bolognesa: 0,
-    cesar: 0,
-    bondiola: 0,
+const [quantities, setQuantities] = useState<Record<string, number>>({
+    "bondiocheddar": 0,
+    "chavo-pollo": 0,
+    "plata-dulce": 0,
+    "verdeo-citrus": 0,
   });
 
   const handleQuantityChange = (id: string, quantity: number) => {
