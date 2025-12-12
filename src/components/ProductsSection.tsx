@@ -12,36 +12,57 @@ interface Product {
   description: string;
   price: number;
   image: string;
+  available: boolean;
 }
 
 const products: Product[] = [
   {
     id: "bondiocheddar",
     name: "Bondiocheddar",
-    description: "Bondiola desmechada cocinada a fuego lento, bañada en cheddar fundido. Simple, contundente, irresistible.",
+    description: "Bondiola desmechada cocinada a fuego lento, con cebolla caramelizada, zanahorias y cheddar fundido. Contundente e irresistible.",
     price: 12500,
     image: burritoBondiocheddar,
+    available: true,
   },
   {
-    id: "chavo-pollo",
-    name: "El Chavo del Pollo",
-    description: "Pollo desmechado con cebolla y morrón salteados, palta fresca y cheddar fundido. Fresco y sabroso.",
+    id: "mexican-chicken",
+    name: "MexicanChicken",
+    description: "Pollo desmechado mezclado con cebolla y morrón, palta fresca y cheddar fundido. Fresco y sabroso.",
     price: 12500,
     image: burritoCesar,
+    available: true,
   },
   {
-    id: "plata-dulce",
-    name: "Plata Dulce",
+    id: "pollo-verdeo",
+    name: "Pollo al Verdeo",
+    description: "Cubos de pollo con verdeo y puerro, queso crema y queso sardo, todo mezclado. Cremoso y aromático.",
+    price: 12500,
+    image: burritoBondiola,
+    available: true,
+  },
+  {
+    id: "caprese",
+    name: "Caprese",
+    description: "Pollo desmechado con queso crema, queso fresco, cebolla caramelizada, aceitunas negras, tomates confitados y albahaca. Italiano y delicioso.",
+    price: 12500,
+    image: burritoBolognesa,
+    available: true,
+  },
+  {
+    id: "pollo-espinaca",
+    name: "Pollo Espinaca",
     description: "Pollo en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
     price: 12500,
     image: burritoBondiola,
+    available: false,
   },
   {
-    id: "verdeo-citrus",
-    name: "Verdeo Citrus",
-    description: "Pollo desmechado, cherrys asados, cebolla caramelizada, queso crema con limón y verdeo, más cheddar. Fresco y único.",
+    id: "bolognesa",
+    name: "Bolognesa",
+    description: "Carne picada con salsa bolognesa casera, queso fundido y especias. Un clásico reconfortante.",
     price: 12500,
     image: burritoBolognesa,
+    available: false,
   },
 ];
 
@@ -52,9 +73,11 @@ interface ProductsSectionProps {
 const ProductsSection = ({ onOrderClick }: ProductsSectionProps) => {
 const [quantities, setQuantities] = useState<Record<string, number>>({
     "bondiocheddar": 0,
-    "chavo-pollo": 0,
-    "plata-dulce": 0,
-    "verdeo-citrus": 0,
+    "mexican-chicken": 0,
+    "pollo-verdeo": 0,
+    "caprese": 0,
+    "pollo-espinaca": 0,
+    "bolognesa": 0,
   });
 
   const handleQuantityChange = (id: string, quantity: number) => {
