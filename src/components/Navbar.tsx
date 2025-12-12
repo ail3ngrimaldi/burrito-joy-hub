@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import logo from "@/assets/logo.svg";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,11 +16,8 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2 group">
-            <span className="text-2xl group-hover:animate-wiggle">🌯</span>
-            <span className="font-display font-bold text-lg text-foreground">
-              BurritoLab
-            </span>
+          <a href="/" className="flex items-center group">
+            <img src={logo} alt="BurritoLab" className="h-12 w-auto" />
           </a>
 
           {/* Desktop nav */}

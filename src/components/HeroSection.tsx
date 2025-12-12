@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero-burrito-new.png";
+import logo from "@/assets/logo.svg";
 
 const HeroSection = () => {
   const scrollToProducts = () => {
@@ -69,16 +69,16 @@ const HeroSection = () => {
             </div>
           </div>
           
-          {/* Hero image */}
-          <div className="relative animate-scale-in">
+          {/* Hero image - Logo */}
+          <div className="relative animate-scale-in flex items-center justify-center">
             <div className="relative">
               {/* Glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-3xl blur-2xl transform scale-95" />
               
               <img
-                src={heroImage}
-                alt="Delicioso burrito casero cortado a la mitad mostrando su relleno"
-                className="relative rounded-3xl shadow-2xl w-full object-cover object-bottom aspect-square animate-float"
+                src={logo}
+                alt="BurritoLab Logo"
+                className="relative w-full max-w-md mx-auto animate-float"
               />
               
               {/* Floating badge - masa liviana */}
