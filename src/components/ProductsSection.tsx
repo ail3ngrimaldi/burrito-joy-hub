@@ -107,7 +107,7 @@ const [quantities, setQuantities] = useState<Record<string, number>>({
             Elegí los que más te tientan
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-4">
-            Todos nuestros burritos pesan 350g y tienen la masa más liviana del mercado. 
+            Todos nuestros burritos pesan 400g y tienen la masa más liviana del mercado. 
             Desarrollamos una receta única que nos permite hacer masas super finas, pero ricas y grandes.
           </p>
           <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold">
