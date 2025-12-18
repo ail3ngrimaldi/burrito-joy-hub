@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/logo.svg";
+import logo from "@/assets/losburritosdedulcinea.svg";
 
 const HeroSection = () => {
   const scrollToProducts = () => {
