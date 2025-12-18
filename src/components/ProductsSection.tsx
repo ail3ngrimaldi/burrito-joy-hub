@@ -111,7 +111,7 @@ const [quantities, setQuantities] = useState<Record<string, number>>({
             Desarrollamos una receta única que nos permite hacer masas super finas, pero ricas y grandes.
           </p>
           <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold">
-            🎁 ¡Llevá 5 y el 6to es GRATIS!
+            🎁 ¡Llevá 5 y uno va GRATIS!
           </div>
         </div>
 
