@@ -123,6 +123,10 @@
   }
 }
 
+.logo {
+  font-family: 'Inter', sans-serif;
+}
+
 @layer components {
   .gradient-hero {
     background: var(--gradient-hero);
