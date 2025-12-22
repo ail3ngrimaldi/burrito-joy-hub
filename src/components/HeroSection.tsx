@@ -33,7 +33,7 @@ const HeroSection = () => {
             
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0">
               Stockeá tu freezer con burritos <strong>nutritivos y abundantes</strong>. 
-              En 3 minutos tenés un platazo listo, sin ensuciar nada. 
+              En pocos minutos tenés un platazo listo, sin ensuciar nada. 
               <span className="text-primary font-semibold"> Tu yo del futuro te lo va a agradecer.</span>
             </p>
             
@@ -77,7 +77,7 @@ const HeroSection = () => {
               
               <img
                 src={logo}
-                alt="BurritoLab Logo"
+                alt="Los burritos de Dulcinea Logo"
                 className="relative w-full max-w-md mx-auto animate-float"
               />
               
