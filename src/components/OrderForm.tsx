@@ -106,7 +106,7 @@ Mis datos:
 ¡Gracias!`;
 
     // Open WhatsApp
-    const whatsappUrl = `https://wa.me/5491124003293text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/5491124003293?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
 
     toast({
