@@ -86,10 +86,16 @@ const [quantities, setQuantities] = useState<Record<string, number>>({
 
   const totalItems = Object.values(quantities).reduce((sum, qty) => sum + qty, 0);
   
-  // Calcular precio con promoción: cada 5 burritos, 1 gratis
+  // Calcular precio real basado en los productos seleccionados
+  const subtotal = products.reduce((sum, product) => {
+  const qty = quantities[product.id] || 0;
+  return sum + (qty * product.price);
+  }, 0);
+  
+  // Aplicar promoción: cada 5 burritos, 1 gratis (20% de descuento)
   const freeBurritos = Math.floor(totalItems / 5);
-  const paidBurritos = totalItems - freeBurritos;
-  const totalPrice = paidBurritos * 12500;
+  const discountPercentage = totalItems >= 5 ? 0.20 : 0;
+  const totalPrice = Math.round(subtotal * (1 - discountPercentage));
 
   const handleOrder = () => {
     onOrderClick(quantities);
