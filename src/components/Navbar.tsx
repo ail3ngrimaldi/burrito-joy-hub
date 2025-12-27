@@ -15,7 +15,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
         <h1 className="flex items-center group">
-          <a href="/" className="hover:opacity-80 transition-opacity">
+          <a href="/" className="logo hover:opacity-80 transition-opacity">
             Los Burritos de Dulcinea
           </a>
         </h1>
