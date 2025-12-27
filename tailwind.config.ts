@@ -15,6 +15,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+        fredoka: ['Fredoka', 'sans-serif'],
         display: ['Fredoka', 'sans-serif'],
       },
       colors: {
