@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        fredoka: ['Fredoka', 'sans-serif'],
-        display: ['Fredoka', 'sans-serif'],
+        sans: ['"Schibsted Grotesk"', 'sans-serif'],
+        heading: ['"Fredoka"', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
