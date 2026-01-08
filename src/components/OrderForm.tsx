@@ -12,9 +12,12 @@ interface OrderFormProps {
 }
 
 const products = [
-  { id: "bolognesa", name: "Bolognesa", price: 3500 },
-  { id: "cesar", name: "César", price: 3500 },
-  { id: "bondiola", name: "Bondiola Desmechada", price: 4000 },
+  { id: "bondiocheddar", name: "Bondiocheddar", price: 12000 },
+  { id: "mexican-chicken", name: "Pollo Mex", price: 11000 },
+  { id: "pollo-honeypinaca", name: "Honeypinaca", price: 10000 },
+  { id: "veggie", name: "Bolognesa Veggie", price: 7000 },
+  { id: "pollo-espinaca", name: "Pollo al Verdeo", price: 12500 },
+  { id: "bolognesa", name: "Bolognesa Carnívoro", price: 12500 },
 ];
 
 const allowedPostalCodes = [
