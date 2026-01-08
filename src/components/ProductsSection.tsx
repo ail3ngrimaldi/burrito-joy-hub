@@ -74,8 +74,8 @@ const ProductsSection = ({ onOrderClick }: ProductsSectionProps) => {
 const [quantities, setQuantities] = useState<Record<string, number>>({
     "bondiocheddar": 0,
     "mexican-chicken": 0,
-    "pollo-verdeo": 0,
-    "caprese": 0,
+    "pollo-honeypinaca": 0,
+    "veggie": 0,
     "pollo-espinaca": 0,
     "bolognesa": 0,
   });
