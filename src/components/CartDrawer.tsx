@@ -10,8 +10,8 @@ interface CartDrawerProps {
 const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const { items, updateQuantity, removeItem, clearCart, totalItems, totalPrice } = useCart();
 
-  const handleWhatsAppOrder = () => {
-    if (items.length === 0) return;
+  const getWhatsAppUrl = () => {
+    if (items.length === 0) return "";
 
     const itemsList = items
       .map((item) => `- ${item.productName} ${item.size} (${item.weight}) x${item.quantity}`)
@@ -23,8 +23,10 @@ ${itemsList}
 
 Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${totalPrice.toLocaleString("es-AR")}`;
 
-    const whatsappUrl = `https://wa.me/5491124003293?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
+    return `https://wa.me/5491124003293?text=${encodeURIComponent(message)}`;
+  };
+
+  const handleOrderClick = () => {
     clearCart();
     onClose();
   };
@@ -128,10 +130,17 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${totalPric
               variant="whatsapp"
               size="lg"
               className="w-full gap-2"
-              onClick={handleWhatsAppOrder}
+              asChild
             >
-              <MessageCircle className="w-5 h-5" />
-              Enviar pedido por WhatsApp
+              <a
+                href={getWhatsAppUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleOrderClick}
+              >
+                <MessageCircle className="w-5 h-5" />
+                Enviar pedido por WhatsApp
+              </a>
             </Button>
           </div>
         )}
