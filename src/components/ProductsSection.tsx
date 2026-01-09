@@ -1,6 +1,4 @@
-import { useState } from "react";
 import ProductCard from "./ProductCard";
-import SizeSelectionDrawer from "./SizeSelectionDrawer";
 import burritoBondiocheddar from "@/assets/burrito-bondiocheddar.jpg";
 import burritoCesar from "@/assets/burrito-cesar.jpg";
 import burritoBondiola from "@/assets/burrito-bondiola.jpg";
@@ -60,16 +58,6 @@ const products: Product[] = [
 ];
 
 const ProductsSection = () => {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
-  const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-  };
-
-  const handleCloseDrawer = () => {
-    setSelectedProduct(null);
-  };
-
   return (
     <section id="productos" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -95,21 +83,11 @@ const ProductsSection = () => {
               className="animate-slide-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <ProductCard
-                {...product}
-                onClick={() => handleProductClick(product)}
-              />
+              <ProductCard {...product} />
             </div>
           ))}
         </div>
       </div>
-
-      {/* Size selection drawer */}
-      <SizeSelectionDrawer
-        isOpen={!!selectedProduct}
-        onClose={handleCloseDrawer}
-        product={selectedProduct}
-      />
     </section>
   );
 };
