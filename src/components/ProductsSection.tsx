@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ProductCard from "./ProductCard";
-import { Button } from "@/components/ui/button";
+import SizeSelectionDrawer from "./SizeSelectionDrawer";
 import burritoBondiocheddar from "@/assets/burrito-bondiocheddar.jpg";
 import burritoCesar from "@/assets/burrito-cesar.jpg";
 import burritoBondiola from "@/assets/burrito-bondiola.jpg";
@@ -10,7 +10,6 @@ interface Product {
   id: string;
   name: string;
   description: string;
-  price: number;
   image: string;
   available: boolean;
 }
@@ -20,7 +19,6 @@ const products: Product[] = [
     id: "bondiocheddar",
     name: "Bondiocheddar",
     description: "Bondiola desmechada cocinada a fuego lento, con cebolla caramelizada, zanahorias en cubo y cheddar fundido. Contundente e irresistible.",
-    price: 12000,
     image: burritoBondiocheddar,
     available: true,
   },
@@ -28,7 +26,6 @@ const products: Product[] = [
     id: "mexican-chicken",
     name: "Pollo Mex",
     description: "Pollo desmechado mezclado con cebolla y morrón en tiras, crema de palta fresca y cheddar fundido. Fresco y sabroso.",
-    price: 11000,
     image: burritoCesar,
     available: true,
   },
@@ -36,7 +33,6 @@ const products: Product[] = [
     id: "pollo-honeypinaca",
     name: "Honeypinaca",
     description: "Pollo en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
-    price: 10000,
     image: burritoBondiola,
     available: true,
   },
@@ -44,7 +40,6 @@ const products: Product[] = [
     id: "veggie",
     name: "Bolognesa Veggie",
     description: "Salsa Bolognesa hecha con soja texturizada, cebolla, morron, ajo y queso fresco. Italiano, delicioso y cruelty free.",
-    price: 7000,
     image: burritoBolognesa,
     available: true,
   },
@@ -52,7 +47,6 @@ const products: Product[] = [
     id: "pollo-espinaca",
     name: "Pollo al Verdeo",
     description: "Pollo en cubos con queso sardo, queso crema y salsa de verdeo y puerro. Plato clásico sin ensuciar",
-    price: 12500,
     image: burritoBondiola,
     available: false,
   },
@@ -60,45 +54,20 @@ const products: Product[] = [
     id: "bolognesa",
     name: "Bolognesa Carnívoro",
     description: "Carne picada desgrasada con salsa bolognesa casera, queso fundido y especias. Un clásico reconfortante.",
-    price: 12500,
     image: burritoBolognesa,
     available: false,
   },
 ];
 
-interface ProductsSectionProps {
-  onOrderClick: (quantities: Record<string, number>) => void;
-}
+const ProductsSection = () => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-const ProductsSection = ({ onOrderClick }: ProductsSectionProps) => {
-const [quantities, setQuantities] = useState<Record<string, number>>({
-    "bondiocheddar": 0,
-    "mexican-chicken": 0,
-    "pollo-honeypinaca": 0,
-    "veggie": 0,
-    "pollo-espinaca": 0,
-    "bolognesa": 0,
-  });
-
-  const handleQuantityChange = (id: string, quantity: number) => {
-    setQuantities((prev) => ({ ...prev, [id]: quantity }));
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
   };
 
-  const totalItems = Object.values(quantities).reduce((sum, qty) => sum + qty, 0);
-  
-  // Calcular precio real basado en los productos seleccionados
-  const subtotal = products.reduce((sum, product) => {
-  const qty = quantities[product.id] || 0;
-  return sum + (qty * product.price);
-  }, 0);
-  
-  // Aplicar promoción: cada 5 burritos, 1 gratis (20% de descuento)
-  const freeBurritos = Math.floor(totalItems / 5);
-  const discountPercentage = totalItems >= 5 ? 0.20 : 0;
-  const totalPrice = Math.round(subtotal * (1 - discountPercentage));
-
-  const handleOrder = () => {
-    onOrderClick(quantities);
+  const handleCloseDrawer = () => {
+    setSelectedProduct(null);
   };
 
   return (
@@ -112,17 +81,14 @@ const [quantities, setQuantities] = useState<Record<string, number>>({
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
             Elegí los que más te tientan
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mb-4">
-            Todos nuestros burritos pesan 400g y tienen la masa más liviana del mercado. 
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Todos nuestros burritos tienen la masa más liviana del mercado. 
             Desarrollamos una receta única que nos permite hacer masas super finas, pero ricas y grandes.
           </p>
-          <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold">
-            🎁 ¡Llevá 5 y uno va GRATIS!
-          </div>
         </div>
 
         {/* Products grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product, index) => (
             <div
               key={product.id}
@@ -131,42 +97,19 @@ const [quantities, setQuantities] = useState<Record<string, number>>({
             >
               <ProductCard
                 {...product}
-                quantity={quantities[product.id] || 0}
-                onQuantityChange={handleQuantityChange}
+                onClick={() => handleProductClick(product)}
               />
             </div>
           ))}
         </div>
-
-        {/* Order summary bar */}
-        {totalItems > 0 && (
-          <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-2xl p-4 z-50 animate-slide-up">
-            <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div>
-                  <span className="text-muted-foreground">
-                    <span className="font-bold text-foreground">{totalItems}</span> burrito{totalItems !== 1 ? "s" : ""} seleccionado{totalItems !== 1 ? "s" : ""}
-                  </span>
-                  {freeBurritos > 0 && (
-                    <span className="ml-2 text-xs text-primary font-bold bg-primary/10 px-2 py-1 rounded-full">
-                      🎁 {freeBurritos} gratis
-                    </span>
-                  )}
-                </div>
-                <div className="text-right">
-                  <span className="text-2xl font-display font-bold text-primary">
-                    ${totalPrice.toLocaleString("es-AR")}
-                  </span>
-                  <span className="text-xs text-muted-foreground block">+ $2.000 envío</span>
-                </div>
-              </div>
-              <Button variant="hero" size="lg" onClick={handleOrder}>
-                Hacer pedido ahora →
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Size selection drawer */}
+      <SizeSelectionDrawer
+        isOpen={!!selectedProduct}
+        onClose={handleCloseDrawer}
+        product={selectedProduct}
+      />
     </section>
   );
 };
