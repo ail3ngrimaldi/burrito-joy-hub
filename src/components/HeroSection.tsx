@@ -92,10 +92,11 @@ const HeroSection = () => {
                 </div>
               </div>
               
-              {/* Promo badge */}
+              {/* Available badge for promotions
               <div className="absolute -top-4 -right-4 bg-primary text-primary-foreground rounded-2xl px-4 py-2 shadow-xl animate-slide-up">
                 <p className="font-display font-bold">5 + 1 gratis</p>
               </div>
+              */}
             </div>
           </div>
         </div>
