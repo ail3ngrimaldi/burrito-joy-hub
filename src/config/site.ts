@@ -82,8 +82,8 @@ export const products: Product[] = [
     available: true,
     prices: {
       M: 9000,
-      L: 12500,
-      XL: 15000,
+      L: 13000,
+      XL: 17000,
     },
   },
   {
@@ -93,9 +93,9 @@ export const products: Product[] = [
     image: burritoMex,
     available: true,
     prices: {
-      M: 9000,
-      L: 12000,
-      XL: 14500,
+      M: 9500,
+      L: 14000,
+      XL: 1700,
     },
   },
   {
@@ -125,7 +125,7 @@ export const products: Product[] = [
   {
     id: "the-bear",
     name: "Carne desmechada",
-    description: "Carne roja desmechada, cebolla y morron salteados con queso fundido. Clásico que no falla",
+    description: "Carne roja desmechada, cebolla y morron salteados con queso fundido. Clásico que no falla.",
     image: notFound,
     available: true,
     prices: {
