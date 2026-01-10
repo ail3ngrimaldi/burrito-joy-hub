@@ -14,8 +14,8 @@ interface Product {
 
 const sizes = [
   { id: "M" as const, label: "M", weight: "360g", price: 9000 },
-  { id: "L" as const, label: "L", weight: "460g", price: 12000 },
-  { id: "XL" as const, label: "XL", weight: "560g", price: 15000 },
+  { id: "L" as const, label: "L", weight: "500g", price: 12000 },
+  { id: "XL" as const, label: "XL", weight: "650g", price: 15000 },
 ];
 
 interface ProductCardProps extends Product {
