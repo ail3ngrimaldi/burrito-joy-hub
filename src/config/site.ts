@@ -31,12 +31,10 @@ export const siteConfig = {
   // Códigos postales permitidos
   allowedPostalCodes: [
     "1640", "1641", "1642", "1643", "1644", // Martínez/San Isidro
-    "1609", "1610", "1611", "1612", "1613", // Boulogne/San Isidro
+    "1610", "1611", "1612", "1613", // Boulogne/San Isidro
     "1636", "1637", "1638", "1639",         // Olivos/Vicente López
     "1602", "1603", "1604", "1605", "1606", // Florida/Vicente López
     "1607", "1608",                         // Villa Martelli
-    "1617", "1618", "1619", "1620", "1621", // General Pacheco
-    "1625", "1626", "1627", "1628", "1629", // Tigre
     "1646", "1647", "1648",                 // San Fernando
   ],
 };
@@ -84,7 +82,7 @@ export const products: Product[] = [
     available: true,
     prices: {
       M: 9000,
-      L: 12000,
+      L: 12500,
       XL: 15000,
     },
   },
@@ -95,21 +93,9 @@ export const products: Product[] = [
     image: burritoMex,
     available: true,
     prices: {
-      M: 8500,
-      L: 11000,
-      XL: 14000,
-    },
-  },
-  {
-    id: "pollo-honeypinaca",
-    name: "Honeypinaca",
-    description: "Pollo en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
-    image: burritoHoneypinaca,
-    available: false,
-    prices: {
-      M: 8500,
-      L: 11000,
-      XL: 14000,
+      M: 9000,
+      L: 12000,
+      XL: 14500,
     },
   },
   {
@@ -119,21 +105,9 @@ export const products: Product[] = [
     image: notFound,
     available: true,
     prices: {
-      M: 7500,
-      L: 10000,
-      XL: 12500,
-    },
-  },
-  {
-    id: "pollo-verdeo",
-    name: "Pollo al Verdeo",
-    description: "Pollo en cubos con queso sardo, queso crema y salsa de verdeo y puerro. Plato clásico sin ensuciar",
-    image: notFound,
-    available: false,
-    prices: {
-      M: 8500,
-      L: 11000,
-      XL: 14000,
+      M: 6500,
+      L: 8500,
+      XL: 10500,
     },
   },
   {
@@ -143,21 +117,45 @@ export const products: Product[] = [
     image: notFound,
     available: true,
     prices: {
-      M: 8000,
-      L: 10500,
-      XL: 13500,
+      M: 9500,
+      L: 13000,
+      XL: 15500,
     },
   },
   {
     id: "the-bear",
-    name: "Como el de the bear",
+    name: "Carne desmechada",
     description: "Carne roja desmechada, cebolla y morron salteados con queso fundido. Clásico que no falla",
     image: notFound,
     available: true,
     prices: {
+      M: 9500,
+      L: 13000,
+      XL: 15500,
+    },
+  },
+    {
+    id: "pollo-honeypinaca",
+    name: "Honeypinaca",
+    description: "Pollo en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
+    image: burritoHoneypinaca,
+    available: false,
+    prices: {
+      M: 8500,
+      L: 11500,
+      XL: 13500,
+    },
+  },
+    {
+    id: "pollo-verdeo",
+    name: "Pollo al Verdeo",
+    description: "Pollo en cubos con queso sardo, queso crema y salsa de verdeo y puerro. Plato clásico sin ensuciar",
+    image: notFound,
+    available: false,
+    prices: {
       M: 9000,
       L: 12000,
-      XL: 15000,
+      XL: 14500,
     },
   },
 ];
