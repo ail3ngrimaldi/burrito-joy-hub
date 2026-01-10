@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Truck } from "lucide-react";
 import { useState } from "react";
+import { siteConfig } from "@/config/site";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,15 +11,29 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
+  const { name, logoFont, delivery } = siteConfig;
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-        <h1 className="flex items-center group">
-          <a href="/" className="font-heading hover:opacity-80 transition-opacity">
-            Los Burritos de Dulcinea
-          </a>
-        </h1>
+          {/* Logo */}
+          <h1 className="flex items-center group">
+            <a 
+              href="/" 
+              className={`${logoFont.family} ${logoFont.sizeMobile} ${logoFont.sizeDesktop} ${logoFont.weight} hover:opacity-80 transition-opacity`}
+            >
+              {name}
+            </a>
+          </h1>
+
+          {/* Delivery info - Desktop */}
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full">
+            <Truck className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">
+              {delivery.message} {delivery.days}
+            </span>
+          </div>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
@@ -62,6 +77,13 @@ const Navbar = () => {
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
+            {/* Delivery info - Mobile */}
+            <div className="flex items-center justify-center gap-2 px-4 py-2 mb-2 bg-primary/10 rounded-lg mx-4">
+              <Truck className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-primary">
+                {delivery.message} {delivery.days}
+              </span>
+            </div>
             <nav className="flex flex-col gap-2">
               <a 
                 href="#productos" 
