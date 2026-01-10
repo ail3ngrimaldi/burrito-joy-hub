@@ -32,7 +32,7 @@ const products: Product[] = [
     name: "Honeypinaca",
     description: "Pollo en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
     image: burritoBondiola,
-    available: true,
+    available: false,
   },
   {
     id: "veggie",
@@ -53,7 +53,14 @@ const products: Product[] = [
     name: "Bolognesa Carnívoro",
     description: "Carne picada desgrasada con salsa bolognesa casera, queso fundido y especias. Un clásico reconfortante.",
     image: burritoBolognesa,
-    available: false,
+    available: true,
+  },
+  {
+    id: "bolognesa",
+    name: "Como el de the bear",
+    description: "Carne roja desmechada, cebolla y morron salteados con queso fundido. Clásico que no falla",
+    image: burritoBolognesa,
+    available: true,
   },
 ];
 
