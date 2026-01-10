@@ -112,7 +112,7 @@ export const products: Product[] = [
   },
   {
     id: "bolognesa",
-    name: "Bolognesa Carnívoro",
+    name: "Bolognesa",
     description: "Carne picada desgrasada con salsa bolognesa casera, queso fundido y especias. Un clásico reconfortante.",
     image: notFound,
     available: true,
