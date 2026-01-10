@@ -1,8 +1,9 @@
 import ProductCard from "./ProductCard";
 import burritoBondiocheddar from "@/assets/burrito-bondiocheddar.jpg";
-import burritoCesar from "@/assets/burrito-cesar.jpg";
-import burritoBondiola from "@/assets/burrito-bondiola.jpg";
+import burritoMex from "@/assets/burrito-cesar.jpg";
+import burritoHoneypinaca from "@/assets/burrito-bondiola.jpg";
 import burritoBolognesa from "@/assets/burrito-bolognesa.jpg";
+import notFound from "@/assets/not_found.png";
 
 interface Product {
   id: string;
@@ -24,42 +25,42 @@ const products: Product[] = [
     id: "mexican-chicken",
     name: "Pollo Mex",
     description: "Pollo desmechado mezclado con cebolla y morrón en tiras, crema de palta fresca y cheddar fundido. Fresco y sabroso.",
-    image: burritoCesar,
+    image: burritoMex,
     available: true,
   },
   {
     id: "pollo-honeypinaca",
     name: "Honeypinaca",
     description: "Pollo en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
-    image: burritoBondiola,
+    image: burritoHoneypinaca,
     available: false,
   },
   {
     id: "veggie",
     name: "Bolognesa Veggie",
     description: "Salsa Bolognesa hecha con soja texturizada, cebolla, morron, ajo y queso fresco. Italiano, delicioso y cruelty free.",
-    image: burritoBolognesa,
+    image: notFound,
     available: true,
   },
   {
-    id: "pollo-espinaca",
+    id: "pollo-verdeo",
     name: "Pollo al Verdeo",
     description: "Pollo en cubos con queso sardo, queso crema y salsa de verdeo y puerro. Plato clásico sin ensuciar",
-    image: burritoBondiola,
+    image: notFound,
     available: false,
   },
   {
     id: "bolognesa",
     name: "Bolognesa Carnívoro",
     description: "Carne picada desgrasada con salsa bolognesa casera, queso fundido y especias. Un clásico reconfortante.",
-    image: burritoBolognesa,
+    image: notFound,
     available: true,
   },
   {
-    id: "bolognesa",
+    id: "the-bear",
     name: "Como el de the bear",
     description: "Carne roja desmechada, cebolla y morron salteados con queso fundido. Clásico que no falla",
-    image: burritoBolognesa,
+    image: notFound,
     available: true,
   },
 ];
