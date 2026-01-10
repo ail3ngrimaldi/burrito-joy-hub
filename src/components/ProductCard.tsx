@@ -3,22 +3,21 @@ import { ShoppingCart, Check, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
+import { productSizes, type ProductSize } from "@/config/site";
 
-interface Product {
+interface ProductPrices {
+  M: number;
+  L: number;
+  XL: number;
+}
+
+interface ProductCardProps {
   id: string;
   name: string;
   description: string;
   image: string;
   available: boolean;
-}
-
-const sizes = [
-  { id: "M" as const, label: "M", weight: "360g", price: 9000 },
-  { id: "L" as const, label: "L", weight: "500g", price: 12000 },
-  { id: "XL" as const, label: "XL", weight: "650g", price: 15000 },
-];
-
-interface ProductCardProps extends Product {
+  prices: ProductPrices;
   onClick?: () => void;
 }
 
@@ -28,13 +27,15 @@ const ProductCard = ({
   description,
   image,
   available,
+  prices,
 }: ProductCardProps) => {
-  const [selectedSize, setSelectedSize] = useState<"M" | "L" | "XL">("M");
+  const [selectedSize, setSelectedSize] = useState<ProductSize>("M");
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const { addItem } = useCart();
 
-  const selectedSizeData = sizes.find((s) => s.id === selectedSize)!;
+  const selectedSizeData = productSizes[selectedSize];
+  const currentPrice = prices[selectedSize];
 
   const handleQuantityChange = (delta: number) => {
     setQuantity((prev) => Math.max(1, prev + delta));
@@ -47,7 +48,7 @@ const ProductCard = ({
         productName: name,
         size: selectedSize,
         weight: selectedSizeData.weight,
-        price: selectedSizeData.price,
+        price: currentPrice,
       },
       quantity
     );
@@ -60,9 +61,11 @@ const ProductCard = ({
 
     setTimeout(() => {
       setIsAdding(false);
-      setQuantity(1); // Reset quantity after adding
+      setQuantity(1);
     }, 1000);
   };
+
+  const sizes: ProductSize[] = ["M", "L", "XL"];
 
   return (
     <div
@@ -105,16 +108,16 @@ const ProductCard = ({
               <div className="flex gap-2">
                 {sizes.map((size) => (
                   <button
-                    key={size.id}
-                    onClick={() => setSelectedSize(size.id)}
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
                     className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      selectedSize === size.id
+                      selectedSize === size
                         ? "bg-primary text-primary-foreground shadow-button"
                         : "bg-muted hover:bg-muted/80 text-foreground"
                     }`}
                   >
-                    <span className="font-bold">{size.label}</span>
-                    <span className="block text-xs opacity-80">{size.weight}</span>
+                    <span className="font-bold">{productSizes[size].label}</span>
+                    <span className="block text-xs opacity-80">{productSizes[size].weight}</span>
                   </button>
                 ))}
               </div>
@@ -145,11 +148,11 @@ const ProductCard = ({
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-2xl font-display font-bold text-primary">
-                  ${(selectedSizeData.price * quantity).toLocaleString("es-AR")}
+                  ${(currentPrice * quantity).toLocaleString("es-AR")}
                 </p>
                 {quantity > 1 && (
                   <p className="text-xs text-muted-foreground">
-                    ${selectedSizeData.price.toLocaleString("es-AR")} c/u
+                    ${currentPrice.toLocaleString("es-AR")} c/u
                   </p>
                 )}
               </div>
