@@ -95,7 +95,7 @@ export const products: Product[] = [
     prices: {
       M: 9500,
       L: 14000,
-      XL: 1700,
+      XL: 17000,
     },
   },
   {
