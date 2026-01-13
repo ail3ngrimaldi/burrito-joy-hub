@@ -22,11 +22,18 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
       .map((item) => `- ${item.productName} ${item.size} (${item.weight}) x${item.quantity}`)
       .join("\n");
 
-    const message = `¡Hola! Quiero hacer el siguiente pedido:
-
+    const deliveryInfo = formData.isPickup 
+      ? `🏠 *RETIRO EN LOCAL*
+Nombre: ${formData.name}
+Código Postal: ${formData.postalCode}`
+      : `🚚 *ENVÍO A DOMICILIO*
 Nombre: ${formData.name}
 Dirección: ${formData.address}
-Código Postal: ${formData.postalCode}
+Código Postal: ${formData.postalCode}`;
+
+    const message = `¡Hola! Quiero hacer el siguiente pedido:
+
+${deliveryInfo}
 
 Productos:
 ${itemsList}
