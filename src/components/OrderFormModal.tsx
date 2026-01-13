@@ -16,15 +16,19 @@ export interface OrderFormData {
   name: string;
   address: string;
   postalCode: string;
+  isPickup: boolean;
 }
 
 const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
-  const [formData, setFormData] = useState<OrderFormData>({
+  const [formData, setFormData] = useState<Omit<OrderFormData, 'isPickup'>>({
     name: "",
     address: "",
     postalCode: "",
   });
   const [errors, setErrors] = useState<Partial<OrderFormData>>({});
+
+  const isPickupRequired = formData.postalCode.trim() !== "" && 
+    !siteConfig.allowedPostalCodes.includes(formData.postalCode.trim());
 
   const validateForm = (): boolean => {
     const newErrors: Partial<OrderFormData> = {};
@@ -33,14 +37,12 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
       newErrors.name = "El nombre es requerido";
     }
 
-    if (!formData.address.trim()) {
+    if (!isPickupRequired && !formData.address.trim()) {
       newErrors.address = "La dirección es requerida";
     }
 
     if (!formData.postalCode.trim()) {
       newErrors.postalCode = "El código postal es requerido";
-    } else if (!siteConfig.allowedPostalCodes.includes(formData.postalCode.trim())) {
-      newErrors.postalCode = "No realizamos entregas a este código postal";
     }
 
     setErrors(newErrors);
@@ -51,7 +53,10 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
     e.preventDefault();
     
     if (validateForm()) {
-      onSubmit(formData);
+      onSubmit({
+        ...formData,
+        isPickup: isPickupRequired
+      });
     } else {
       toast.error("Por favor completá todos los campos correctamente");
     }
@@ -111,24 +116,26 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
             )}
           </div>
 
-          {/* Address */}
-          <div className="space-y-2">
-            <Label htmlFor="address" className="text-foreground font-medium flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              Dirección completa
-            </Label>
-            <Input
-              id="address"
-              type="text"
-              placeholder="Av. Libertador 1234, Piso 5, Depto A"
-              value={formData.address}
-              onChange={(e) => handleChange("address", e.target.value)}
-              className={errors.address ? "border-destructive" : ""}
-            />
-            {errors.address && (
-              <p className="text-sm text-destructive">{errors.address}</p>
-            )}
-          </div>
+          {/* Address - only required for delivery */}
+          {!isPickupRequired && (
+            <div className="space-y-2">
+              <Label htmlFor="address" className="text-foreground font-medium flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                Dirección completa
+              </Label>
+              <Input
+                id="address"
+                type="text"
+                placeholder="Av. Libertador 1234, Piso 5, Depto A"
+                value={formData.address}
+                onChange={(e) => handleChange("address", e.target.value)}
+                className={errors.address ? "border-destructive" : ""}
+              />
+              {errors.address && (
+                <p className="text-sm text-destructive">{errors.address}</p>
+              )}
+            </div>
+          )}
 
           {/* Postal Code */}
           <div className="space-y-2">
@@ -147,14 +154,25 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
             {errors.postalCode && (
               <p className="text-sm text-destructive">{errors.postalCode}</p>
             )}
-            <p className="text-xs text-muted-foreground">
-              Realizamos entregas en zona norte de Buenos Aires
-            </p>
+            {isPickupRequired ? (
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                <p className="text-sm text-amber-800 font-medium">
+                  ⚠️ No realizamos envíos a tu zona
+                </p>
+                <p className="text-xs text-amber-700 mt-1">
+                  Podés retirar tu pedido en nuestro local. Te enviaremos la dirección por WhatsApp.
+                </p>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Realizamos entregas en zona norte de Buenos Aires
+              </p>
+            )}
           </div>
 
           {/* Submit Button */}
           <Button type="submit" className="w-full" size="lg">
-            Continuar al pedido
+            {isPickupRequired ? "Continuar (Retiro en local)" : "Continuar al pedido"}
           </Button>
         </form>
       </div>
