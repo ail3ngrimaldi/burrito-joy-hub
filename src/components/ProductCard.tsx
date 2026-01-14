@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { ShoppingCart, Check, Plus, Minus } from "lucide-react";
+import { ShoppingCart, Check, Plus, Minus, ImageOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { productSizes, type ProductSize } from "@/config/site";
-
+import notFoundImage from "@/assets/not_found.png";
 interface ProductPrices {
   M: number;
   L: number;
@@ -75,13 +75,22 @@ const ProductCard = ({
     >
       {/* Image container */}
       <div className="relative aspect-square overflow-hidden">
-        <img
-          src={image}
-          alt={`Burrito ${name}`}
-          className={`w-full h-full object-cover transition-transform duration-500 ${
-            available ? "group-hover:scale-110" : "grayscale"
-          }`}
-        />
+        {image === notFoundImage ? (
+          <div className="w-full h-full bg-muted flex flex-col items-center justify-center gap-3">
+            <ImageOff className="w-12 h-12 text-muted-foreground/50" />
+            <span className="text-muted-foreground/70 text-sm font-medium">
+              Imagen no disponible
+            </span>
+          </div>
+        ) : (
+          <img
+            src={image}
+            alt={`Burrito ${name}`}
+            className={`w-full h-full object-cover transition-transform duration-500 ${
+              available ? "group-hover:scale-110" : "grayscale"
+            }`}
+          />
+        )}
         {!available && (
           <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
             <span className="bg-muted text-muted-foreground px-4 py-2 rounded-full font-bold text-sm">
