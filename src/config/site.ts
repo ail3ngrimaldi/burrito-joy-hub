@@ -81,21 +81,21 @@ export const products: Product[] = [
     image: burritoBondiocheddar,
     available: true,
     prices: {
-      M: 9000,
+      M: 9500,
       L: 13000,
-      XL: 17000,
+      XL: 16500,
     },
   },
   {
     id: "mexican-chicken",
     name: "Pollo Mex",
-    description: "Pollo desmechado mezclado con cebolla y morrón en tiras, crema de palta fresca y cheddar fundido. Fresco y sabroso.",
+    description: "Suprema desmechada mezclada con cebolla y morrón salteados, palta embebida en aceite, limón y cheddar fundido. Fresco y sabroso.",
     image: burritoMex,
     available: true,
     prices: {
-      M: 9500,
-      L: 14000,
-      XL: 17000,
+      M: 9000,
+      L: 12500,
+      XL: 14500,
     },
   },
   {
@@ -113,13 +113,13 @@ export const products: Product[] = [
   {
     id: "bolognesa",
     name: "Bolognesa",
-    description: "Carne picada desgrasada con salsa bolognesa casera, queso fundido y especias. Un clásico reconfortante.",
+    description: "Carne picada baja en grasa con salsa bolognesa casera, queso fundido y especias.",
     image: notFound,
     available: true,
     prices: {
       M: 9500,
-      L: 13000,
-      XL: 15500,
+      L: 14000,
+      XL: 17000,
     },
   },
   {
@@ -137,7 +137,7 @@ export const products: Product[] = [
     {
     id: "pollo-honeypinaca",
     name: "Honeypinaca",
-    description: "Pollo en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
+    description: "Suprema en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
     image: burritoHoneypinaca,
     available: false,
     prices: {
@@ -149,7 +149,7 @@ export const products: Product[] = [
     {
     id: "pollo-verdeo",
     name: "Pollo al Verdeo",
-    description: "Pollo en cubos con queso sardo, queso crema y salsa de verdeo y puerro. Plato clásico sin ensuciar",
+    description: "Suprema en cubos con queso sardo, queso crema y salsa de verdeo y puerro. Plato clásico sin ensuciar",
     image: notFound,
     available: false,
     prices: {
