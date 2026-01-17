@@ -8,8 +8,8 @@
 /* Custom font for brand name */
 @font-face {
   font-family: 'Junigarden';
-  src: url('/fonts/JunigardenSerif_PERSONAL_USE_ONLY.woff2') format('woff2'),
-       url('/fonts/JunigardenSerif_PERSONAL_USE_ONLY.otf') format('opentype');
+  src: url('/fonts/JunigardenSwash_PERSONAL_USE_ONLY.woff2') format('woff2'),
+       url('/fonts/JunigardenSwash_PERSONAL_USE_ONLY.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
