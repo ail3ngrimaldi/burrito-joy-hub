@@ -21,7 +21,7 @@ const steps = [
     icon: Package,
     step: "3",
     title: "Recibí y disfrutá",
-    description: "Recibí tu pedido y disfrutá de burritos ricos, abundantes y sanos cuando quieras.",
+    description: "Hacemos entregas los Jueves y Viernes. Recibí tu pedido y disfrutá de burritos ricos, abundantes y sanos cuando quieras.",
     color: "text-burrito-orange",
     bgColor: "bg-burrito-orange/10",
   },

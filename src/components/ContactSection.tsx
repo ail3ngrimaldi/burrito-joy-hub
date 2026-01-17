@@ -49,7 +49,7 @@ const ContactSection = () => {
             </div>
             <div className="flex items-center gap-2">
               <span>🚚</span>
-              <span>Envíos a domicilio</span>
+              <span>Envíos Jue y Vie</span>
             </div>
           </div>
         </div>
