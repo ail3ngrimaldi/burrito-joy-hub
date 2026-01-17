@@ -35,7 +35,7 @@ const benefits = [
   },
   {
     icon: Zap,
-    title: "Listos en 3 minutos",
+    title: "Listos en 5 minutos",
     description: "Del freezer al plato en un suspiro. Microondas, horno o sartén. Vos elegís.",
   },
   {
