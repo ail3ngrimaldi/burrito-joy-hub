@@ -150,7 +150,7 @@
 /* Alternative: Strong stroke effect */
 .brand-name-stroke {
   font-family: 'Junigarden', 'Fredoka', cursive;
-  color: hsl(var(--primary));
+  color: #FFB700;
   -webkit-text-stroke: 2px #FFB700;
   paint-order: stroke fill;
 }
@@ -248,4 +248,8 @@ html {
 
 #lovable-badge {
   display: none !important;
+}
+
+.text-lg {
+  font-size: 1.5em;
 }
