@@ -41,7 +41,7 @@ const ContactSection = () => {
           <div className="flex flex-wrap items-center justify-center gap-6 mt-10 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <span>📍</span>
-              <span>Buenos Aires, Argentina</span>
+              <span>Vicente Lopez, Argentina</span>
             </div>
             <div className="flex items-center gap-2">
               <span>⏰</span>
@@ -49,7 +49,7 @@ const ContactSection = () => {
             </div>
             <div className="flex items-center gap-2">
               <span>🚚</span>
-              <span>Envíos Jue y Vie</span>
+              <span>Envíos Jueves y Viernes</span>
             </div>
           </div>
         </div>
