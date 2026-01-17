@@ -16,8 +16,8 @@ const HeroSection = () => {
       <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-48 h-48 bg-secondary/30 rounded-full blur-3xl" />
       
-      <div className="container relative z-10 mx-auto px-4 py-12 lg:py-0">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      <div className="container relative z-10 mx-auto px-6 md:px-8 py-12 lg:py-0">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Text content */}
           <div className="text-center lg:text-left animate-fade-in">
             <span className="inline-block px-4 py-2 bg-secondary/50 text-secondary-foreground rounded-full text-sm font-medium mb-6">

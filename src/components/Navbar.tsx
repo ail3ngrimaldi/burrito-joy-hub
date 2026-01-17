@@ -23,13 +23,13 @@ const Navbar = () => {
         </span>
       </div>
       
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+      <div className="container mx-auto px-6 md:px-8">
+        <div className="max-w-6xl mx-auto flex items-center justify-between h-16">
           {/* Logo */}
           <h1 className="flex items-center group">
             <a 
               href="/" 
-              className={`${logoFont.family} ${logoFont.sizeMobile} ${logoFont.sizeDesktop} ${logoFont.weight} hover:opacity-80 transition-opacity`}
+              className="brand-name text-lg md:text-xl font-bold hover:opacity-80 transition-opacity"
             >
               {name}
             </a>
