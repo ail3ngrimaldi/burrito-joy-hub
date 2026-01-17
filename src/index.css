@@ -140,7 +140,7 @@
 .brand-name {
   font-family: 'Junigarden', 'Fredoka', cursive;
   color: #511C00;
-  -webkit-text-stroke: 1px hsl(var(--foreground) / 0.3);
+  -webkit-text-stroke: 1px #FFB700 / 0.3);
   text-shadow: 
     2px 2px 0 hsl(var(--foreground) / 0.1),
     -1px -1px 0 hsl(var(--background));
