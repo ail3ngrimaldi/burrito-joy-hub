@@ -15,6 +15,14 @@ const Navbar = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
+      {/* Mobile delivery banner - always visible on mobile */}
+      <div className="md:hidden flex items-center justify-center gap-2 py-2 bg-primary/10 border-b border-border/30">
+        <Truck className="w-4 h-4 text-primary" />
+        <span className="text-sm font-medium text-primary">
+          {delivery.message} {delivery.days}
+        </span>
+      </div>
+      
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -77,13 +85,6 @@ const Navbar = () => {
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
-            {/* Delivery info - Mobile */}
-            <div className="flex items-center justify-center gap-2 px-4 py-2 mb-2 bg-primary/10 rounded-lg mx-4">
-              <Truck className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">
-                {delivery.message} {delivery.days}
-              </span>
-            </div>
             <nav className="flex flex-col gap-2">
               <a 
                 href="#productos" 

@@ -60,7 +60,7 @@ const HeroSection = () => {
             <div className="mt-8 flex items-center gap-6 justify-center lg:justify-start text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <span className="text-accent text-lg">✓</span>
-                <span>Envío a domicilio</span>
+                <span>Envío a domicilio <span className="font-medium">(Jue y Vie)</span></span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-accent text-lg">✓</span>
