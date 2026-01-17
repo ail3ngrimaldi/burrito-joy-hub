@@ -10,8 +10,9 @@ const ContactSection = () => {
 
   return (
     <section id="contacto" className="py-20 bg-gradient-to-t from-muted/50 to-background">
-      <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto text-center animate-fade-in">
+      <div className="container mx-auto px-6 md:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="max-w-2xl mx-auto text-center animate-fade-in">
           {/* Icon */}
           <div className="w-20 h-20 bg-burrito-green/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <MessageCircle className="w-10 h-10 text-burrito-green" />
@@ -38,18 +39,19 @@ const ContactSection = () => {
           </Button>
 
           {/* Trust badges */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-10 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <span>📍</span>
-              <span>Vicente Lopez, Argentina</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>⏰</span>
-              <span>Respondemos 9 a 21hs</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>🚚</span>
-              <span>Envíos Jueves y Viernes</span>
+            <div className="flex flex-wrap items-center justify-center gap-6 mt-10 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <span>📍</span>
+                <span>Vicente Lopez, Argentina</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>⏰</span>
+                <span>Respondemos 9 a 21hs</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>🚚</span>
+                <span>Envíos Jueves y Viernes</span>
+              </div>
             </div>
           </div>
         </div>

@@ -34,7 +34,8 @@ const faqs = [
 const ValueProposition = () => {
   return (
     <section id="propuesta" className="py-16 bg-background">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6 md:px-8">
+        <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10 animate-fade-in">
           <span className="inline-block px-4 py-2 bg-secondary/50 text-secondary-foreground rounded-full text-sm font-medium mb-4">
@@ -48,8 +49,8 @@ const ValueProposition = () => {
           </p>
         </div>
 
-        {/* FAQ Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
+          {/* FAQ Grid */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {faqs.map((faq, index) => (
             <div
               key={faq.question}
@@ -69,12 +70,13 @@ const ValueProposition = () => {
           ))}
         </div>
 
-        {/* Simple callout */}
-        <div className="mt-12 text-center">
-          <p className="text-muted-foreground">
-            <span className="text-xl mr-2">💬</span>
-            ¿Más dudas? <a href={`https://wa.me/5491124003293`} target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">Escribinos por WhatsApp</a>
-          </p>
+          {/* Simple callout */}
+          <div className="mt-12 text-center">
+            <p className="text-muted-foreground">
+              <span className="text-xl mr-2">💬</span>
+              ¿Más dudas? <a href={`https://wa.me/5491124003293`} target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">Escribinos por WhatsApp</a>
+            </p>
+          </div>
         </div>
       </div>
     </section>
