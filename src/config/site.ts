@@ -94,8 +94,8 @@ export const products: Product[] = [
     available: true,
     prices: {
       M: 9000,
-      L: 12500,
-      XL: 14500,
+      L: 12000,
+      XL: 14000,
     },
   },
   {
