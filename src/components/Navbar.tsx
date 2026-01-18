@@ -15,8 +15,8 @@ const Navbar = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-      {/* Mobile delivery banner - always visible on mobile */}
-      <div className="md:hidden flex items-center justify-center gap-2 py-2 bg-primary/10 border-b border-border/30">
+      {/* Mobile delivery banner - only visible on small screens */}
+      <div className="lg:hidden flex items-center justify-center gap-2 py-2 bg-primary/10 border-b border-border/30">
         <Truck className="w-4 h-4 text-primary" />
         <span className="text-sm font-medium text-primary">
           {delivery.message} {delivery.days}
@@ -24,27 +24,19 @@ const Navbar = () => {
       </div>
       
       <div className="container mx-auto px-6 md:px-8">
-        <div className="max-w-6xl mx-auto flex items-center justify-between h-16">
+        <div className="max-w-6xl mx-auto flex items-center justify-between h-14 lg:h-16">
           {/* Logo */}
           <h1 className="flex items-center group">
             <a 
               href="/" 
-              className="brand-name text-lg md:text-xl font-bold hover:opacity-80 transition-opacity"
+              className="brand-name hover:opacity-80 transition-opacity"
             >
               {name}
             </a>
           </h1>
 
-          {/* Delivery info - Desktop */}
-          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full">
-            <Truck className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">
-              {delivery.message} {delivery.days}
-            </span>
-          </div>
-
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* Desktop nav - hidden on mobile and tablet */}
+          <nav className="hidden lg:flex items-center gap-8">
             <a 
               href="#productos" 
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -68,9 +60,9 @@ const Navbar = () => {
             </Button>
           </nav>
 
-          {/* Mobile menu button */}
+          {/* Mobile/Tablet menu button - visible until lg breakpoint */}
           <button
-            className="md:hidden p-2 hover:bg-muted rounded-lg transition-colors"
+            className="lg:hidden p-2 hover:bg-muted rounded-lg transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
           >
@@ -82,9 +74,9 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile/Tablet menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border animate-fade-in">
+          <div className="lg:hidden py-4 border-t border-border animate-fade-in">
             <nav className="flex flex-col gap-2">
               <a 
                 href="#productos" 
@@ -95,7 +87,7 @@ const Navbar = () => {
               </a>
               <a 
                 href="#propuesta" 
-                className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 ¿Cómo funciona?
