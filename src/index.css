@@ -133,6 +133,10 @@
     font-family: 'Fredoka', sans-serif;
     font-family: 'Playfair Display', serif; 
   }
+
+  p {
+    font-family: 'Montserrat', sans-serif !important;
+  }
 }
 
 .logo {
