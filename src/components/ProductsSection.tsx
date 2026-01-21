@@ -1,7 +1,10 @@
 import ProductCard from "./ProductCard";
 import { products } from "@/config/site";
+import { useProductStock, hasAnyStock } from "@/hooks/useProductStock";
 
 const ProductsSection = () => {
+  const { data: stockMap, isLoading } = useProductStock();
+
   return (
     <section id="productos" className="py-20 bg-muted/30">
       <div className="container mx-auto px-6 md:px-8">
@@ -22,15 +25,26 @@ const ProductsSection = () => {
 
           {/* Products grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product, index) => (
-              <div
-                key={product.id}
-                className="animate-slide-up"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <ProductCard {...product} />
-              </div>
-            ))}
+            {products.map((product, index) => {
+              // Un producto está disponible si tiene stock en algún tamaño
+              const hasStock = hasAnyStock(stockMap, product.id);
+              const isAvailable = product.available && (isLoading || hasStock);
+              
+              return (
+                <div
+                  key={product.id}
+                  className="animate-slide-up"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <ProductCard 
+                    {...product} 
+                    available={isAvailable}
+                    stockMap={stockMap}
+                    isLoadingStock={isLoading}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
