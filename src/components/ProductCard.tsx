@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ShoppingCart, Check, Plus, Minus, ImageOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { productSizes, type ProductSize } from "@/config/site";
+import { type ProductStockMap, getStockForProduct } from "@/hooks/useProductStock";
 import notFoundImage from "@/assets/not_found.png";
+
 interface ProductPrices {
   M: number;
   L: number;
@@ -18,6 +20,8 @@ interface ProductCardProps {
   image: string;
   available: boolean;
   prices: ProductPrices;
+  stockMap?: ProductStockMap;
+  isLoadingStock?: boolean;
   onClick?: () => void;
 }
 
@@ -28,6 +32,8 @@ const ProductCard = ({
   image,
   available,
   prices,
+  stockMap,
+  isLoadingStock,
 }: ProductCardProps) => {
   const [selectedSize, setSelectedSize] = useState<ProductSize>("M");
   const [quantity, setQuantity] = useState(1);
@@ -37,11 +43,30 @@ const ProductCard = ({
   const selectedSizeData = productSizes[selectedSize];
   const currentPrice = prices[selectedSize];
 
+  // Get stock for current size
+  const currentStock = getStockForProduct(stockMap, id, selectedSize);
+  const maxQuantity = isLoadingStock ? 99 : currentStock;
+
+  // Reset quantity if it exceeds available stock
+  useEffect(() => {
+    if (!isLoadingStock && quantity > currentStock && currentStock > 0) {
+      setQuantity(currentStock);
+    }
+  }, [currentStock, isLoadingStock, quantity]);
+
   const handleQuantityChange = (delta: number) => {
-    setQuantity((prev) => Math.max(1, prev + delta));
+    const newQty = quantity + delta;
+    if (newQty >= 1 && newQty <= maxQuantity) {
+      setQuantity(newQty);
+    }
   };
 
   const handleAddToCart = () => {
+    if (!isLoadingStock && currentStock < quantity) {
+      toast.error(`Solo hay ${currentStock} unidades disponibles`);
+      return;
+    }
+
     addItem(
       {
         productId: id,
@@ -66,6 +91,9 @@ const ProductCard = ({
   };
 
   const sizes: ProductSize[] = ["M", "L", "XL"];
+
+  // Check if a specific size has stock
+  const getSizeStock = (size: ProductSize) => getStockForProduct(stockMap, id, size);
 
   return (
     <div
@@ -115,20 +143,30 @@ const ProductCard = ({
             <div className="mb-4">
               <p className="text-sm font-medium text-foreground mb-2">Tamaño:</p>
               <div className="flex gap-2">
-                {sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      selectedSize === size
-                        ? "bg-primary text-primary-foreground shadow-button"
-                        : "bg-muted hover:bg-muted/80 text-foreground"
-                    }`}
-                  >
-                    <span className="font-bold">{productSizes[size].label}</span>
-                    <span className="block text-xs opacity-80">{productSizes[size].weight}</span>
-                  </button>
-                ))}
+                {sizes.map((size) => {
+                  const sizeStock = getSizeStock(size);
+                  const isOutOfStock = !isLoadingStock && sizeStock === 0;
+                  
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => !isOutOfStock && setSelectedSize(size)}
+                      disabled={isOutOfStock}
+                      className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        isOutOfStock
+                          ? "bg-muted/50 text-muted-foreground cursor-not-allowed opacity-50"
+                          : selectedSize === size
+                          ? "bg-primary text-primary-foreground shadow-button"
+                          : "bg-muted hover:bg-muted/80 text-foreground"
+                      }`}
+                    >
+                      <span className="font-bold">{productSizes[size].label}</span>
+                      <span className="block text-xs opacity-80">
+                        {isOutOfStock ? "Agotado" : productSizes[size].weight}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -146,12 +184,20 @@ const ProductCard = ({
                 <span className="w-8 text-center font-bold text-lg">{quantity}</span>
                 <button
                   onClick={() => handleQuantityChange(1)}
-                  className="w-9 h-9 rounded-lg bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors"
+                  disabled={quantity >= maxQuantity}
+                  className="w-9 h-9 rounded-lg bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
             </div>
+
+            {/* Stock indicator */}
+            {!isLoadingStock && currentStock > 0 && currentStock <= 5 && (
+              <p className="text-xs text-amber-600 font-medium mb-2">
+                ⚠️ ¡Solo quedan {currentStock} unidades!
+              </p>
+            )}
 
             {/* Price and add button */}
             <div className="flex items-center justify-between gap-4">
