@@ -43,7 +43,6 @@ export const siteConfig = {
 export const productSizes = {
   M: { label: "M", weight: "360g" },
   L: { label: "L", weight: "500g" },
-  XL: { label: "XL", weight: "650g" },
 } as const;
 
 export type ProductSize = keyof typeof productSizes;
@@ -69,7 +68,6 @@ export interface Product {
   prices: {
     M: number;
     L: number;
-    XL: number;
   };
 }
 
@@ -83,7 +81,6 @@ export const products: Product[] = [
     prices: {
       M: 9500,
       L: 13000,
-      XL: 16500,
     },
   },
   {
@@ -95,7 +92,6 @@ export const products: Product[] = [
     prices: {
       M: 9000,
       L: 12000,
-      XL: 14000,
     },
   },
   {
@@ -107,7 +103,6 @@ export const products: Product[] = [
     prices: {
       M: 6500,
       L: 8500,
-      XL: 10500,
     },
   },
   {
@@ -119,7 +114,6 @@ export const products: Product[] = [
     prices: {
       M: 9500,
       L: 14000,
-      XL: 17000,
     },
   },
   {
@@ -131,7 +125,6 @@ export const products: Product[] = [
     prices: {
       M: 9500,
       L: 13500,
-      XL: 16500,
     },
   },
     {
@@ -143,7 +136,6 @@ export const products: Product[] = [
     prices: {
       M: 8500,
       L: 11500,
-      XL: 13500,
     },
   },
     {
@@ -155,7 +147,6 @@ export const products: Product[] = [
     prices: {
       M: 9000,
       L: 12000,
-      XL: 14500,
     },
   },
 ];

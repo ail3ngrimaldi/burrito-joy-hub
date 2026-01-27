@@ -10,7 +10,6 @@ import notFoundImage from "@/assets/not_found.png";
 interface ProductPrices {
   M: number;
   L: number;
-  XL: number;
 }
 
 interface ProductCardProps {
@@ -90,7 +89,7 @@ const ProductCard = ({
     }, 1000);
   };
 
-  const sizes: ProductSize[] = ["M", "L", "XL"];
+  const sizes: ProductSize[] = ["M", "L"];
 
   // Check if a specific size has stock
   const getSizeStock = (size: ProductSize) => getStockForProduct(stockMap, id, size);
