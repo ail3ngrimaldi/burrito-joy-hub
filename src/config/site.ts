@@ -56,6 +56,7 @@ import burritoBondiocheddar from "@/assets/burrito-bondiocheddar.jpg";
 import burritoMex from "@/assets/burrito-cesar.jpg";
 import burritoHoneypinaca from "@/assets/burrito-bondiola.jpg";
 import burritoBolognesa from "@/assets/burrito-bolognesa.jpg";
+import burritoRB from "@/assets/roast-beef.jpg";
 import notFound from "@/assets/not_found.png";
 
 export interface Product {
@@ -120,7 +121,7 @@ export const products: Product[] = [
     id: "the-bear",
     name: "Carne desmechada",
     description: "Carne roja desmechada, cebolla y morron salteados con queso fundido. Clásico que no falla.",
-    image: notFound,
+    image: burritoRB,
     available: true,
     prices: {
       M: 10000,
