@@ -41,8 +41,8 @@ export const siteConfig = {
 
 // Tamaños disponibles con sus pesos
 export const productSizes = {
-  M: { label: "M", weight: "360g" },
-  L: { label: "L", weight: "500g" },
+  M: { label: "M", weight: "350g" },
+  L: { label: "L", weight: "480g" },
 } as const;
 
 export type ProductSize = keyof typeof productSizes;
