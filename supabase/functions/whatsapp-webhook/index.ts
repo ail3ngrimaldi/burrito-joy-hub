@@ -71,17 +71,36 @@ ZONAS DE ENTREGA (códigos postales):
 ENTREGAS: Jueves y Viernes
 `;
 
+// Order item structure for stock management
+interface OrderItem {
+  productId: string;
+  size: "M" | "L";
+  quantity: number;
+}
+
+interface AIResponseWithOrder {
+  response: string;
+  isOrder: boolean;
+  orderItems: OrderItem[];
+}
+
 // Use Lovable AI to interpret the message and generate a response
 async function generateAIResponse(
   message: string,
   customerName: string,
   stockInfo: string
-): Promise<string> {
+): Promise<AIResponseWithOrder> {
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  
+  const defaultResponse: AIResponseWithOrder = {
+    response: `¡Hola ${customerName}! Gracias por contactarnos. Te respondemos a la brevedad. 🌯`,
+    isOrder: false,
+    orderItems: []
+  };
   
   if (!LOVABLE_API_KEY) {
     console.error("LOVABLE_API_KEY not configured");
-    return "¡Hola! Gracias por contactarnos. En este momento estamos teniendo problemas técnicos. Por favor, intentá de nuevo más tarde.";
+    return defaultResponse;
   }
 
   const systemPrompt = `Sos el asistente virtual de "Los Burritos de Dulcinea", un emprendimiento de burritos artesanales en Buenos Aires.
@@ -100,17 +119,36 @@ INSTRUCCIONES:
 1. Si preguntan por productos/precios/ingredientes: Respondé con la info del catálogo.
 2. Si preguntan por zonas de entrega: Mencioná las zonas y códigos postales.
 3. Si preguntan por stock: Usá la información de STOCK ACTUAL.
-4. Si hacen un pedido (mencionan querer comprar/pedir burritos):
+4. Si hacen un pedido (mencionan querer comprar/pedir burritos específicos con cantidades):
    - Confirmá el pedido
    - Pedí horarios disponibles para Jueves o Viernes
    - Mencioná que pueden hacer transferencia a "burritosdulcinea"
-   - Ejemplo: "¡Hola ${customerName}! Tu pedido fue tomado. Ahora necesitamos que nos des opciones de horarios para pasar por tu casa el Jueves o Viernes. Si querés, podés ir haciendo una transferencia a burritosdulcinea por el monto de $[TOTAL]"
 5. Si el saludo es genérico: Saludá y ofrecé ayuda.
 
 IMPORTANTE: 
 - Siempre mencioná el nombre del cliente (${customerName}) cuando sea apropiado.
 - Si algo está sin stock, sugerí alternativas.
-- Mantené las respuestas cortas (máximo 3-4 oraciones).`;
+- Mantené las respuestas cortas (máximo 3-4 oraciones).
+
+RESPUESTA EN JSON:
+Respondé SIEMPRE en formato JSON válido con esta estructura:
+{
+  "response": "tu mensaje de respuesta al cliente",
+  "isOrder": true/false,
+  "orderItems": [
+    {"productId": "bondiocheddar", "size": "M", "quantity": 2}
+  ]
+}
+
+MAPEO DE PRODUCTOS para orderItems:
+- Bondiocheddar → "bondiocheddar"
+- Pollo Mex → "pollo-mex"
+- Bolognesa Veggie → "bolognesa-veggie"
+- Bolognesa → "bolognesa"
+- Carne desmechada / Roast Beef → "roast-beef"
+
+Solo marcá isOrder=true si el cliente CONFIRMA un pedido con productos y cantidades específicas.
+Si solo preguntan precios o información, isOrder=false.`;
 
   try {
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -130,15 +168,68 @@ IMPORTANTE:
 
     if (!response.ok) {
       console.error("AI Gateway error:", response.status);
-      return `¡Hola ${customerName}! Gracias por escribirnos. En breve te respondemos. 🌯`;
+      return defaultResponse;
     }
 
     const data = await response.json();
-    return data.choices?.[0]?.message?.content || `¡Hola ${customerName}! Gracias por tu mensaje. Te respondemos pronto.`;
+    const aiContent = data.choices?.[0]?.message?.content || "";
+    
+    // Parse JSON response from AI
+    try {
+      // Extract JSON from response (handle markdown code blocks)
+      let jsonStr = aiContent;
+      const jsonMatch = aiContent.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[1].trim();
+      }
+      
+      const parsed = JSON.parse(jsonStr);
+      return {
+        response: parsed.response || defaultResponse.response,
+        isOrder: parsed.isOrder === true,
+        orderItems: Array.isArray(parsed.orderItems) ? parsed.orderItems : []
+      };
+    } catch (parseError) {
+      console.error("Error parsing AI JSON response:", parseError);
+      // If JSON parsing fails, return the raw content as response
+      return {
+        response: aiContent || defaultResponse.response,
+        isOrder: false,
+        orderItems: []
+      };
+    }
   } catch (error) {
     console.error("Error calling AI:", error);
-    return `¡Hola ${customerName}! Gracias por contactarnos. Te respondemos a la brevedad. 🌯`;
+    return defaultResponse;
   }
+}
+
+// Decrement stock for order items
+async function processOrderStock(
+  supabase: any,
+  orderItems: OrderItem[]
+): Promise<{ success: boolean; failedItems: string[] }> {
+  const failedItems: string[] = [];
+  
+  for (const item of orderItems) {
+    const { data, error } = await supabase.rpc("decrement_stock", {
+      p_product_id: item.productId,
+      p_size: item.size,
+      p_quantity: item.quantity
+    });
+    
+    if (error || data === false) {
+      console.error(`Failed to decrement stock for ${item.productId} ${item.size}:`, error);
+      failedItems.push(`${item.productId} ${item.size}`);
+    } else {
+      console.log(`Stock decremented: ${item.productId} ${item.size} x${item.quantity}`);
+    }
+  }
+  
+  return {
+    success: failedItems.length === 0,
+    failedItems
+  };
 }
 
 // Send message via WhatsApp API
@@ -246,15 +337,25 @@ serve(async (req) => {
                 ? stockData.map((s: any) => `${s.product_id} ${s.size}: ${s.quantity} unidades`).join("\n")
                 : "Stock no disponible";
 
-              // Generate AI response
-              const aiResponse = await generateAIResponse(
+              // Generate AI response with order detection
+              const aiResult = await generateAIResponse(
                 incomingMessage,
                 customerName,
                 stockInfo
               );
 
+              // If it's an order, process stock decrement
+              if (aiResult.isOrder && aiResult.orderItems.length > 0) {
+                console.log("Order detected, processing stock:", aiResult.orderItems);
+                const stockResult = await processOrderStock(supabase, aiResult.orderItems);
+                
+                if (!stockResult.success) {
+                  console.warn("Some items failed to decrement:", stockResult.failedItems);
+                }
+              }
+
               // Send response
-              await sendWhatsAppMessage(from, aiResponse);
+              await sendWhatsAppMessage(from, aiResult.response);
             }
           }
         }
