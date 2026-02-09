@@ -55,8 +55,8 @@ export type ProductSize = keyof typeof productSizes;
 import burritoBondiocheddar from "@/assets/burrito-bondiocheddar.jpg";
 import burritoMex from "@/assets/burrito-cesar.jpg";
 import burritoHoneypinaca from "@/assets/burrito-bondiola.jpg";
-import burritoBolognesa from "@/assets/burrito-bolognesa.jpg";
 import burritoRB from "@/assets/roast-beef.jpg";
+import burritoBolognesa from "@/assets/bolognesa.png";
 import notFound from "@/assets/not_found.png";
 
 export interface Product {
@@ -110,7 +110,7 @@ export const products: Product[] = [
     id: "bolognesa",
     name: "Bolognesa",
     description: "Carne picada baja en grasa con salsa bolognesa casera, queso fundido y especias. Generoso en carne, justo en precio.",
-    image: notFound,
+    image: burritoBolognesa,
     available: true,
     prices: {
       M: 9500,
