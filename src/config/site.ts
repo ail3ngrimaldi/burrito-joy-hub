@@ -128,15 +128,4 @@ export const products: Product[] = [
       L: 11500,
     },
   },
-    {
-    id: "pollo-verdeo",
-    name: "Pollo al Verdeo",
-    description: "Suprema en cubos con queso sardo, queso crema y salsa de verdeo y puerro. Plato clásico sin ensuciar",
-    image: notFound,
-    available: false,
-    prices: {
-      M: 9000,
-      L: 12000,
-    },
-  },
 ];
