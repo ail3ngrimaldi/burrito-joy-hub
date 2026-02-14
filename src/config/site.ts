@@ -133,9 +133,9 @@ export const products: Product[] = [
     name: "Honeypinaca",
     description: "Suprema en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
     image: burritoHoneypinaca,
-    available: false,
+    available: true,
     prices: {
-      M: 8500,
+      M: 9000,
       L: 11500,
     },
   },
