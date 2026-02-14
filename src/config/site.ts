@@ -96,17 +96,6 @@ export const products: Product[] = [
     },
   },
   {
-    id: "veggie",
-    name: "Bolognesa Veggie",
-    description: "Salsa Bolognesa hecha con soja texturizada, cebolla, morron, ajo y queso fresco. Italiano, delicioso y cruelty free.",
-    image: notFound,
-    available: true,
-    prices: {
-      M: 6500,
-      L: 8500,
-    },
-  },
-  {
     id: "bolognesa",
     name: "Bolognesa",
     description: "Carne picada baja en grasa con salsa bolognesa casera, queso fundido y especias. Generoso en carne, justo en precio.",
