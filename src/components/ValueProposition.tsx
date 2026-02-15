@@ -4,28 +4,28 @@ const faqs = [
   {
     icon: Snowflake,
     question: "¿Vienen congelados?",
-    answer: "Sí, los burritos vienen congelados y listos para calentar. Duran meses en el freezer y en 5 minutos tenés un platazo.",
+    answer: "Sí, los burritos vienen congelados y listos para calentar. Duran 3 meses en el freezer y en 5 minutos tenés un platazo.",
     color: "text-blue-500",
     bgColor: "bg-blue-500/10",
   },
   {
     icon: Truck,
     question: "¿Dónde entregan?",
-    answer: "Zona Norte de Buenos Aires: San Isidro, Martínez, Olivos, Vicente López, Florida y alrededores. Otras zonas pueden retirar.",
+    answer: "Zona norte y CABA, con bonificación por envío de $2000 según la distancia desde nuestra sucursal",
     color: "text-primary",
     bgColor: "bg-primary/10",
   },
   {
     icon: CreditCard,
     question: "¿Cómo pago?",
-    answer: "Transferencia bancaria o efectivo al momento de la entrega. Simple y sin vueltas.",
+    answer: "Transferencia bancaria o efectivo al momento de la entrega.",
     color: "text-accent",
     bgColor: "bg-accent/10",
   },
   {
     icon: Clock,
     question: "¿Cuándo entregan?",
-    answer: "Hacemos entregas los Jueves y Viernes. Coordinamos el horario por WhatsApp.",
+    answer: "Las entregas son los viernes. Los pedidos ingresan hasta el jueves a las 18hs",
     color: "text-burrito-orange",
     bgColor: "bg-burrito-orange/10",
   },
@@ -38,9 +38,6 @@ const ValueProposition = () => {
         <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10 animate-fade-in">
-          <span className="inline-block px-4 py-2 bg-secondary/50 text-secondary-foreground rounded-full text-sm font-medium mb-4">
-            ❓ Preguntas frecuentes
-          </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
             Todo lo que necesitás saber
           </h2>
