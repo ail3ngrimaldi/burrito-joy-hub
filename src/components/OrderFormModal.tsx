@@ -157,15 +157,15 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
             {isPickupRequired ? (
               <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <p className="text-sm text-amber-800 font-medium">
-                  ⚠️ No realizamos envíos a tu zona
+                  ⚠️ Estás muy lejos de nuestra fábrica de burritos
                 </p>
                 <p className="text-xs text-amber-700 mt-1">
-                  Podés retirar tu pedido en nuestro local. Te enviaremos la dirección por WhatsApp.
+                El envio a tu domicilio cuesta $2000, o retiralos sin cargo en Olivos.
                 </p>
               </div>
             ) : (
               <p className="text-xs text-muted-foreground">
-                Realizamos entregas en zona norte de Buenos Aires
+                Realizamos entregas en zona norte de Buenos Aires y CABA
               </p>
             )}
           </div>
