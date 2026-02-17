@@ -42,7 +42,7 @@ const HeroSection = () => {
                 🧊 Congelados
               </span>
               <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
-                🚚 Envío Jueves y Viernes
+                🚚 Envío Viernes
               </span>
               <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-accent/10 text-accent rounded-full text-sm font-medium">
                 📍 Zona Norte GBA
