@@ -21,7 +21,7 @@ export const siteConfig = {
   
   // Información de entregas
   delivery: {
-    days: "Jueves y Viernes",
+    days: "Viernes",
     message: "Entregas:",
   },
   
