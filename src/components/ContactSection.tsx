@@ -50,7 +50,7 @@ const ContactSection = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span>🚚</span>
-                <span>Envíos Jueves y Viernes</span>
+                <span>Envíos Viernes</span>
               </div>
             </div>
           </div>
