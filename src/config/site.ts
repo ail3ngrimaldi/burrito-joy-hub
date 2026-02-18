@@ -98,7 +98,7 @@ export const products: Product[] = [
   {
     id: "bolognesa",
     name: "Bolognesa",
-    description: "Carne picada baja en grasa con salsa bolognesa casera, queso fundido y especias. Generoso en carne, justo en precio.",
+    description: "Carne picada baja en grasa con salsa bolognesa casera, ricota baja en grasas procesada, queso fundido y especias. Proteína y calorías en su medida justa.",
     image: burritoBolognesa,
     available: true,
     prices: {
