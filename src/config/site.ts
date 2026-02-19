@@ -55,7 +55,7 @@ export type ProductSize = keyof typeof productSizes;
 import imgBondioCheddar from "@/assets/bondioch.png";
 import imgPolloPalta from "@/assets/pollopalt.png";
 import imgHoneyPin from "@/assets/honeypin.png";
-import imgCarneDesm from "@/assets/roastbeef.png";
+import imgCarneDesm from "@/assets/desmechada.png";
 import imgBologn from "@/assets/bolgn.png";
 import notFound from "@/assets/not_found.png";
 
