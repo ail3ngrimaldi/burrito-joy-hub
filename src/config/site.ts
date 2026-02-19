@@ -52,11 +52,11 @@ export type ProductSize = keyof typeof productSizes;
 // ==========================================
 
 // Importar imágenes
-import burritoBondiocheddar from "@/assets/burrito-bondiocheddar.jpg";
-import burritoMex from "@/assets/burrito-cesar.jpg";
-import burritoHoneypinaca from "@/assets/burrito-bondiola.jpg";
-import burritoRB from "@/assets/roast-beef.jpg";
-import burritoBolognesa from "@/assets/bolognesa.png";
+import imgBondioCheddar from "@/assets/bondioch.png";
+import imgPolloPalta from "@/assets/pollopalt.png";
+import imgHoneyPin from "@/assets/honeypin.png";
+import imgCarneDesm from "@/assets/roastbeef.png";
+import imgBologn from "@/assets/bolgn.png";
 import notFound from "@/assets/not_found.png";
 
 export interface Product {
@@ -77,7 +77,7 @@ export const products: Product[] = [
     id: "bondiocheddar",
     name: "Bondiocheddar",
     description: "Bondiola desmechada cocinada a fuego lento, con cebolla caramelizada, zanahorias en cubo y cheddar fundido. Contundente e irresistible.",
-    image: burritoBondiocheddar,
+    image: imgBondioCheddar,
     available: true,
     prices: {
       M: 9500,
@@ -88,7 +88,7 @@ export const products: Product[] = [
     id: "mexican-chicken",
     name: "Pollo Mex",
     description: "Suprema desmechada mezclada con cebolla y morrón salteados, palta embebida en aceite, limón y cheddar fundido. Fresco y sabroso.",
-    image: burritoMex,
+    image: imgPolloPalta,
     available: true,
     prices: {
       M: 9000,
@@ -99,7 +99,7 @@ export const products: Product[] = [
     id: "bolognesa",
     name: "Bolognesa",
     description: "Carne picada baja en grasa con salsa bolognesa casera, ricota baja en grasas procesada, queso fundido y especias. Proteína y calorías en su medida justa.",
-    image: burritoBolognesa,
+    image: imgBologn,
     available: true,
     prices: {
       M: 9500,
@@ -110,7 +110,7 @@ export const products: Product[] = [
     id: "the-bear",
     name: "Carne desmechada",
     description: "Carne roja desmechada, cebolla y morron salteados con queso fundido. Clásico que no falla.",
-    image: burritoRB,
+    image: imgCarneDesm,
     available: true,
     prices: {
       M: 10000,
@@ -121,7 +121,7 @@ export const products: Product[] = [
     id: "pollo-honeypinaca",
     name: "Honeypinaca",
     description: "Suprema en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
-    image: burritoHoneypinaca,
+    image: imgHoneyPin,
     available: true,
     prices: {
       M: 9000,
