@@ -113,8 +113,8 @@ const ProductCard = ({
           <img
             src={image}
             alt={`Burrito ${name}`}
-            className={`w-full h-full object-cover transition-transform duration-500 ${
-              available ? "group-hover:scale-110" : "grayscale"
+            className={`w-full h-full object-cover ${
+              available ? "" : "grayscale"
             }`}
           />
         )}
