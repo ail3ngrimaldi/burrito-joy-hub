@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         sans: ['DM Sans', 'sans-serif'],
         display: ['Nunito', 'sans-serif'],
+        heading: ['Nunito', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
