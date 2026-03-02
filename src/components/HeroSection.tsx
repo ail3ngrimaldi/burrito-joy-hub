@@ -17,9 +17,9 @@ const HeroSection = () => {
             </p>
 
             <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[0.95] mb-8 tracking-tight">
-              Stockeá el<br />
-              freezer,<br />
-              <span className="text-accent">comé rico.</span>
+              STOCKEÁ EL<br />
+              FREEZER,<br />
+              <span className="text-accent">COMÉ RICO.</span>
             </h1>
 
             <p className="text-lg text-muted-foreground mb-10 max-w-md mx-auto lg:mx-0 leading-relaxed">
