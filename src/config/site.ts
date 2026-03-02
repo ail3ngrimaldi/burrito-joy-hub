@@ -41,8 +41,8 @@ export const siteConfig = {
 
 // Tamaños disponibles con sus pesos
 export const productSizes = {
-  M: { label: "M", weight: "350g" },
-  L: { label: "L", weight: "480g" },
+  M: { label: "REGULAR", weight: "350g" },
+  L: { label: "EXTRALARGE", weight: "480g" },
 } as const;
 
 export type ProductSize = keyof typeof productSizes;
@@ -65,7 +65,10 @@ export interface Product {
   description: string;
   image: string;
   available: boolean;
-  nutrition?: { kcal: number; protein: number };
+  nutrition?: {
+    M: { kcal: number; protein: number };
+    L: { kcal: number; protein: number };
+  };
   // Precios por tamaño (en pesos argentinos)
   prices: {
     M: number;
@@ -84,7 +87,10 @@ export const products: Product[] = [
       M: 9500,
       L: 13000,
     },
-    nutrition: { kcal: 847, protein: 50 }
+    nutrition: {
+      M: { kcal: 847, protein: 50 },
+      L: { kcal: 1163, protein: 68 },
+    }
   },
   {
     id: "mexican-chicken",
@@ -96,7 +102,10 @@ export const products: Product[] = [
       M: 9000,
       L: 12000,
     },
-    nutrition: { kcal: 726, protein: 54 }
+    nutrition: {
+      M: { kcal: 726, protein: 54 },
+      L: { kcal: 1054, protein: 78 },
+    }
   },
   {
     id: "bolognesa",
@@ -108,7 +117,10 @@ export const products: Product[] = [
       M: 9500,
       L: 14000,
     },
-    nutrition: { kcal: 641, protein: 54 }
+    nutrition: {
+      M: { kcal: 641, protein: 54 },
+      L: { kcal: 922, protein: 74 },
+    }
   },
   {
     id: "the-bear",
@@ -120,7 +132,10 @@ export const products: Product[] = [
       M: 10000,
       L: 14500,
     },
-    nutrition: { kcal: 688, protein: 51 }
+    nutrition: {
+        M: { kcal: 688, protein: 51 },
+      L: { kcal: 998, protein: 74 },
+    }
   },
     {
     id: "pollo-honeypinaca",
@@ -132,6 +147,9 @@ export const products: Product[] = [
       M: 9000,
       L: 11500,
     },
-    nutrition: { kcal: 700, protein: 51 }
+    nutrition: {
+      M: { kcal: 700, protein: 51 },
+      L: { kcal: 1018, protein: 74 },
+    }
   },
 ];
