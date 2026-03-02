@@ -22,6 +22,7 @@ interface ProductCardProps {
   stockMap?: ProductStockMap;
   isLoadingStock?: boolean;
   onClick?: () => void;
+  nutrition?: { kcal: number; protein: number };
 }
 
 const ProductCard = ({
@@ -33,6 +34,7 @@ const ProductCard = ({
   prices,
   stockMap,
   isLoadingStock,
+  nutrition,
 }: ProductCardProps) => {
   const [selectedSize, setSelectedSize] = useState<ProductSize>("M");
   const [quantity, setQuantity] = useState(1);
@@ -135,6 +137,17 @@ const ProductCard = ({
         <p className="text-muted-foreground text-sm leading-relaxed mb-4">
           {description}
         </p>
+
+        {nutrition && (
+        <div className="flex gap-2 mb-4">
+          <span className="text-xs px-2 py-1 bg-secondary border border-border text-muted-foreground">
+            🔥 {nutrition.kcal} kcal
+          </span>
+          <span className="text-xs px-2 py-1 bg-secondary border border-border text-muted-foreground">
+            💪 {nutrition.protein}g proteína
+          </span>
+        </div>
+        )}
 
         {available && (
           <>
