@@ -11,12 +11,12 @@ const FloatingCart = ({ onClick }: FloatingCartProps) => {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-6 right-6 z-40 p-4 bg-primary text-primary-foreground rounded-full shadow-button hover:shadow-hover transition-all duration-300 hover:scale-110 group"
+      className="fixed bottom-6 right-6 z-40 p-4 bg-foreground text-background rounded-full transition-all duration-200 hover:scale-105 hover:opacity-90"
       aria-label="Ver carrito"
     >
-      <ShoppingCart className="w-6 h-6" />
+      <ShoppingCart className="w-5 h-5" />
       {totalItems > 0 && (
-        <span className="absolute -top-2 -right-2 w-7 h-7 bg-secondary text-secondary-foreground rounded-full flex items-center justify-center text-sm font-bold animate-scale-in">
+        <span className="absolute -top-1 -right-1 w-6 h-6 bg-accent text-accent-foreground rounded-full flex items-center justify-center text-xs font-bold">
           {totalItems}
         </span>
       )}
