@@ -86,8 +86,8 @@ export const products: Product[] = [
   },
   {
     id: "mexican-chicken",
-    name: "Pollo Mex",
-    description: "Suprema desmechada mezclada con cebolla y morrón salteados, palta embebida en aceite, limón y cheddar fundido. Fresco y sabroso.",
+    name: "Pollo Palta",
+    description: "Suprema en cubos sazonada mezclada con cebolla y morrón salteados, palta embebida en aceite, limón y cheddar fundido. Fresco y sabroso.",
     image: imgPolloPalta,
     available: true,
     prices: {
@@ -109,7 +109,7 @@ export const products: Product[] = [
   {
     id: "the-bear",
     name: "Carne desmechada",
-    description: "Carne roja desmechada, cebolla y morron salteados con queso fundido. Clásico que no falla.",
+    description: "Carne roja desmechada, mezclada en salsa robert con cebolla y morron salteados más muzzarella fundido. Clásico que no falla.",
     image: imgCarneDesm,
     available: true,
     prices: {
@@ -120,7 +120,7 @@ export const products: Product[] = [
     {
     id: "pollo-honeypinaca",
     name: "Honeypinaca",
-    description: "Suprema en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
+    description: "Suprema en cubos mezclada en espinaca, queso crema, miel, cebolla caramelizada y queso fresco. Dulce y cremoso.",
     image: imgHoneyPin,
     available: true,
     prices: {
