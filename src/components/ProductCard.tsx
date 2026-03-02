@@ -8,8 +8,8 @@ import { type ProductStockMap, getStockForProduct } from "@/hooks/useProductStoc
 import notFoundImage from "@/assets/not_found.png";
 
 interface ProductPrices {
-  M: number;
-  L: number;
+  regular: number;
+  extralarge: number;
 }
 
 interface ProductCardProps {
