@@ -8,8 +8,8 @@ import { type ProductStockMap, getStockForProduct } from "@/hooks/useProductStoc
 import notFoundImage from "@/assets/not_found.png";
 
 interface ProductPrices {
-  regular: number;
-  extralarge: number;
+  M: number;
+  L: number;
 }
 
 interface ProductCardProps {
@@ -88,7 +88,7 @@ const ProductCard = ({
     }, 1000);
   };
 
-  const sizes: ProductSize[] = ["REGULAR", "XL"];
+  const sizes: ProductSize[] = ["M", "L"];
   const getSizeStock = (size: ProductSize) => getStockForProduct(stockMap, id, size);
 
   return (
