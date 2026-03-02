@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, Truck } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { siteConfig } from "@/config/site";
 
@@ -11,99 +11,53 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
-  const { name, logoFont, delivery } = siteConfig;
+  const { name } = siteConfig;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-      {/* Mobile delivery banner - only visible on small screens */}
-      <div className="lg:hidden flex items-center justify-center gap-2 py-2 bg-primary/10 border-b border-border/30">
-        <Truck className="w-4 h-4 text-primary" />
-        <span className="text-sm font-medium text-primary">
-          {delivery.message} {delivery.days}
-        </span>
-      </div>
-      
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md">
       <div className="container mx-auto px-6 md:px-8">
-        <div className="max-w-6xl mx-auto flex items-center justify-between h-14 lg:h-16">
+        <div className="max-w-6xl mx-auto flex items-center justify-between h-16">
           {/* Logo */}
-          <h1 className="flex items-center group">
-            <a 
-              href="/" 
-              className="brand-name hover:opacity-80 transition-opacity"
-            >
-              {name}
-            </a>
-          </h1>
+          <a href="/" className="brand-name hover:opacity-70 transition-opacity">
+            {name}
+          </a>
 
-          {/* Desktop nav - hidden on mobile and tablet */}
-          <nav className="hidden lg:flex items-center gap-8">
-            <a 
-              href="#productos" 
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-8">
+            <a href="#productos" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
               Productos
             </a>
-            <a 
-              href="#propuesta" 
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              ¿Cómo funciona?
+            <a href="#propuesta" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
+              FAQ
             </a>
-            <a 
-              href="#contacto" 
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Contacto
-            </a>
-            <Button variant="default" size="sm" onClick={scrollToProducts}>
-              Pedir ahora
+            <Button variant="hero" size="sm" onClick={scrollToProducts}>
+              Pedir
             </Button>
           </nav>
 
-          {/* Mobile/Tablet menu button - visible until lg breakpoint */}
+          {/* Mobile menu button */}
           <button
-            className="lg:hidden p-2 hover:bg-muted rounded-lg transition-colors"
+            className="md:hidden p-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
           >
-            {isMenuOpen ? (
-              <X className="w-6 h-6 text-foreground" />
-            ) : (
-              <Menu className="w-6 h-6 text-foreground" />
-            )}
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
-        {/* Mobile/Tablet menu */}
+        {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-border animate-fade-in">
-            <nav className="flex flex-col gap-2">
-              <a 
-                href="#productos" 
-                className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
+          <div className="md:hidden py-6 border-t border-border">
+            <nav className="flex flex-col gap-4">
+              <a href="#productos" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>
                 Productos
               </a>
-              <a 
-                href="#propuesta" 
-                className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                ¿Cómo funciona?
+              <a href="#propuesta" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>
+                FAQ
               </a>
-              <a 
-                href="#contacto" 
-                className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contacto
-              </a>
-              <div className="px-4 pt-2">
-                <Button variant="default" className="w-full" onClick={scrollToProducts}>
-                  Pedir ahora
-                </Button>
-              </div>
+              <Button variant="hero" size="default" onClick={scrollToProducts} className="w-full mt-2">
+                Pedir ahora
+              </Button>
             </nav>
           </div>
         )}

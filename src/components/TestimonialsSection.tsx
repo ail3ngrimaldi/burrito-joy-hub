@@ -1,8 +1,6 @@
-import { Quote } from "lucide-react";
-
 const testimonials = [
   {
-    text: "La calidad de estos burritos. Son de otro level. Solo probé el de bondio. Masa crocante y supeeeer rellenos. Están excelentes amiga. Recomiendo con ensaladita. Me re salvó encima.",
+    text: "La calidad de estos burritos. Son de otro level. Solo probé el de bondio. Masa crocante y supeeeer rellenos. Están excelentes amiga.",
     author: "Alan",
   },
   {
@@ -17,32 +15,29 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   return (
-    <section id="opiniones" className="py-16 bg-gradient-to-t from-muted/50 to-background">
+    <section className="py-24 bg-secondary">
       <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-10 animate-fade-in">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
+          <div className="text-center mb-16">
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
+              Testimonios
+            </p>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground tracking-tight">
               Lo que dicen nuestros clientes
             </h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">
-              No lo decimos nosotros, lo dicen ellos 🌯
-            </p>
           </div>
 
-          {/* Testimonials Grid */}
-          <div className="grid sm:grid-cols-3 gap-6">
-            {testimonials.map((t, index) => (
-              <div
-                key={t.author}
-                className="relative p-6 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg animate-slide-up"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <Quote className="w-8 h-8 text-primary/20 mb-3" />
-                <p className="text-foreground leading-relaxed mb-4 italic">
+          {/* Testimonials */}
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((t) => (
+              <div key={t.author} className="text-center">
+                <p className="text-foreground leading-relaxed mb-6 italic text-lg">
                   "{t.text}"
                 </p>
-                <p className="text-sm font-bold text-primary">— {t.author}</p>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
+                  — {t.author}
+                </p>
               </div>
             ))}
           </div>
