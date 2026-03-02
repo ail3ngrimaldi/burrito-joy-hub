@@ -3,7 +3,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 export interface CartItem {
   productId: string;
   productName: string;
-  size: "M" | "L";
+  size: "REGULAR" | "EXTRALARGE";
   weight: string;
   price: number;
   quantity: number;
