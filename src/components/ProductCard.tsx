@@ -88,7 +88,7 @@ const ProductCard = ({
     }, 1000);
   };
 
-  const sizes: ProductSize[] = ["M", "L"];
+  const sizes: ProductSize[] = ["REGULAR", "XL"];
   const getSizeStock = (size: ProductSize) => getStockForProduct(stockMap, id, size);
 
   return (
