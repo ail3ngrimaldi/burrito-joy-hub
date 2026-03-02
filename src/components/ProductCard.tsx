@@ -128,11 +128,9 @@ const ProductCard = ({
           <h3 className="font-display text-lg font-bold text-foreground">
             {name}
           </h3>
-          {available && (
-            <p className="font-display text-lg font-bold text-foreground">
-              ${currentPrice.toLocaleString("es-AR")}
-            </p>
-          )}
+          <p className="font-display text-lg font-bold text-foreground">
+            ${currentPrice.toLocaleString("es-AR")}
+          </p>
         </div>
         <p className="text-muted-foreground text-sm leading-relaxed mb-4">
           {description}
@@ -228,7 +226,7 @@ const ProductCard = ({
 
         {!available && (
           <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">
-            Próximamente
+            En producción
           </p>
         )}
       </div>
