@@ -22,7 +22,10 @@ interface ProductCardProps {
   stockMap?: ProductStockMap;
   isLoadingStock?: boolean;
   onClick?: () => void;
-  nutrition?: { kcal: number; protein: number };
+  nutrition?: {
+    M: { kcal: number; protein: number };
+    L: { kcal: number; protein: number };
+  };
 }
 
 const ProductCard = ({
@@ -139,10 +142,10 @@ const ProductCard = ({
         {nutrition && (
         <div className="flex gap-2 mb-4">
           <span className="text-xs px-2 py-1 bg-secondary border border-border text-muted-foreground">
-            🔥 {nutrition.kcal} kcal
+            🔥 {nutrition[selectedSize].kcal} kcal
           </span>
           <span className="text-xs px-2 py-1 bg-secondary border border-border text-muted-foreground">
-            💪 {nutrition.protein}g proteína
+            💪 {nutrition[selectedSize].protein}g proteína
           </span>
         </div>
         )}
