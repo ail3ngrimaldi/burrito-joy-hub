@@ -41,8 +41,8 @@ export const siteConfig = {
 
 // Tamaños disponibles con sus pesos
 export const productSizes = {
-  M: { label: "M", weight: "350g" },
-  L: { label: "L", weight: "480g" },
+  regular: { label: "regular", weight: "350g" },
+  extralarge: { label: "extralarge", weight: "480g" },
 } as const;
 
 export type ProductSize = keyof typeof productSizes;
@@ -68,8 +68,8 @@ export interface Product {
   nutrition?: { kcal: number; protein: number };
   // Precios por tamaño (en pesos argentinos)
   prices: {
-    M: number;
-    L: number;
+    regular: number;
+    extralarge: number;
   };
 }
 
@@ -81,8 +81,8 @@ export const products: Product[] = [
     image: imgBondioCheddar,
     available: true,
     prices: {
-      M: 9500,
-      L: 13000,
+      regular: 9500,
+      extralarge: 13000,
     },
     nutrition: { kcal: 847, protein: 50 }
   },
@@ -93,8 +93,8 @@ export const products: Product[] = [
     image: imgPolloPalta,
     available: true,
     prices: {
-      M: 9000,
-      L: 12000,
+      regular: 9000,
+      extralarge: 12000,
     },
     nutrition: { kcal: 726, protein: 54 }
   },
@@ -105,8 +105,8 @@ export const products: Product[] = [
     image: imgBologn,
     available: true,
     prices: {
-      M: 9500,
-      L: 14000,
+      regular: 9500,
+      extralarge: 14000,
     },
     nutrition: { kcal: 641, protein: 54 }
   },
@@ -117,8 +117,8 @@ export const products: Product[] = [
     image: imgCarneDesm,
     available: true,
     prices: {
-      M: 10000,
-      L: 14500,
+      regular: 10000,
+      extralarge: 14500,
     },
     nutrition: { kcal: 688, protein: 51 }
   },
@@ -129,8 +129,8 @@ export const products: Product[] = [
     image: imgHoneyPin,
     available: true,
     prices: {
-      M: 9000,
-      L: 11500,
+      regular: 9000,
+      extralarge: 11500,
     },
     nutrition: { kcal: 700, protein: 51 }
   },
