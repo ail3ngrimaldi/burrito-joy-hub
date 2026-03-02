@@ -65,6 +65,7 @@ export interface Product {
   description: string;
   image: string;
   available: boolean;
+  nutrition?: { kcal: number; protein: number };
   // Precios por tamaño (en pesos argentinos)
   prices: {
     M: number;
@@ -83,6 +84,7 @@ export const products: Product[] = [
       M: 9500,
       L: 13000,
     },
+    nutrition: { kcal: 847, protein: 50 }
   },
   {
     id: "mexican-chicken",
@@ -94,6 +96,7 @@ export const products: Product[] = [
       M: 9000,
       L: 12000,
     },
+    nutrition: { kcal: 726, protein: 54 }
   },
   {
     id: "bolognesa",
@@ -105,6 +108,7 @@ export const products: Product[] = [
       M: 9500,
       L: 14000,
     },
+    nutrition: { kcal: 641, protein: 54 }
   },
   {
     id: "the-bear",
@@ -116,6 +120,7 @@ export const products: Product[] = [
       M: 10000,
       L: 14500,
     },
+    nutrition: { kcal: 688, protein: 51 }
   },
     {
     id: "pollo-honeypinaca",
@@ -127,5 +132,6 @@ export const products: Product[] = [
       M: 9000,
       L: 11500,
     },
+    nutrition: { kcal: 700, protein: 51 }
   },
 ];
