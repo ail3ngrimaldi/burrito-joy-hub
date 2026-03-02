@@ -118,10 +118,12 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /*
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Nunito', sans-serif !important;
     letter-spacing: -0.02em;
   }
+  */
 
   p {
     font-family: 'DM Sans', sans-serif;
