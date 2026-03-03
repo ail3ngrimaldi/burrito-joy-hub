@@ -125,7 +125,7 @@ export const products: Product[] = [
   {
     id: "the-bear",
     name: "Carne desmechada",
-    description: "Carne roja desmechada, mezclada en salsa robert con cebolla y morron salteados más muzzarella fundido. Clásico que no falla.",
+    description: "Carne roja desmechada, mezclada en salsa robert con cebolla y morron salteados más muzzarella fundida. Clásico que no falla.",
     image: imgCarneDesm,
     available: true,
     prices: {
