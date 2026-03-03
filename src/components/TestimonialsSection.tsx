@@ -1,6 +1,6 @@
 const testimonials = [
   {
-    text: "La calidad de estos burritos. Son de otro level. Solo probé el de bondio. Masa crocante y supeeeer rellenos. Están excelentes amiga.",
+    text: "La calidad de estos burritos. Son de otro level. Solo probé el de bondio. Masa crocante y supeeeer rellenos. Están excelentes.",
     author: "Alan",
   },
   {
