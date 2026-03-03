@@ -41,8 +41,8 @@ export const siteConfig = {
 
 // Tamaños disponibles con sus pesos
 export const productSizes = {
-  M: { label: "REGULAR", weight: "350g" },
-  L: { label: "EXTRALARGE", weight: "480g" },
+  M: { label: "REGULAR", weight: "+350g" },
+  L: { label: "EXTRALARGE", weight: "+500g" },
 } as const;
 
 export type ProductSize = keyof typeof productSizes;
