@@ -22,6 +22,10 @@ interface ProductCardProps {
   stockMap?: ProductStockMap;
   isLoadingStock?: boolean;
   onClick?: () => void;
+  nutrition?: {
+    M: { kcal: number; protein: number };
+    L: { kcal: number; protein: number };
+  };
 }
 
 const ProductCard = ({
@@ -33,6 +37,7 @@ const ProductCard = ({
   prices,
   stockMap,
   isLoadingStock,
+  nutrition,
 }: ProductCardProps) => {
   const [selectedSize, setSelectedSize] = useState<ProductSize>("M");
   const [quantity, setQuantity] = useState(1);
@@ -41,12 +46,9 @@ const ProductCard = ({
 
   const selectedSizeData = productSizes[selectedSize];
   const currentPrice = prices[selectedSize];
-
-  // Get stock for current size
   const currentStock = getStockForProduct(stockMap, id, selectedSize);
   const maxQuantity = isLoadingStock ? 99 : currentStock;
 
-  // Reset quantity if it exceeds available stock
   useEffect(() => {
     if (!isLoadingStock && quantity > currentStock && currentStock > 0) {
       setQuantity(currentStock);
@@ -90,37 +92,33 @@ const ProductCard = ({
   };
 
   const sizes: ProductSize[] = ["M", "L"];
-
-  // Check if a specific size has stock
   const getSizeStock = (size: ProductSize) => getStockForProduct(stockMap, id, size);
 
   return (
     <div
-      className={`group bg-card rounded-2xl overflow-hidden shadow-card transition-all duration-300 ${
-        available ? "hover:shadow-xl hover:-translate-y-2" : "opacity-60"
+      className={`group bg-card border border-border overflow-hidden transition-all duration-300 ${
+        available ? "hover:border-foreground/30" : "opacity-50"
       }`}
     >
-      {/* Image container */}
-      <div className="relative aspect-square overflow-hidden">
+      {/* Image */}
+      <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
         {image === notFoundImage ? (
-          <div className="w-full h-full bg-muted flex flex-col items-center justify-center gap-3">
-            <ImageOff className="w-12 h-12 text-muted-foreground/50" />
-            <span className="text-muted-foreground/70 text-sm font-medium">
-              Imagen no disponible
-            </span>
+          <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+            <ImageOff className="w-10 h-10 text-muted-foreground/40" />
+            <span className="text-muted-foreground/60 text-xs">Imagen no disponible</span>
           </div>
         ) : (
           <img
             src={image}
             alt={`Burrito ${name}`}
-            className={`w-full h-full object-cover ${
+            className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
               available ? "" : "grayscale"
             }`}
           />
         )}
         {!available && (
-          <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
-            <span className="bg-muted text-muted-foreground px-4 py-2 rounded-full font-bold text-sm">
+          <div className="absolute inset-0 bg-background/70 flex items-center justify-center">
+            <span className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
               Sin stock
             </span>
           </div>
@@ -128,117 +126,117 @@ const ProductCard = ({
       </div>
 
       {/* Content */}
-      <div className="p-6">
-        <h3 className="font-display text-xl font-bold text-foreground mb-2">
-          {name}
-        </h3>
-        <p className="text-muted-foreground text-sm mb-4 min-h-[40px]">
+      <div className="p-5">
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="font-display text-lg font-bold text-foreground">
+            {name}
+          </h3>
+         {available ? (
+          <p className="font-display text-lg font-bold text-foreground">
+            ${currentPrice.toLocaleString("es-AR")}
+          </p>
+          ) : (
+          <p className="font-display text-sm font-bold text-muted-foreground">
+            ${prices.M.toLocaleString("es-AR")} — ${prices.L.toLocaleString("es-AR")}
+          </p>
+          )}
+        </div>
+        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
           {description}
         </p>
+
+        {nutrition && (
+        <div className="flex gap-2 mb-4">
+          <span className="text-xs px-2 py-1 bg-secondary border border-border text-muted-foreground">
+            🔥 {nutrition[selectedSize].kcal} kcal
+          </span>
+          <span className="text-xs px-2 py-1 bg-secondary border border-border text-muted-foreground">
+            💪 {nutrition[selectedSize].protein}g proteína
+          </span>
+        </div>
+        )}
 
         {available && (
           <>
             {/* Size selector */}
-            <div className="mb-4">
-              <p className="text-sm font-medium text-foreground mb-2">Tamaño:</p>
-              <div className="flex gap-2">
-                {sizes.map((size) => {
-                  const sizeStock = getSizeStock(size);
-                  const isOutOfStock = !isLoadingStock && sizeStock === 0;
-                  
-                  return (
-                    <button
-                      key={size}
-                      onClick={() => !isOutOfStock && setSelectedSize(size)}
-                      disabled={isOutOfStock}
-                      className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        isOutOfStock
-                          ? "bg-muted/50 text-muted-foreground cursor-not-allowed opacity-50"
-                          : selectedSize === size
-                          ? "bg-primary text-primary-foreground shadow-button"
-                          : "bg-muted hover:bg-muted/80 text-foreground"
-                      }`}
-                    >
-                      <span className="font-bold">{productSizes[size].label}</span>
-                      <span className="block text-xs opacity-80">
-                        {isOutOfStock ? "Agotado" : productSizes[size].weight}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="flex gap-2 mb-4">
+              {sizes.map((size) => {
+                const sizeStock = getSizeStock(size);
+                const isOutOfStock = !isLoadingStock && sizeStock === 0;
+
+                return (
+                  <button
+                    key={size}
+                    onClick={() => !isOutOfStock && setSelectedSize(size)}
+                    disabled={isOutOfStock}
+                    className={`flex-1 py-2 text-xs uppercase tracking-wider font-medium transition-all border ${
+                      isOutOfStock
+                        ? "border-border text-muted-foreground/40 cursor-not-allowed"
+                        : selectedSize === size
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border text-foreground hover:border-foreground"
+                    }`}
+                  >
+                    {productSizes[size].label} · {isOutOfStock ? "Agotado" : productSizes[size].weight}
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Quantity selector */}
-            <div className="mb-4">
-              <p className="text-sm font-medium text-foreground mb-2">Cantidad:</p>
+            {/* Quantity + Add */}
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleQuantityChange(-1)}
                   disabled={quantity <= 1}
-                  className="w-9 h-9 rounded-lg bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-8 h-8 border border-border flex items-center justify-center text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-30"
                 >
-                  <Minus className="w-4 h-4" />
+                  <Minus className="w-3 h-3" />
                 </button>
-                <span className="w-8 text-center font-bold text-lg">{quantity}</span>
+                <span className="w-6 text-center text-sm font-medium">{quantity}</span>
                 <button
                   onClick={() => handleQuantityChange(1)}
                   disabled={quantity >= maxQuantity}
-                  className="w-9 h-9 rounded-lg bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-8 h-8 border border-border flex items-center justify-center text-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-30"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-3 h-3" />
                 </button>
               </div>
-            </div>
 
-            {/* Stock indicator */}
-            {!isLoadingStock && currentStock > 0 && currentStock <= 5 && (
-              <p className="text-xs text-amber-600 font-medium mb-2">
-                ⚠️ ¡Solo quedan {currentStock} unidades!
-              </p>
-            )}
-
-            {/* Price and add button */}
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-2xl font-display font-bold text-primary">
-                  ${(currentPrice * quantity).toLocaleString("es-AR")}
-                </p>
-                {quantity > 1 && (
-                  <p className="text-xs text-muted-foreground">
-                    ${currentPrice.toLocaleString("es-AR")} c/u
-                  </p>
-                )}
-              </div>
               <Button
                 onClick={handleAddToCart}
                 disabled={isAdding}
-                className={`gap-2 transition-all duration-300 ${
-                  isAdding ? "bg-accent" : ""
-                }`}
+                variant="default"
+                size="sm"
+                className="uppercase tracking-wider text-xs"
               >
                 {isAdding ? (
                   <>
-                    <Check className="w-4 h-4" />
-                    ¡Listo!
+                    <Check className="w-3 h-3" />
+                    Listo
                   </>
                 ) : (
                   <>
-                    <ShoppingCart className="w-4 h-4" />
-                    Agregar {quantity > 1 ? `(${quantity})` : ""}
+                    <ShoppingCart className="w-3 h-3" />
+                    Agregar
                   </>
                 )}
               </Button>
             </div>
+
+            {/* Low stock warning */}
+            {!isLoadingStock && currentStock > 0 && currentStock <= 5 && (
+              <p className="text-xs text-accent font-medium mt-3">
+                Solo quedan {currentStock} unidades
+              </p>
+            )}
           </>
         )}
 
         {!available && (
-          <div className="text-center py-2">
-            <span className="text-muted-foreground text-sm font-medium">
-              Próximamente disponible
-            </span>
-          </div>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">
+            En producción
+          </p>
         )}
       </div>
     </div>

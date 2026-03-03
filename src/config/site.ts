@@ -41,8 +41,8 @@ export const siteConfig = {
 
 // Tamaños disponibles con sus pesos
 export const productSizes = {
-  M: { label: "M", weight: "350g" },
-  L: { label: "L", weight: "480g" },
+  M: { label: "REGULAR", weight: "+350g" },
+  L: { label: "EXTRALARGE", weight: "+500g" },
 } as const;
 
 export type ProductSize = keyof typeof productSizes;
@@ -65,6 +65,10 @@ export interface Product {
   description: string;
   image: string;
   available: boolean;
+  nutrition?: {
+    M: { kcal: number; protein: number };
+    L: { kcal: number; protein: number };
+  };
   // Precios por tamaño (en pesos argentinos)
   prices: {
     M: number;
@@ -83,17 +87,25 @@ export const products: Product[] = [
       M: 9500,
       L: 13000,
     },
+    nutrition: {
+      M: { kcal: 847, protein: 50 },
+      L: { kcal: 1163, protein: 68 },
+    }
   },
   {
     id: "mexican-chicken",
-    name: "Pollo Mex",
-    description: "Suprema desmechada mezclada con cebolla y morrón salteados, palta embebida en aceite, limón y cheddar fundido. Fresco y sabroso.",
+    name: "Pollo Palta",
+    description: "Suprema en cubos sazonada mezclada con cebolla y morrón salteados, palta embebida en aceite, limón y cheddar fundido. Fresco y sabroso.",
     image: imgPolloPalta,
     available: true,
     prices: {
       M: 9000,
       L: 12000,
     },
+    nutrition: {
+      M: { kcal: 726, protein: 54 },
+      L: { kcal: 1054, protein: 78 },
+    }
   },
   {
     id: "bolognesa",
@@ -105,27 +117,39 @@ export const products: Product[] = [
       M: 9500,
       L: 14000,
     },
+    nutrition: {
+      M: { kcal: 641, protein: 54 },
+      L: { kcal: 922, protein: 74 },
+    }
   },
   {
     id: "the-bear",
     name: "Carne desmechada",
-    description: "Carne roja desmechada, cebolla y morron salteados con queso fundido. Clásico que no falla.",
+    description: "Carne roja desmechada, mezclada en salsa robert con cebolla y morron salteados más muzzarella fundida. Clásico que no falla.",
     image: imgCarneDesm,
     available: true,
     prices: {
       M: 10000,
       L: 14500,
     },
+    nutrition: {
+        M: { kcal: 688, protein: 51 },
+      L: { kcal: 998, protein: 74 },
+    }
   },
     {
     id: "pollo-honeypinaca",
     name: "Honeypinaca",
-    description: "Suprema en tiras con queso crema, miel, espinaca, cebolla caramelizada y queso fresco. Dulce y cremoso.",
+    description: "Suprema en cubos mezclada en espinaca, queso crema, miel, cebolla caramelizada y queso fresco. Dulce y cremoso.",
     image: imgHoneyPin,
     available: true,
     prices: {
       M: 9000,
       L: 11500,
     },
+    nutrition: {
+      M: { kcal: 700, protein: 51 },
+      L: { kcal: 1018, protein: 74 },
+    }
   },
 ];
