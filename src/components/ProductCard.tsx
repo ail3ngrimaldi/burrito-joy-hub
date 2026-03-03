@@ -131,9 +131,15 @@ const ProductCard = ({
           <h3 className="font-display text-lg font-bold text-foreground">
             {name}
           </h3>
+         {available ? (
           <p className="font-display text-lg font-bold text-foreground">
             ${currentPrice.toLocaleString("es-AR")}
           </p>
+          ) : (
+          <p className="font-display text-sm font-bold text-muted-foreground">
+            ${prices.M.toLocaleString("es-AR")} — ${prices.L.toLocaleString("es-AR")}
+          </p>
+          )}
         </div>
         <p className="text-muted-foreground text-sm leading-relaxed mb-4">
           {description}
