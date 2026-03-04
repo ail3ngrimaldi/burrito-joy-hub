@@ -139,13 +139,13 @@ export const products: Product[] = [
   },
     {
     id: "pollo-honeypinaca",
-    name: "Honeypinaca",
+    name: "Pollo espinaca",
     description: "Suprema en cubos mezclada en espinaca, queso crema, miel, cebolla caramelizada y queso fresco. Dulce y cremoso.",
     image: imgHoneyPin,
     available: true,
     prices: {
       M: 9000,
-      L: 11500,
+      L: 12000,
     },
     nutrition: {
       M: { kcal: 700, protein: 51 },
