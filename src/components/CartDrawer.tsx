@@ -45,9 +45,61 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${totalPric
     return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
 
-  const handleFormSubmit = (formData: OrderFormData) => {
+  const handleFormSubmit = async (formData: OrderFormData) => {
     setOrderData(formData);
     setShowOrderForm(false);
+
+    // Save order to database
+    try {
+      const deliveryAddress = formData.isPickup
+        ? `RETIRO EN LOCAL - CP: ${formData.postalCode}`
+        : `${formData.address} - CP: ${formData.postalCode}`;
+
+      const { data: order, error: orderError } = await supabase
+        .from("orders")
+        .insert({
+          customer_name: formData.name,
+          delivery_address: deliveryAddress,
+          total_amount: totalPrice,
+          status: "pendiente" as const,
+          notes: formData.isPickup ? "Retiro en local" : "Envío a domicilio",
+        })
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      // Insert order items
+      const orderItems = items.map((item) => ({
+        order_id: order.id,
+        product_id: item.productId,
+        product_name: item.productName,
+        size: item.size,
+        quantity: item.quantity,
+        unit_price: item.price,
+      }));
+
+      const { error: itemsError } = await supabase
+        .from("order_items")
+        .insert(orderItems);
+
+      if (itemsError) throw itemsError;
+
+      // Decrement stock for each item
+      for (const item of items) {
+        await supabase.rpc("decrement_stock", {
+          p_product_id: item.productId,
+          p_size: item.size,
+          p_quantity: item.quantity,
+        });
+      }
+
+      console.log("Order saved successfully:", order.id);
+    } catch (error) {
+      console.error("Error saving order:", error);
+      toast.error("Error al guardar el pedido, pero se enviará por WhatsApp");
+    }
+
     // Open WhatsApp with the order
     const url = getWhatsAppUrl(formData);
     window.open(url, "_blank", "noopener,noreferrer");
