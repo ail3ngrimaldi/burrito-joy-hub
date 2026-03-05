@@ -3,6 +3,8 @@ import { X, Plus, Minus, Trash2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { siteConfig } from "@/config/site";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import OrderFormModal, { type OrderFormData } from "./OrderFormModal";
 
 interface CartDrawerProps {
