@@ -26,12 +26,14 @@ const statusLabels: Record<string, string> = {
   pendiente: "Pendiente",
   por_entregar: "Por entregar",
   entregado: "Entregado",
+  cancelado: "Cancelado",
 };
 
 const statusColors: Record<string, string> = {
   pendiente: "bg-yellow-500/20 text-yellow-700 border-yellow-500/30",
   por_entregar: "bg-blue-500/20 text-blue-700 border-blue-500/30",
   entregado: "bg-green-500/20 text-green-700 border-green-500/30",
+  cancelado: "bg-red-500/20 text-red-700 border-red-500/30",
 };
 
 const OrderManager = () => {
@@ -295,6 +297,7 @@ const OrderManager = () => {
                       <SelectItem value="pendiente">Pendiente</SelectItem>
                       <SelectItem value="por_entregar">Por entregar</SelectItem>
                       <SelectItem value="entregado">Entregado</SelectItem>
+                      <SelectItem value="cancelado">Cancelado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

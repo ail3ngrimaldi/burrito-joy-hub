@@ -132,7 +132,7 @@ export type Database = {
       }
     }
     Enums: {
-      order_status: "pendiente" | "por_entregar" | "entregado"
+      order_status: "pendiente" | "por_entregar" | "entregado" | "cancelado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -260,7 +260,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      order_status: ["pendiente", "por_entregar", "entregado"],
+      order_status: ["pendiente", "por_entregar", "entregado", "cancelado"],
     },
   },
 } as const
