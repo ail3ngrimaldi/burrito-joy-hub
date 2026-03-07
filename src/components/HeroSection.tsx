@@ -23,7 +23,7 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground mb-10 max-w-md mx-auto lg:mx-0 leading-relaxed">
-              Caseros, nutritivos y abundantes. Duran meses en el freezer. En 5 minutos tenés un platazo.
+              Caseros, nutritivos y abundantes. Duran meses en el freezer. En minutos tenés un platazo.
             </p>
 
             {/* Minimal info tags */}
