@@ -26,7 +26,7 @@ const AdminLogin = () => {
     if (error) {
       toast.error("Credenciales incorrectas");
     } else {
-      navigate("/admin");
+      navigate("/gestion-d8k2");
     }
     setLoading(false);
   };

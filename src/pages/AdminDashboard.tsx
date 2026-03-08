@@ -13,12 +13,12 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) navigate("/admin/login");
+      if (!session) navigate("/gestion-d8k2/acceso");
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session) navigate("/admin/login");
+      if (!session) navigate("/gestion-d8k2/acceso");
     });
 
     return () => subscription.unsubscribe();
@@ -26,7 +26,7 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate("/admin/login");
+    navigate("/gestion-d8k2/acceso");
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
