@@ -42,6 +42,7 @@ const ProductCard = ({
   stockMap,
   isLoadingStock,
   nutrition,
+  newRecipe,
 }: ProductCardProps) => {
   const [selectedSize, setSelectedSize] = useState<ProductSize>("M");
   const [quantity, setQuantity] = useState(1);
