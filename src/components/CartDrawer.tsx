@@ -24,6 +24,10 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
       .map((item) => `- ${item.productName} ${item.size} (${item.weight}) x${item.quantity}`)
       .join("\n");
 
+    const shippingLine = formData.shippingCost > 0 
+      ? `\nEnvío: $${formData.shippingCost.toLocaleString("es-AR")}` 
+      : (formData.isPickup ? "" : "\nEnvío: GRATIS");
+
     const deliveryInfo = formData.isPickup 
       ? `🏠 *RETIRO EN LOCAL*
 Nombre: ${formData.name}
@@ -33,14 +37,17 @@ Nombre: ${formData.name}
 Dirección: ${formData.address}
 Código Postal: ${formData.postalCode}`;
 
+    const orderTotal = totalPrice + formData.shippingCost;
+
     const message = `¡Hola! Quiero hacer el siguiente pedido:
 
 ${deliveryInfo}
 
 Productos:
 ${itemsList}
+${shippingLine}
 
-Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${totalPrice.toLocaleString("es-AR")}`;
+Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTotal.toLocaleString("es-AR")}`;
 
     return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
