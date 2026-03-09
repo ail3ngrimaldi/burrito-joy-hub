@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { X, MapPin, User, Mail } from "lucide-react";
+import { useState, useMemo } from "react";
+import { X, MapPin, User, Mail, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { siteConfig } from "@/config/site";
+import { getShippingCost } from "@/config/site";
 import { toast } from "sonner";
 
 interface OrderFormModalProps {
@@ -17,57 +17,58 @@ export interface OrderFormData {
   address: string;
   postalCode: string;
   isPickup: boolean;
+  shippingCost: number;
 }
 
 const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
-  const [formData, setFormData] = useState<Omit<OrderFormData, 'isPickup'>>({
+  const [formData, setFormData] = useState({
     name: "",
     address: "",
     postalCode: "",
   });
-  const [errors, setErrors] = useState<Partial<OrderFormData>>({});
+  const [wantsPickup, setWantsPickup] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const isPickupRequired = formData.postalCode.trim() !== "" && 
-    !siteConfig.allowedPostalCodes.includes(formData.postalCode.trim());
+  const shipping = useMemo(() => {
+    const cp = formData.postalCode.trim();
+    if (!cp) return null;
+    return getShippingCost(cp);
+  }, [formData.postalCode]);
+
+  const isFreeDelivery = shipping?.free === true;
+  const hasPaidDelivery = shipping && !shipping.free && shipping.price !== null;
+  const isUnknownZone = shipping && !shipping.free && shipping.price === null;
+  const shippingPrice = hasPaidDelivery ? (shipping as { price: number }).price : 0;
+
+  const needsAddress = isFreeDelivery || (hasPaidDelivery && !wantsPickup);
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<OrderFormData> = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "El nombre es requerido";
-    }
-
-    if (!isPickupRequired && !formData.address.trim()) {
-      newErrors.address = "La dirección es requerida";
-    }
-
-    if (!formData.postalCode.trim()) {
-      newErrors.postalCode = "El código postal es requerido";
-    }
-
+    const newErrors: Record<string, string> = {};
+    if (!formData.name.trim()) newErrors.name = "El nombre es requerido";
+    if (needsAddress && !formData.address.trim()) newErrors.address = "La dirección es requerida";
+    if (!formData.postalCode.trim()) newErrors.postalCode = "El código postal es requerido";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (validateForm()) {
+      const isPickup = isUnknownZone || wantsPickup;
       onSubmit({
         ...formData,
-        isPickup: isPickupRequired
+        isPickup,
+        shippingCost: isPickup || isFreeDelivery ? 0 : shippingPrice,
       });
     } else {
       toast.error("Por favor completá todos los campos correctamente");
     }
   };
 
-  const handleChange = (field: keyof OrderFormData, value: string) => {
+  const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
+    if (field === "postalCode") setWantsPickup(false);
   };
 
   if (!isOpen) return null;
@@ -111,33 +112,10 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
               onChange={(e) => handleChange("name", e.target.value)}
               className={errors.name ? "border-destructive" : ""}
             />
-            {errors.name && (
-              <p className="text-sm text-destructive">{errors.name}</p>
-            )}
+            {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
           </div>
 
-          {/* Address - only required for delivery */}
-          {!isPickupRequired && (
-            <div className="space-y-2">
-              <Label htmlFor="address" className="text-foreground font-medium flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                Dirección completa
-              </Label>
-              <Input
-                id="address"
-                type="text"
-                placeholder="Av. Libertador 1234, Piso 5, Depto A"
-                value={formData.address}
-                onChange={(e) => handleChange("address", e.target.value)}
-                className={errors.address ? "border-destructive" : ""}
-              />
-              {errors.address && (
-                <p className="text-sm text-destructive">{errors.address}</p>
-              )}
-            </div>
-          )}
-
-          {/* Postal Code */}
+          {/* Postal Code (moved up so shipping info shows before address) */}
           <div className="space-y-2">
             <Label htmlFor="postalCode" className="text-foreground font-medium flex items-center gap-2">
               <Mail className="w-4 h-4" />
@@ -151,28 +129,85 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
               onChange={(e) => handleChange("postalCode", e.target.value)}
               className={errors.postalCode ? "border-destructive" : ""}
             />
-            {errors.postalCode && (
-              <p className="text-sm text-destructive">{errors.postalCode}</p>
-            )}
-            {isPickupRequired ? (
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                <p className="text-sm text-amber-800 font-medium">
-                  ⚠️ Estás muy lejos de nuestra fábrica de burritos
-                </p>
-                <p className="text-xs text-amber-700 mt-1">
-                El envio a tu domicilio cuesta $2000, o retiralos sin cargo en Olivos.
+            {errors.postalCode && <p className="text-sm text-destructive">{errors.postalCode}</p>}
+
+            {/* Shipping info banners */}
+            {isFreeDelivery && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-800 font-medium flex items-center gap-1">
+                  <Truck className="w-4 h-4" /> ¡Envío gratis a tu zona!
                 </p>
               </div>
-            ) : (
+            )}
+
+            {hasPaidDelivery && (
+              <div className="p-3 bg-accent/30 border border-accent rounded-lg space-y-2">
+                <p className="text-sm text-foreground font-medium flex items-center gap-1">
+                  <Truck className="w-4 h-4" /> Envío a tu zona: ${shippingPrice.toLocaleString("es-AR")}
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={!wantsPickup ? "default" : "outline"}
+                    onClick={() => setWantsPickup(false)}
+                    className="flex-1 text-xs"
+                  >
+                    Envío (${shippingPrice.toLocaleString("es-AR")})
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={wantsPickup ? "default" : "outline"}
+                    onClick={() => setWantsPickup(true)}
+                    className="flex-1 text-xs"
+                  >
+                    Retiro gratis
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {isUnknownZone && (
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                <p className="text-sm text-amber-800 font-medium">
+                  ⚠️ Tu zona no tiene envío configurado aún
+                </p>
+                <p className="text-xs text-amber-700 mt-1">
+                  Podés retirar sin cargo en Olivos, o consultanos por WhatsApp para coordinar envío.
+                </p>
+              </div>
+            )}
+
+            {!shipping && (
               <p className="text-xs text-muted-foreground">
-                Realizamos entregas en zona norte de Buenos Aires y CABA
+                Ingresá tu código postal para ver las opciones de envío
               </p>
             )}
           </div>
 
+          {/* Address - only when delivering */}
+          {needsAddress && (
+            <div className="space-y-2">
+              <Label htmlFor="address" className="text-foreground font-medium flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                Dirección completa
+              </Label>
+              <Input
+                id="address"
+                type="text"
+                placeholder="Av. Libertador 1234, Piso 5, Depto A"
+                value={formData.address}
+                onChange={(e) => handleChange("address", e.target.value)}
+                className={errors.address ? "border-destructive" : ""}
+              />
+              {errors.address && <p className="text-sm text-destructive">{errors.address}</p>}
+            </div>
+          )}
+
           {/* Submit Button */}
           <Button type="submit" className="w-full" size="lg">
-            {isPickupRequired ? "Continuar (Retiro en local)" : "Continuar al pedido"}
+            {(isUnknownZone || wantsPickup) ? "Continuar (Retiro en local)" : "Continuar al pedido"}
           </Button>
         </form>
       </div>
