@@ -36,9 +36,9 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
   }, [formData.postalCode]);
 
   const isFreeDelivery = shipping?.free === true;
-  const hasPaidDelivery = shipping && !shipping.free && shipping.price !== null;
-  const isUnknownZone = shipping && !shipping.free && shipping.price === null;
-  const shippingPrice = hasPaidDelivery ? (shipping as { price: number }).price : 0;
+  const hasPaidDelivery = shipping !== null && !shipping.free && 'price' in shipping && shipping.price !== null;
+  const isUnknownZone = shipping !== null && !shipping.free && 'price' in shipping && shipping.price === null;
+  const shippingPrice = hasPaidDelivery ? (shipping as { free: false; price: number; zoneName: string }).price : 0;
 
   const needsAddress = isFreeDelivery || (hasPaidDelivery && !wantsPickup);
 

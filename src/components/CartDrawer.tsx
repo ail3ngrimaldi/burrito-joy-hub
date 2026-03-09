@@ -67,7 +67,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
         .insert({
           customer_name: formData.name,
           delivery_address: deliveryAddress,
-          total_amount: totalPrice,
+          total_amount: totalPrice + formData.shippingCost,
           status: "pendiente" as const,
           notes: formData.isPickup ? "Retiro en local" : "Envío a domicilio",
         })
