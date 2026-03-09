@@ -29,7 +29,8 @@ export const siteConfig = {
   whatsappNumber: "5491124003293",
   
   // Códigos postales permitidos
-  allowedPostalCodes: [
+  // Códigos postales con envío GRATIS
+  freeDeliveryPostalCodes: [
     "1640", "1641", "1642", "1643", "1644", // Martínez/San Isidro
     "1610", "1611", "1612", "1613", // Boulogne/San Isidro
     "1636", "1637", "1638", "1639",         // Olivos/Vicente López
@@ -38,6 +39,78 @@ export const siteConfig = {
     "1646", "1647", "1648",                 // San Fernando
   ],
 };
+
+// ==========================================
+// CALCULADORA DE ENVÍOS - COMPLETAR PRECIOS
+// ==========================================
+// Cada zona tiene un listado de códigos postales y un precio de envío.
+// Ordenalas de más cercana a más lejana. Si un CP no está en ninguna
+// zona (ni en freeDeliveryPostalCodes), se mostrará "Consultar".
+//
+// Ejemplo de cómo completar:
+//   { name: "CABA Centro", postalCodes: ["1000","1001"], price: 1500 },
+
+export interface ShippingZone {
+  name: string;
+  postalCodes: string[];
+  price: number; // en pesos argentinos
+}
+
+export const shippingZones: ShippingZone[] = [
+  // --- ZONA 1: Cercana (ejemplo) ---
+  {
+    name: "Zona cercana",
+    postalCodes: [
+      // Agregá acá los CPs de zona cercana
+      // "1234", "1235",
+    ],
+    price: 2000,
+  },
+  // --- ZONA 2: Media ---
+  {
+    name: "Zona media",
+    postalCodes: [
+      // Agregá acá los CPs de zona media
+      // "1400", "1401",
+    ],
+    price: 3500,
+  },
+  // --- ZONA 3: Lejana ---
+  {
+    name: "Zona lejana",
+    postalCodes: [
+      // Agregá acá los CPs de zona lejana
+      // "1800", "1801",
+    ],
+    price: 5000,
+  },
+];
+
+/**
+ * Calcula el costo de envío para un código postal.
+ * Retorna: { free: true } | { free: false, price: number, zone: string } | { free: false, price: null }
+ * price = null significa que el CP no está en ninguna zona configurada (consultar).
+ */
+export function getShippingCost(postalCode: string): 
+  | { free: true }
+  | { free: false; price: number; zoneName: string }
+  | { free: false; price: null } {
+  
+  const trimmed = postalCode.trim();
+  
+  if (siteConfig.freeDeliveryPostalCodes.includes(trimmed)) {
+    return { free: true };
+  }
+
+  for (const zone of shippingZones) {
+    if (zone.postalCodes.includes(trimmed)) {
+      return { free: false, price: zone.price, zoneName: zone.name };
+    }
+  }
+
+  // CP no encontrado en ninguna zona
+  return { free: false, price: null };
+}
 
 // Tamaños disponibles con sus pesos
 export const productSizes = {
