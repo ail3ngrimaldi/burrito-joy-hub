@@ -198,6 +198,11 @@ export interface Product {
     M: number;
     L: number;
   };
+  // Tag de nueva receta (opcional)
+  newRecipe?: {
+    enabled: boolean;
+    label: string; // Ej: "Más cremoso!" o "Con salsa robert"
+  };
 }
 
 export const products: Product[] = [
@@ -259,7 +264,11 @@ export const products: Product[] = [
     nutrition: {
         M: { kcal: 688, protein: 51 },
       L: { kcal: 998, protein: 74 },
-    }
+    },
+    newRecipe: {
+      enabled: true,
+      label: "Con salsa robert",
+    },
   },
     {
     id: "pollo-honeypinaca",
