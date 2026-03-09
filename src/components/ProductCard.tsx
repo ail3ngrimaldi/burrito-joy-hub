@@ -107,6 +107,13 @@ const ProductCard = ({
     >
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
+        {newRecipe?.enabled && (
+          <div className="absolute top-3 right-3 z-10">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold bg-burrito-orange text-white shadow-md">
+              ✨ Nueva receta: {newRecipe.label}
+            </span>
+          </div>
+        )}
         {image === notFoundImage ? (
           <div className="w-full h-full flex flex-col items-center justify-center gap-2">
             <ImageOff className="w-10 h-10 text-muted-foreground/40" />
