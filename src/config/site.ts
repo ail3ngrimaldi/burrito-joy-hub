@@ -100,7 +100,7 @@ export const shippingZones: ShippingZone[] = [
       "1418",
       // (1414, 1416, 1427 ya en Zona 1/arriba)
     ],
-    price: 3500, // ← Ajustá este precio
+    price: 2500, // ← Ajustá este precio
   },
 
   // -------------------------------------------------------
@@ -133,7 +133,7 @@ export const shippingZones: ShippingZone[] = [
       "1184",
       // (1000, 1001, 1005, 1006, 1007, 1010, 1425 ya incluidos)
     ],
-    price: 5000, // ← Ajustá este precio
+    price: 3000, // ← Ajustá este precio
   },
 ];
 
