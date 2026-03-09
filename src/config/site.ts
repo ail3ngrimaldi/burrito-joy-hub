@@ -264,7 +264,11 @@ export const products: Product[] = [
     nutrition: {
         M: { kcal: 688, protein: 51 },
       L: { kcal: 998, protein: 74 },
-    }
+    },
+    newRecipe: {
+      enabled: true,
+      label: "Con salsa robert",
+    },
   },
     {
     id: "pollo-honeypinaca",
