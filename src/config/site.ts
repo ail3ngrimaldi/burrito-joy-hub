@@ -234,7 +234,11 @@ export const products: Product[] = [
     nutrition: {
       M: { kcal: 726, protein: 54 },
       L: { kcal: 1054, protein: 78 },
-    }
+    },
+    newRecipe: {
+      enabled: true,
+      label: "Pollo en cubos, sazón ajustado!",
+    },
   },
   {
     id: "bolognesa",
@@ -264,11 +268,7 @@ export const products: Product[] = [
     nutrition: {
         M: { kcal: 688, protein: 51 },
       L: { kcal: 998, protein: 74 },
-    },
-    newRecipe: {
-      enabled: true,
-      label: "Con salsa robert",
-    },
+    }
   },
     {
     id: "pollo-honeypinaca",
@@ -283,6 +283,10 @@ export const products: Product[] = [
     nutrition: {
       M: { kcal: 700, protein: 51 },
       L: { kcal: 1018, protein: 74 },
-    }
+    },
+    newRecipe: {
+      enabled: true,
+      label: "Pollo sazonado en cubos",
+    },
   },
 ];
