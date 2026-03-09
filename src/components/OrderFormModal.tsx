@@ -133,8 +133,8 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
 
             {/* Shipping info banners */}
             {isFreeDelivery && (
-              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-800 font-medium flex items-center gap-1">
+              <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
+                <p className="text-sm text-primary font-medium flex items-center gap-1">
                   <Truck className="w-4 h-4" /> ¡Envío gratis a tu zona!
                 </p>
               </div>
