@@ -198,6 +198,11 @@ export interface Product {
     M: number;
     L: number;
   };
+  // Tag de nueva receta (opcional)
+  newRecipe?: {
+    enabled: boolean;
+    label: string; // Ej: "Más cremoso!" o "Con salsa robert"
+  };
 }
 
 export const products: Product[] = [

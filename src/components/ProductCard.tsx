@@ -26,6 +26,10 @@ interface ProductCardProps {
     M: { kcal: number; protein: number };
     L: { kcal: number; protein: number };
   };
+  newRecipe?: {
+    enabled: boolean;
+    label: string;
+  };
 }
 
 const ProductCard = ({
