@@ -169,11 +169,11 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
             )}
 
             {isUnknownZone && (
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                <p className="text-sm text-amber-800 font-medium">
+              <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-lg">
+                <p className="text-sm text-destructive font-medium">
                   ⚠️ Tu zona no tiene envío configurado aún
                 </p>
-                <p className="text-xs text-amber-700 mt-1">
+                <p className="text-xs text-destructive/80 mt-1">
                   Podés retirar sin cargo en Olivos, o consultanos por WhatsApp para coordinar envío.
                 </p>
               </div>
