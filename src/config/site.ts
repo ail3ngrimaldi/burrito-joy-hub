@@ -57,32 +57,83 @@ export interface ShippingZone {
 }
 
 export const shippingZones: ShippingZone[] = [
-  // --- ZONA 1: Cercana (ejemplo) ---
+  // -------------------------------------------------------
+  // ZONA 1 – Cercana (Belgrano, Núñez, Colegiales, Coghlan, Saavedra)
+  // Barrios limítrofes con Vicente López / Olivos
+  // -------------------------------------------------------
   {
-    name: "Zona cercana",
+    name: "CABA Zona Norte",
     postalCodes: [
-      // Agregá acá los CPs de zona cercana
-      // "1234", "1235",
+      // Belgrano
+      "1424", "1425", "1426", "1428", "1429", "1430",
+      // Núñez
+      // (1428, 1429 ya incluidos en Belgrano)
+      // Colegiales
+      "1414", "1427",
+      // (1426, 1428 ya incluidos)
+      // Coghlan
+      "1431",
+      // (1428, 1429, 1430 ya incluidos)
+      // Saavedra
+      // (1428, 1429, 1430, 1431 ya incluidos)
     ],
-    price: 2000,
+    price: 2000, // ← Ajustá este precio
   },
-  // --- ZONA 2: Media ---
+
+  // -------------------------------------------------------
+  // ZONA 2 – Media (Palermo, Villa Urquiza, Chacarita)
+  // -------------------------------------------------------
   {
-    name: "Zona media",
+    name: "CABA Zona Media",
     postalCodes: [
-      // Agregá acá los CPs de zona media
-      // "1400", "1401",
+      // Palermo (CPs no incluidos en Zona 1)
+      "1004", "1007", "1019", "1055", "1113",
+      "1172", "1175", "1176", "1177", "1179",
+      "1180", "1181", "1182", "1183", "1186",
+      "1188", "1416", "1439",
+      // (1414, 1425, 1426, 1428, 1429 ya en Zona 1)
+
+      // Villa Urquiza (CPs no incluidos en Zona 1)
+      // (1427, 1428, 1430, 1431 ya en Zona 1)
+
+      // Chacarita (CPs no incluidos en Zona 1)
+      "1418",
+      // (1414, 1416, 1427 ya en Zona 1/arriba)
     ],
-    price: 3500,
+    price: 3500, // ← Ajustá este precio
   },
-  // --- ZONA 3: Lejana ---
+
+  // -------------------------------------------------------
+  // ZONA 3 – Lejana (Recoleta, San Nicolás, Puerto Madero)
+  // -------------------------------------------------------
   {
-    name: "Zona lejana",
+    name: "CABA Zona Centro/Sur",
     postalCodes: [
-      // Agregá acá los CPs de zona lejana
-      // "1800", "1801",
+      // Recoleta (CPs no incluidos en zonas anteriores)
+      "1000", "1001", "1011", "1012", "1013", "1014",
+      "1015", "1016", "1017", "1018", "1020", "1021",
+      "1022", "1023", "1024", "1025", "1026", "1057",
+      "1059", "1060", "1061", "1062", "1091", "1108",
+      "1111", "1112", "1114", "1115", "1116", "1117",
+      "1118", "1119", "1120", "1121", "1122", "1123",
+      "1124", "1125", "1126", "1127", "1128", "1129",
+      "1170", "1171", "1173", "1174", "1187", "1215",
+      // (1172, 1175, 1180, 1186, 1188, 1414, 1425 ya en zonas anteriores)
+
+      // San Nicolás (CPs no incluidos en zonas anteriores)
+      "1002", "1003", "1005", "1006", "1008", "1009",
+      "1010", "1028", "1033", "1035", "1036", "1037",
+      "1038", "1039", "1040", "1041", "1042", "1043",
+      "1044", "1045", "1047", "1048", "1049", "1050",
+      "1053", "1056", "1066", "1084", "1105", "1106",
+      "1190",
+      // (muchos CPs ya incluidos en Recoleta arriba)
+
+      // Puerto Madero (CPs no incluidos en zonas anteriores)
+      "1184",
+      // (1000, 1001, 1005, 1006, 1007, 1010, 1425 ya incluidos)
     ],
-    price: 5000,
+    price: 5000, // ← Ajustá este precio
   },
 ];
 
