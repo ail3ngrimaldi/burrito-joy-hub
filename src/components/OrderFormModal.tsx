@@ -181,7 +181,7 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
 
             {!shipping && (
               <p className="text-xs text-muted-foreground">
-                Ingresá tu código postal para ver las opciones de envío
+                Ingresá tu código postal o localidad para ver las opciones de envío
               </p>
             )}
           </div>

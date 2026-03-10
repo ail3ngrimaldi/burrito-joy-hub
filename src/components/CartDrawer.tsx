@@ -165,7 +165,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
                         {item.productName}
                       </h4>
                       <p className="text-sm text-muted-foreground">
-                        {item.size} ({item.weight})
+                        {getSizeLabel(item.size)}
                       </p>
                       <p className="text-primary font-bold">
                         ${(item.price * item.quantity).toLocaleString("es-AR")}

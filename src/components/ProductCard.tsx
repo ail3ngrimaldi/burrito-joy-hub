@@ -86,7 +86,7 @@ const ProductCard = ({
 
     setIsAdding(true);
     toast.success(
-      `${quantity}x ${name} (${selectedSize}) agregado${quantity > 1 ? "s" : ""} al carrito`,
+      `${quantity}x ${name} (${selectedSizeData.label}) agregado${quantity > 1 ? "s" : ""} al carrito`,
       { duration: 2000 }
     );
 

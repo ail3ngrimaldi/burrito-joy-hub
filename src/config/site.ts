@@ -137,18 +137,60 @@ export const shippingZones: ShippingZone[] = [
   },
 ];
 
+// ==========================================
+// MAPEO DE LOCALIDADES A CÓDIGOS POSTALES
+// ==========================================
+// Permite buscar por nombre de localidad además de CP
+
+export const localityMap: Record<string, string[]> = {
+  // Zona Norte GBA (envío gratis)
+  "martinez": ["1640", "1641", "1642", "1643", "1644"],
+  "san isidro": ["1640", "1641", "1642", "1643", "1644", "1610", "1611", "1612", "1613"],
+  "boulogne": ["1610", "1611", "1612", "1613"],
+  "olivos": ["1636", "1637", "1638", "1639"],
+  "vicente lopez": ["1636", "1637", "1638", "1639", "1602", "1603", "1604", "1605", "1606"],
+  "florida": ["1602", "1603", "1604", "1605", "1606"],
+  "villa martelli": ["1607", "1608"],
+  "san fernando": ["1646", "1647", "1648"],
+  "munro": ["1605"],
+  "carapachay": ["1605"],
+  "la lucila": ["1636"],
+  // CABA Zona 1
+  "belgrano": ["1426", "1428", "1429"],
+  "nunez": ["1428", "1429"],
+  "nuñez": ["1428", "1429"],
+  "colegiales": ["1414", "1427"],
+  "coghlan": ["1431"],
+  "saavedra": ["1430", "1431"],
+  // CABA Zona 2
+  "palermo": ["1425", "1414", "1416"],
+  "villa urquiza": ["1431"],
+  "chacarita": ["1414", "1418"],
+  // CABA Zona 3
+  "recoleta": ["1012", "1024", "1025", "1060", "1061", "1116", "1117", "1118", "1119"],
+  "san nicolas": ["1002", "1003", "1005", "1008", "1035", "1036", "1037"],
+  "puerto madero": ["1184", "1000", "1001"],
+};
+
 /**
- * Calcula el costo de envío para un código postal.
- * Retorna: { free: true } | { free: false, price: number, zone: string } | { free: false, price: null }
- * price = null significa que el CP no está en ninguna zona configurada (consultar).
+ * Normaliza un input de texto: quita acentos, pasa a minúsculas y trimea.
  */
-export function getShippingCost(postalCode: string): 
+function normalizeInput(input: string): string {
+  return input.trim().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+/**
+ * Calcula el costo de envío para un código postal o nombre de localidad.
+ */
+export function getShippingCost(input: string): 
   | { free: true }
   | { free: false; price: number; zoneName: string }
   | { free: false; price: null } {
   
-  const trimmed = postalCode.trim();
+  const trimmed = input.trim();
   
+  // First try as postal code
   if (siteConfig.freeDeliveryPostalCodes.includes(trimmed)) {
     return { free: true };
   }
@@ -159,7 +201,26 @@ export function getShippingCost(postalCode: string):
     }
   }
 
-  // CP no encontrado en ninguna zona
+  // Then try as locality name
+  const normalized = normalizeInput(trimmed);
+  const matchedCPs = localityMap[normalized];
+  
+  if (matchedCPs && matchedCPs.length > 0) {
+    // Use the first CP to determine the zone
+    const firstCP = matchedCPs[0];
+    
+    if (siteConfig.freeDeliveryPostalCodes.includes(firstCP)) {
+      return { free: true };
+    }
+
+    for (const zone of shippingZones) {
+      if (zone.postalCodes.includes(firstCP)) {
+        return { free: false, price: zone.price, zoneName: zone.name };
+      }
+    }
+  }
+
+  // Not found
   return { free: false, price: null };
 }
 
