@@ -46,7 +46,7 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "El nombre es requerido";
     if (needsAddress && !formData.address.trim()) newErrors.address = "La dirección es requerida";
-    if (!formData.postalCode.trim()) newErrors.postalCode = "El código postal es requerido";
+    if (!formData.postalCode.trim()) newErrors.postalCode = "El código postal o localidad es requerido";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -115,16 +115,16 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
             {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
           </div>
 
-          {/* Postal Code (moved up so shipping info shows before address) */}
+          {/* Postal Code or Locality */}
           <div className="space-y-2">
             <Label htmlFor="postalCode" className="text-foreground font-medium flex items-center gap-2">
               <Mail className="w-4 h-4" />
-              Código Postal
+              Código Postal o Localidad
             </Label>
             <Input
               id="postalCode"
               type="text"
-              placeholder="1640"
+              placeholder="Ej: 1640 o Belgrano"
               value={formData.postalCode}
               onChange={(e) => handleChange("postalCode", e.target.value)}
               className={errors.postalCode ? "border-destructive" : ""}
@@ -181,7 +181,7 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
 
             {!shipping && (
               <p className="text-xs text-muted-foreground">
-                Ingresá tu código postal para ver las opciones de envío
+                Ingresá tu código postal o localidad para ver las opciones de envío
               </p>
             )}
           </div>
