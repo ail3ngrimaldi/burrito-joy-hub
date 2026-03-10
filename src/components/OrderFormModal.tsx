@@ -46,7 +46,7 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "El nombre es requerido";
     if (needsAddress && !formData.address.trim()) newErrors.address = "La dirección es requerida";
-    if (!formData.postalCode.trim()) newErrors.postalCode = "El código postal es requerido";
+    if (!formData.postalCode.trim()) newErrors.postalCode = "El código postal o localidad es requerido";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
