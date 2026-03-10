@@ -58,11 +58,15 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
     setOrderData(formData);
     setShowOrderForm(false);
 
-    // Save order to database
+    // Build WhatsApp URL first (before any async work)
+    const whatsAppUrl = getWhatsAppUrl(formData);
+    let orderSaved = false;
+
+    // Save order to database BEFORE opening WhatsApp
     try {
       const deliveryAddress = formData.isPickup
-        ? `RETIRO EN LOCAL - CP: ${formData.postalCode}`
-        : `${formData.address} - CP: ${formData.postalCode}`;
+        ? `RETIRO EN LOCAL - ${formData.postalCode}`
+        : `${formData.address} - ${formData.postalCode}`;
 
       const { data: order, error: orderError } = await supabase
         .from("orders")
@@ -103,17 +107,23 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
         });
       }
 
+      orderSaved = true;
       console.log("Order saved successfully:", order.id);
     } catch (error) {
       console.error("Error saving order:", error);
-      toast.error("Error al guardar el pedido, pero se enviará por WhatsApp");
+      toast.error("Hubo un problema guardando el pedido. Intentá de nuevo o contactanos por WhatsApp.");
     }
 
-    // Open WhatsApp with the order
-    const url = getWhatsAppUrl(formData);
-    window.open(url, "_blank", "noopener,noreferrer");
-    clearCart();
-    onClose();
+    // Only open WhatsApp and clear cart AFTER DB save succeeds
+    if (orderSaved) {
+      toast.success("¡Pedido registrado! Redirigiendo a WhatsApp...");
+      // Small delay to ensure toast is seen before redirect
+      setTimeout(() => {
+        window.open(whatsAppUrl, "_blank", "noopener,noreferrer");
+      }, 500);
+      clearCart();
+      onClose();
+    }
   };
 
   const handleOrderClick = () => {
