@@ -17,11 +17,13 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [orderData, setOrderData] = useState<OrderFormData | null>(null);
 
+  const getSizeLabel = (size: "M" | "L") => size === "M" ? "REGULAR" : "XL";
+
   const getWhatsAppUrl = (formData: OrderFormData) => {
     if (items.length === 0) return "";
 
     const itemsList = items
-      .map((item) => `- ${item.productName} ${item.size} (${item.weight}) x${item.quantity}`)
+      .map((item) => `- ${item.productName} ${getSizeLabel(item.size)} x${item.quantity}`)
       .join("\n");
 
     const shippingLine = formData.shippingCost > 0 
