@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { LogOut, Package, ShoppingCart } from "lucide-react";
+import { LogOut, Package, ShoppingCart, BarChart3 } from "lucide-react";
 import StockManager from "@/components/admin/StockManager";
 import OrderManager from "@/components/admin/OrderManager";
+import AnalyticsManager from "@/components/admin/AnalyticsManager";
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
