@@ -44,6 +44,7 @@ const OrderManager = () => {
   const [deliveryDate, setDeliveryDate] = useState("");
   const [notes, setNotes] = useState("");
   const [items, setItems] = useState<OrderItem[]>([{ productId: "", size: "M", quantity: 1 }]);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const { data: orders, isLoading } = useQuery({
     queryKey: ["admin-orders"],
