@@ -242,6 +242,42 @@ const OrderManager = () => {
         </Dialog>
       </div>
 
+      {/* Revenue summary */}
+      {!isLoading && orders && orders.length > 0 && (() => {
+        const nonCancelled = orders.filter((o) => o.status !== "cancelado");
+        const totalRevenue = nonCancelled.reduce((sum, o) => sum + (o.total_amount || 0), 0);
+        const pendingCount = orders.filter((o) => o.status === "pendiente").length;
+        const porEntregarCount = orders.filter((o) => o.status === "por_entregar").length;
+        return (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Card>
+              <CardContent className="py-3 px-4">
+                <p className="text-xs text-muted-foreground">Ingresos totales</p>
+                <p className="text-xl font-bold text-primary">${totalRevenue.toLocaleString("es-AR")}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="py-3 px-4">
+                <p className="text-xs text-muted-foreground">Total pedidos</p>
+                <p className="text-xl font-bold text-foreground">{orders.length}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="py-3 px-4">
+                <p className="text-xs text-muted-foreground">Pendientes</p>
+                <p className="text-xl font-bold text-yellow-600">{pendingCount}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="py-3 px-4">
+                <p className="text-xs text-muted-foreground">Por entregar</p>
+                <p className="text-xl font-bold text-blue-600">{porEntregarCount}</p>
+              </CardContent>
+            </Card>
+          </div>
+        );
+      })()}
+
       {isLoading ? (
         <p>Cargando pedidos...</p>
       ) : orders?.length === 0 ? (

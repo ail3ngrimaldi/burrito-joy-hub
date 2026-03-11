@@ -43,12 +43,15 @@ const AdminDashboard = () => {
 
       <div className="max-w-5xl mx-auto p-4">
         <Tabs defaultValue="orders">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="orders">
               <ShoppingCart className="h-4 w-4 mr-2" /> Pedidos
             </TabsTrigger>
             <TabsTrigger value="stock">
               <Package className="h-4 w-4 mr-2" /> Stock
+            </TabsTrigger>
+            <TabsTrigger value="analytics">
+              <BarChart3 className="h-4 w-4 mr-2" /> Métricas
             </TabsTrigger>
           </TabsList>
 
@@ -58,6 +61,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="stock" className="mt-4">
             <StockManager />
+          </TabsContent>
+
+          <TabsContent value="analytics" className="mt-4">
+            <AnalyticsManager />
           </TabsContent>
         </Tabs>
       </div>
