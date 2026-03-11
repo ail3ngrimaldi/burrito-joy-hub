@@ -289,7 +289,7 @@ export const products: Product[] = [
     image: imgPolloPalta,
     available: true,
     prices: {
-      M: 9000,
+      M: 9500,
       L: 12000,
     },
     nutrition: {
@@ -308,7 +308,7 @@ export const products: Product[] = [
     image: imgBologn,
     available: true,
     prices: {
-      M: 9500,
+      M: 10000,
       L: 14000,
     },
     nutrition: {
@@ -323,11 +323,11 @@ export const products: Product[] = [
     image: imgCarneDesm,
     available: true,
     prices: {
-      M: 10000,
+      M: 10500,
       L: 14500,
     },
     nutrition: {
-        M: { kcal: 688, protein: 51 },
+      M: { kcal: 688, protein: 51 },
       L: { kcal: 998, protein: 74 },
     }
   },
@@ -338,7 +338,7 @@ export const products: Product[] = [
     image: imgHoneyPin,
     available: true,
     prices: {
-      M: 9000,
+      M: 9500,
       L: 12000,
     },
     nutrition: {
