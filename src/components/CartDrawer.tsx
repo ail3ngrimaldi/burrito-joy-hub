@@ -110,7 +110,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
       }
 
       orderSaved = true;
-      console.log("Order saved successfully:", order.id);
+      console.log("Order saved successfully:", orderId);
     } catch (error) {
       console.error("Error saving order:", error);
       toast.error("Hubo un problema guardando el pedido. Intentá de nuevo o contactanos por WhatsApp.");
