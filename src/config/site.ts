@@ -290,7 +290,7 @@ export const products: Product[] = [
     available: true,
     prices: {
       M: 9500,
-      L: 12500,
+      L: 12000,
     },
     nutrition: {
       M: { kcal: 726, protein: 54 },
@@ -309,7 +309,7 @@ export const products: Product[] = [
     available: true,
     prices: {
       M: 10000,
-      L: 14500,
+      L: 14000,
     },
     nutrition: {
       M: { kcal: 641, protein: 54 },
@@ -339,7 +339,7 @@ export const products: Product[] = [
     available: true,
     prices: {
       M: 9500,
-      L: 12500,
+      L: 12000,
     },
     nutrition: {
       M: { kcal: 700, protein: 51 },
