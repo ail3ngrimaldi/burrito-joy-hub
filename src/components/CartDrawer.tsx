@@ -68,23 +68,25 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
         ? `RETIRO EN LOCAL - ${formData.postalCode}`
         : `${formData.address} - ${formData.postalCode}`;
 
-      const { data: order, error: orderError } = await supabase
+      // Generate order ID client-side so we don't need SELECT permission
+      const orderId = crypto.randomUUID();
+
+      const { error: orderError } = await supabase
         .from("orders")
         .insert({
+          id: orderId,
           customer_name: formData.name,
           delivery_address: deliveryAddress,
           total_amount: totalPrice + formData.shippingCost,
           status: "pendiente" as const,
           notes: formData.isPickup ? "Retiro en local" : "Envío a domicilio",
-        })
-        .select()
-        .single();
+        });
 
       if (orderError) throw orderError;
 
       // Insert order items
       const orderItems = items.map((item) => ({
-        order_id: order.id,
+        order_id: orderId,
         product_id: item.productId,
         product_name: item.productName,
         size: item.size,
