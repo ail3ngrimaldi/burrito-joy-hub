@@ -119,10 +119,14 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
     // Only open WhatsApp and clear cart AFTER DB save succeeds
     if (orderSaved) {
       toast.success("¡Pedido registrado! Redirigiendo a WhatsApp...");
-      // Small delay to ensure toast is seen before redirect
-      setTimeout(() => {
-        window.open(whatsAppUrl, "_blank", "noopener,noreferrer");
-      }, 500);
+      // Use an <a> tag click to avoid popup blockers
+      const link = document.createElement("a");
+      link.href = whatsAppUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       clearCart();
       onClose();
     }
