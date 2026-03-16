@@ -251,6 +251,21 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
         </div>
       </div>
 
+      {/* Processing Overlay */}
+      {isProcessing && (
+        <div className="fixed inset-0 bg-foreground/60 backdrop-blur-sm z-[70] flex items-center justify-center animate-fade-in">
+          <div className="bg-card rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-4 max-w-xs mx-4">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            <p className="text-foreground font-display text-xl font-bold text-center">
+              Preparando tu pedido... 🌯
+            </p>
+            <p className="text-muted-foreground text-sm text-center">
+              Ya casi te mandamos a WhatsApp
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Order Form Modal */}
       <OrderFormModal
         isOpen={showOrderForm}
