@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Plus, Minus, Trash2, MessageCircle } from "lucide-react";
+import { X, Plus, Minus, Trash2, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { siteConfig } from "@/config/site";
