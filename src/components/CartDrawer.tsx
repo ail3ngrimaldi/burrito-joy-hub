@@ -58,6 +58,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
   const handleFormSubmit = async (formData: OrderFormData) => {
     setOrderData(formData);
     setShowOrderForm(false);
+    setIsProcessing(true);
 
     // Build WhatsApp URL first (before any async work)
     const whatsAppUrl = getWhatsAppUrl(formData);
@@ -115,6 +116,8 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
     } catch (error) {
       console.error("Error saving order:", error);
       toast.error("Hubo un problema guardando el pedido. Intentá de nuevo o contactanos por WhatsApp.");
+      setIsProcessing(false);
+      return;
     }
 
     // Only open WhatsApp and clear cart AFTER DB save succeeds
@@ -129,6 +132,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
       link.click();
       document.body.removeChild(link);
       clearCart();
+      setIsProcessing(false);
       onClose();
     }
   };
