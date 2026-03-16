@@ -16,6 +16,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const { items, updateQuantity, removeItem, clearCart, totalItems, totalPrice } = useCart();
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [orderData, setOrderData] = useState<OrderFormData | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const getSizeLabel = (size: "M" | "L") => size === "M" ? "REGULAR" : "XL";
 
