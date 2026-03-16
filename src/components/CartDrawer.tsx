@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Plus, Minus, Trash2, MessageCircle } from "lucide-react";
+import { X, Plus, Minus, Trash2, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { siteConfig } from "@/config/site";
@@ -16,6 +16,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const { items, updateQuantity, removeItem, clearCart, totalItems, totalPrice } = useCart();
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [orderData, setOrderData] = useState<OrderFormData | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const getSizeLabel = (size: "M" | "L") => size === "M" ? "REGULAR" : "XL";
 
@@ -57,6 +58,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
   const handleFormSubmit = async (formData: OrderFormData) => {
     setOrderData(formData);
     setShowOrderForm(false);
+    setIsProcessing(true);
 
     // Build WhatsApp URL first (before any async work)
     const whatsAppUrl = getWhatsAppUrl(formData);
@@ -114,6 +116,8 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
     } catch (error) {
       console.error("Error saving order:", error);
       toast.error("Hubo un problema guardando el pedido. Intentá de nuevo o contactanos por WhatsApp.");
+      setIsProcessing(false);
+      return;
     }
 
     // Only open WhatsApp and clear cart AFTER DB save succeeds
@@ -128,6 +132,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
       link.click();
       document.body.removeChild(link);
       clearCart();
+      setIsProcessing(false);
       onClose();
     }
   };
@@ -245,6 +250,21 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
           )}
         </div>
       </div>
+
+      {/* Processing Overlay */}
+      {isProcessing && (
+        <div className="fixed inset-0 bg-foreground/60 backdrop-blur-sm z-[70] flex items-center justify-center animate-fade-in">
+          <div className="bg-card rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-4 max-w-xs mx-4">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            <p className="text-foreground font-display text-xl font-bold text-center">
+              Preparando tu pedido... 🌯
+            </p>
+            <p className="text-muted-foreground text-sm text-center">
+              Ya casi te mandamos a WhatsApp
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Order Form Modal */}
       <OrderFormModal
