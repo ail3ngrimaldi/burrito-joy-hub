@@ -42,9 +42,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const removeItem = (productId: string, size: string) => {
+  const removeItem = (productId: string, size: string, variant?: string) => {
     setItems((prev) =>
-      prev.filter((item) => !(item.productId === productId && item.size === size))
+      prev.filter((item) => !(item.productId === productId && item.size === size && item.variant === variant))
     );
   };
 
