@@ -244,6 +244,11 @@ import imgCarneDesm from "@/assets/desmechada.png";
 import imgBologn from "@/assets/bolgn.png";
 import notFound from "@/assets/not_found.png";
 
+export interface ProductVariant {
+  id: string;
+  label: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -262,8 +267,10 @@ export interface Product {
   // Tag de nueva receta (opcional)
   newRecipe?: {
     enabled: boolean;
-    label: string; // Ej: "Más cremoso!" o "Con salsa robert"
+    label: string;
   };
+  // Variantes del producto (ej: tipo de queso)
+  variants?: ProductVariant[];
 }
 
 export const products: Product[] = [
