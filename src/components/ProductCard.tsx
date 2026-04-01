@@ -222,7 +222,7 @@ const ProductCard = ({
                   <button
                     key={size}
                     onClick={() => !isOutOfStock && setSelectedSize(size)}
-                    disabled={isOutOfStock || false}
+                    disabled={!!isOutOfStock}
                     className={`flex-1 py-2 text-xs uppercase tracking-wider font-medium transition-all border ${
                       isOutOfStock
                         ? "border-border text-muted-foreground/40 cursor-not-allowed"
