@@ -361,4 +361,15 @@ export const products: Product[] = [
       label: "Pollo sazonado en cubos",
     },
   },
+  {
+    id: "veggie",
+    name: "Bolognesa Veggie",
+    description: "Salsa Bolognesa hecha con soja texturizada, cebolla, morrón, zanahoria, apio y queso fresco. Italiano, delicioso y cruelty free.",
+    image: notFound,
+    available: true,
+    prices: {
+      M: 6500,
+      L: 8500,
+    },
+  },
 ];

@@ -18,6 +18,7 @@ type OrderStatus = Database["public"]["Enums"]["order_status"];
 
 interface OrderItem {
   productId: string;
+  variantId?: string;
   size: string;
   quantity: number;
 }
@@ -64,15 +65,24 @@ const OrderManager = () => {
       if (validItems.length === 0) throw new Error("Agregá al menos un producto");
       if (!customerName.trim()) throw new Error("Ingresá el nombre del cliente");
 
+      // Validate variants
+      for (const item of validItems) {
+        const product = products.find((p) => p.id === item.productId);
+        if (product?.variants && product.variants.length > 0 && !item.variantId) {
+          throw new Error(`Seleccioná la variante para ${product.name}`);
+        }
+      }
+
       // Calculate total
       let total = 0;
       const orderItems = validItems.map((item) => {
         const product = products.find((p) => p.id === item.productId);
+        const variant = product?.variants?.find((v) => v.id === item.variantId);
         const price = product?.prices[item.size as "M" | "L"] || 0;
         total += price * item.quantity;
         return {
-          product_id: item.productId,
-          product_name: product?.name || item.productId,
+          product_id: item.variantId ? `${item.productId}-${item.variantId}` : item.productId,
+          product_name: variant ? `${product?.name} (${variant.label})` : (product?.name || item.productId),
           size: item.size,
           quantity: item.quantity,
           unit_price: price,
@@ -102,10 +112,11 @@ const OrderManager = () => {
 
       if (itemsError) throw itemsError;
 
-      // Decrement stock for each item
+      // Decrement stock for each item (use compound ID for variants)
       for (const item of validItems) {
+        const stockId = item.variantId ? `${item.productId}-${item.variantId}` : item.productId;
         await supabase.rpc("decrement_stock", {
-          p_product_id: item.productId,
+          p_product_id: stockId,
           p_size: item.size,
           p_quantity: item.quantity,
         });
@@ -148,7 +159,7 @@ const OrderManager = () => {
 
   const addItem = () => setItems([...items, { productId: "", size: "M", quantity: 1 }]);
   const removeItem = (idx: number) => setItems(items.filter((_, i) => i !== idx));
-  const updateItem = (idx: number, field: keyof OrderItem, value: string | number) => {
+  const updateItem = (idx: number, field: keyof OrderItem, value: string | number | undefined) => {
     const updated = [...items];
     (updated[idx] as any)[field] = value;
     setItems(updated);
@@ -190,41 +201,65 @@ const OrderManager = () => {
 
               <div className="space-y-2">
                 <Label>Productos</Label>
-                {items.map((item, idx) => (
-                  <div key={idx} className="flex gap-2 items-end">
-                    <Select value={item.productId} onValueChange={(v) => updateItem(idx, "productId", v)}>
-                      <SelectTrigger className="flex-1">
-                        <SelectValue placeholder="Producto" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {products.map((p) => (
-                          <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Select value={item.size} onValueChange={(v) => updateItem(idx, "size", v)}>
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="M">M</SelectItem>
-                        <SelectItem value="L">L</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      type="number"
-                      min={1}
-                      className="w-16"
-                      value={item.quantity}
-                      onChange={(e) => updateItem(idx, "quantity", parseInt(e.target.value) || 1)}
-                    />
-                    {items.length > 1 && (
-                      <Button variant="ghost" size="icon" onClick={() => removeItem(idx)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                ))}
+                {items.map((item, idx) => {
+                  const selectedProduct = products.find((p) => p.id === item.productId);
+                  const hasVariants = selectedProduct?.variants && selectedProduct.variants.length > 0;
+                  return (
+                    <div key={idx} className="space-y-2">
+                      <div className="flex gap-2 items-end">
+                        <Select value={item.productId} onValueChange={(v) => {
+                          updateItem(idx, "productId", v);
+                          // Reset variant when product changes
+                          const updated = [...items];
+                          updated[idx].variantId = undefined;
+                          setItems(updated);
+                        }}>
+                          <SelectTrigger className="flex-1">
+                            <SelectValue placeholder="Producto" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {products.map((p) => (
+                              <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {hasVariants && (
+                          <Select value={item.variantId || ""} onValueChange={(v) => updateItem(idx, "variantId", v)}>
+                            <SelectTrigger className="w-36">
+                              <SelectValue placeholder="Variante" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {selectedProduct.variants!.map((v) => (
+                                <SelectItem key={v.id} value={v.id}>{v.label}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                        <Select value={item.size} onValueChange={(v) => updateItem(idx, "size", v)}>
+                          <SelectTrigger className="w-20">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="M">M</SelectItem>
+                            <SelectItem value="L">L</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          type="number"
+                          min={1}
+                          className="w-16"
+                          value={item.quantity}
+                          onChange={(e) => updateItem(idx, "quantity", parseInt(e.target.value) || 1)}
+                        />
+                        {items.length > 1 && (
+                          <Button variant="ghost" size="icon" onClick={() => removeItem(idx)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
                 <Button variant="outline" size="sm" onClick={addItem}>
                   <Plus className="h-3 w-3 mr-1" /> Agregar producto
                 </Button>
