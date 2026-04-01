@@ -288,7 +288,14 @@ const OrderManager = () => {
         </Card>
       ) : (
         <div className="space-y-3">
-          {orders?.map((order) => (
+          {[...(orders || [])]
+            .sort((a, b) => {
+              if (a.status === "cancelado" && b.status !== "cancelado") return 1;
+              if (a.status !== "cancelado" && b.status === "cancelado") return -1;
+              return 0;
+            })
+            .filter((order) => statusFilter === "all" || order.status === statusFilter)
+            .map((order) => (
             <Card key={order.id}>
               <CardContent className="py-4">
                 <div className="flex items-start justify-between gap-4">

@@ -7,13 +7,15 @@ export interface CartItem {
   weight: string;
   price: number;
   quantity: number;
+  variant?: string;
+  variantLabel?: string;
 }
 
 interface CartContextType {
   items: CartItem[];
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
-  removeItem: (productId: string, size: string) => void;
-  updateQuantity: (productId: string, size: string, quantity: number) => void;
+  removeItem: (productId: string, size: string, variant?: string) => void;
+  updateQuantity: (productId: string, size: string, quantity: number, variant?: string) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -27,7 +29,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const addItem = (newItem: Omit<CartItem, "quantity">, quantity: number = 1) => {
     setItems((prev) => {
       const existingIndex = prev.findIndex(
-        (item) => item.productId === newItem.productId && item.size === newItem.size
+        (item) => item.productId === newItem.productId && item.size === newItem.size && item.variant === newItem.variant
       );
 
       if (existingIndex >= 0) {
@@ -40,21 +42,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const removeItem = (productId: string, size: string) => {
+  const removeItem = (productId: string, size: string, variant?: string) => {
     setItems((prev) =>
-      prev.filter((item) => !(item.productId === productId && item.size === size))
+      prev.filter((item) => !(item.productId === productId && item.size === size && item.variant === variant))
     );
   };
 
-  const updateQuantity = (productId: string, size: string, quantity: number) => {
+  const updateQuantity = (productId: string, size: string, quantity: number, variant?: string) => {
     if (quantity <= 0) {
-      removeItem(productId, size);
+      removeItem(productId, size, variant);
       return;
     }
 
     setItems((prev) =>
       prev.map((item) =>
-        item.productId === productId && item.size === size
+        item.productId === productId && item.size === size && item.variant === variant
           ? { ...item, quantity }
           : item
       )
