@@ -48,15 +48,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  const updateQuantity = (productId: string, size: string, quantity: number) => {
+  const updateQuantity = (productId: string, size: string, quantity: number, variant?: string) => {
     if (quantity <= 0) {
-      removeItem(productId, size);
+      removeItem(productId, size, variant);
       return;
     }
 
     setItems((prev) =>
       prev.map((item) =>
-        item.productId === productId && item.size === size
+        item.productId === productId && item.size === size && item.variant === variant
           ? { ...item, quantity }
           : item
       )
