@@ -159,7 +159,7 @@ const OrderManager = () => {
 
   const addItem = () => setItems([...items, { productId: "", size: "M", quantity: 1 }]);
   const removeItem = (idx: number) => setItems(items.filter((_, i) => i !== idx));
-  const updateItem = (idx: number, field: keyof OrderItem, value: string | number) => {
+  const updateItem = (idx: number, field: keyof OrderItem, value: string | number | undefined) => {
     const updated = [...items];
     (updated[idx] as any)[field] = value;
     setItems(updated);
