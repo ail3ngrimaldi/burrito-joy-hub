@@ -307,6 +307,10 @@ export const products: Product[] = [
       enabled: true,
       label: "Pollo en cubos, sazón ajustado!",
     },
+    variants: [
+      { id: "cremalight", label: "Queso crema light" },
+      { id: "cheddar", label: "Queso cheddar" },
+    ],
   },
   {
     id: "bolognesa",

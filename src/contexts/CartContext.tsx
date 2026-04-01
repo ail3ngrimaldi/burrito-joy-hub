@@ -29,7 +29,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const addItem = (newItem: Omit<CartItem, "quantity">, quantity: number = 1) => {
     setItems((prev) => {
       const existingIndex = prev.findIndex(
-        (item) => item.productId === newItem.productId && item.size === newItem.size
+        (item) => item.productId === newItem.productId && item.size === newItem.size && item.variant === newItem.variant
       );
 
       if (existingIndex >= 0) {
