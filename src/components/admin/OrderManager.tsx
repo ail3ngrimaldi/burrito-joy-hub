@@ -201,41 +201,65 @@ const OrderManager = () => {
 
               <div className="space-y-2">
                 <Label>Productos</Label>
-                {items.map((item, idx) => (
-                  <div key={idx} className="flex gap-2 items-end">
-                    <Select value={item.productId} onValueChange={(v) => updateItem(idx, "productId", v)}>
-                      <SelectTrigger className="flex-1">
-                        <SelectValue placeholder="Producto" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {products.map((p) => (
-                          <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Select value={item.size} onValueChange={(v) => updateItem(idx, "size", v)}>
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="M">M</SelectItem>
-                        <SelectItem value="L">L</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      type="number"
-                      min={1}
-                      className="w-16"
-                      value={item.quantity}
-                      onChange={(e) => updateItem(idx, "quantity", parseInt(e.target.value) || 1)}
-                    />
-                    {items.length > 1 && (
-                      <Button variant="ghost" size="icon" onClick={() => removeItem(idx)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                ))}
+                {items.map((item, idx) => {
+                  const selectedProduct = products.find((p) => p.id === item.productId);
+                  const hasVariants = selectedProduct?.variants && selectedProduct.variants.length > 0;
+                  return (
+                    <div key={idx} className="space-y-2">
+                      <div className="flex gap-2 items-end">
+                        <Select value={item.productId} onValueChange={(v) => {
+                          updateItem(idx, "productId", v);
+                          // Reset variant when product changes
+                          const updated = [...items];
+                          updated[idx].variantId = undefined;
+                          setItems(updated);
+                        }}>
+                          <SelectTrigger className="flex-1">
+                            <SelectValue placeholder="Producto" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {products.map((p) => (
+                              <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {hasVariants && (
+                          <Select value={item.variantId || ""} onValueChange={(v) => updateItem(idx, "variantId", v)}>
+                            <SelectTrigger className="w-36">
+                              <SelectValue placeholder="Variante" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {selectedProduct.variants!.map((v) => (
+                                <SelectItem key={v.id} value={v.id}>{v.label}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                        <Select value={item.size} onValueChange={(v) => updateItem(idx, "size", v)}>
+                          <SelectTrigger className="w-20">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="M">M</SelectItem>
+                            <SelectItem value="L">L</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          type="number"
+                          min={1}
+                          className="w-16"
+                          value={item.quantity}
+                          onChange={(e) => updateItem(idx, "quantity", parseInt(e.target.value) || 1)}
+                        />
+                        {items.length > 1 && (
+                          <Button variant="ghost" size="icon" onClick={() => removeItem(idx)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
                 <Button variant="outline" size="sm" onClick={addItem}>
                   <Plus className="h-3 w-3 mr-1" /> Agregar producto
                 </Button>
