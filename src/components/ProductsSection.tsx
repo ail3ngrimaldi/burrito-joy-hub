@@ -22,7 +22,9 @@ const ProductsSection = () => {
           {/* Products grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => {
-              const hasStock = hasAnyStock(stockMap, product.id);
+              const hasStock = product.variants
+                ? product.variants.some(v => hasAnyStock(stockMap, `${product.id}-${v.id}`))
+                : hasAnyStock(stockMap, product.id);
               const isAvailable = product.available && (isLoading || hasStock);
 
               return (
