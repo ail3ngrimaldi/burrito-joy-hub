@@ -112,10 +112,11 @@ const OrderManager = () => {
 
       if (itemsError) throw itemsError;
 
-      // Decrement stock for each item
+      // Decrement stock for each item (use compound ID for variants)
       for (const item of validItems) {
+        const stockId = item.variantId ? `${item.productId}-${item.variantId}` : item.productId;
         await supabase.rpc("decrement_stock", {
-          p_product_id: item.productId,
+          p_product_id: stockId,
           p_size: item.size,
           p_quantity: item.quantity,
         });
