@@ -65,15 +65,24 @@ const OrderManager = () => {
       if (validItems.length === 0) throw new Error("Agregá al menos un producto");
       if (!customerName.trim()) throw new Error("Ingresá el nombre del cliente");
 
+      // Validate variants
+      for (const item of validItems) {
+        const product = products.find((p) => p.id === item.productId);
+        if (product?.variants && product.variants.length > 0 && !item.variantId) {
+          throw new Error(`Seleccioná la variante para ${product.name}`);
+        }
+      }
+
       // Calculate total
       let total = 0;
       const orderItems = validItems.map((item) => {
         const product = products.find((p) => p.id === item.productId);
+        const variant = product?.variants?.find((v) => v.id === item.variantId);
         const price = product?.prices[item.size as "M" | "L"] || 0;
         total += price * item.quantity;
         return {
-          product_id: item.productId,
-          product_name: product?.name || item.productId,
+          product_id: item.variantId ? `${item.productId}-${item.variantId}` : item.productId,
+          product_name: variant ? `${product?.name} (${variant.label})` : (product?.name || item.productId),
           size: item.size,
           quantity: item.quantity,
           unit_price: price,
