@@ -27,9 +27,11 @@ const AnalyticsManager = () => {
   const productStats: Record<string, { name: string; totalQty: number; totalRevenue: number; bySize: Record<string, number> }> = {};
   
   validItems.forEach((item) => {
-    const key = item.product_id;
+    // Strip variant suffix to aggregate by base product
+    const baseId = item.product_id.replace(/-(?:cremalight|cheddar)$/, "");
+    const key = baseId;
     if (!productStats[key]) {
-      const product = products.find((p) => p.id === key);
+      const product = products.find((p) => p.id === baseId);
       productStats[key] = {
         name: product?.name || item.product_name,
         totalQty: 0,
