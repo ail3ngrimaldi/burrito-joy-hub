@@ -356,10 +356,6 @@ export const products: Product[] = [
       M: { kcal: 700, protein: 51 },
       L: { kcal: 1018, protein: 74 },
     },
-    newRecipe: {
-      enabled: true,
-      label: "Pollo sazonado en cubos",
-    },
   },
   {
     id: "veggie",
@@ -370,6 +366,10 @@ export const products: Product[] = [
     prices: {
       M: 6500,
       L: 8500,
+    },
+    newRecipe: {
+      enabled: true,
+      label: "Nuevo gusto!",
     },
   },
 ];
