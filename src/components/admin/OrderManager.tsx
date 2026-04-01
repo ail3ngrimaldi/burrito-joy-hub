@@ -18,6 +18,7 @@ type OrderStatus = Database["public"]["Enums"]["order_status"];
 
 interface OrderItem {
   productId: string;
+  variantId?: string;
   size: string;
   quantity: number;
 }
