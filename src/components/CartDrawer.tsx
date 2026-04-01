@@ -5,6 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { siteConfig } from "@/config/site";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useProductStock, getStockForProduct } from "@/hooks/useProductStock";
 import OrderFormModal, { type OrderFormData } from "./OrderFormModal";
 
 interface CartDrawerProps {
@@ -17,8 +18,15 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [orderData, setOrderData] = useState<OrderFormData | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { data: stockMap, isLoading: isLoadingStock } = useProductStock();
 
   const getSizeLabel = (size: "M" | "L") => size === "M" ? "REGULAR" : "XL";
+
+  const getStockProductId = (productId: string, variant?: string) =>
+    variant ? `${productId}-${variant}` : productId;
+
+  const getItemStock = (item: { productId: string; size: "M" | "L"; variant?: string }) =>
+    getStockForProduct(stockMap, getStockProductId(item.productId, item.variant), item.size);
 
   const getWhatsAppUrl = (formData: OrderFormData) => {
     if (items.length === 0) return "";
@@ -60,17 +68,14 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
     setShowOrderForm(false);
     setIsProcessing(true);
 
-    // Build WhatsApp URL first (before any async work)
     const whatsAppUrl = getWhatsAppUrl(formData);
     let orderSaved = false;
 
-    // Save order to database BEFORE opening WhatsApp
     try {
       const deliveryAddress = formData.isPickup
         ? `RETIRO EN LOCAL - ${formData.postalCode}`
         : `${formData.address} - ${formData.postalCode}`;
 
-      // Generate order ID client-side so we don't need SELECT permission
       const orderId = crypto.randomUUID();
 
       const { error: orderError } = await supabase
@@ -86,7 +91,6 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
 
       if (orderError) throw orderError;
 
-      // Insert order items
       const orderItems = items.map((item) => ({
         order_id: orderId,
         product_id: item.productId,
@@ -102,10 +106,10 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
 
       if (itemsError) throw itemsError;
 
-      // Decrement stock for each item
       for (const item of items) {
+        const stockProdId = getStockProductId(item.productId, item.variant);
         await supabase.rpc("decrement_stock", {
-          p_product_id: item.productId,
+          p_product_id: stockProdId,
           p_size: item.size,
           p_quantity: item.quantity,
         });
@@ -120,10 +124,8 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
       return;
     }
 
-    // Only open WhatsApp and clear cart AFTER DB save succeeds
     if (orderSaved) {
       toast.success("¡Pedido registrado! Redirigiendo a WhatsApp...");
-      // Use an <a> tag click to avoid popup blockers
       const link = document.createElement("a");
       link.href = whatsAppUrl;
       link.target = "_blank";
@@ -176,52 +178,62 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
               </div>
             ) : (
               <div className="space-y-4">
-                {items.map((item) => (
-                  <div
-                    key={`${item.productId}-${item.size}`}
-                    className="flex items-center gap-4 p-4 bg-muted/50 rounded-xl"
-                  >
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-foreground">
-                        {item.productName}
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        {getSizeLabel(item.size)}
-                      </p>
-                      <p className="text-primary font-bold">
-                        ${(item.price * item.quantity).toLocaleString("es-AR")}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => updateQuantity(item.productId, item.size, item.quantity - 1)}
-                        className="p-2 hover:bg-muted rounded-full transition-colors"
-                        aria-label="Disminuir cantidad"
-                      >
-                        <Minus className="w-4 h-4 text-foreground" />
-                      </button>
-                      <span className="w-8 text-center font-semibold text-foreground">
-                        {item.quantity}
-                      </span>
-                      <button
-                        onClick={() => updateQuantity(item.productId, item.size, item.quantity + 1)}
-                        className="p-2 hover:bg-muted rounded-full transition-colors"
-                        aria-label="Aumentar cantidad"
-                      >
-                        <Plus className="w-4 h-4 text-foreground" />
-                      </button>
-                    </div>
-
-                    <button
-                      onClick={() => removeItem(item.productId, item.size)}
-                      className="p-2 hover:bg-destructive/10 rounded-full transition-colors text-destructive"
-                      aria-label="Eliminar item"
+                {items.map((item) => {
+                  const itemStock = isLoadingStock ? 99 : getItemStock(item);
+                  return (
+                    <div
+                      key={`${item.productId}-${item.size}-${item.variant || ""}`}
+                      className="flex items-center gap-4 p-4 bg-muted/50 rounded-xl"
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-foreground">
+                          {item.productName}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {getSizeLabel(item.size)}
+                        </p>
+                        <p className="text-primary font-bold">
+                          ${(item.price * item.quantity).toLocaleString("es-AR")}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => updateQuantity(item.productId, item.size, item.quantity - 1, item.variant)}
+                          className="p-2 hover:bg-muted rounded-full transition-colors"
+                          aria-label="Disminuir cantidad"
+                        >
+                          <Minus className="w-4 h-4 text-foreground" />
+                        </button>
+                        <span className="w-8 text-center font-semibold text-foreground">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => {
+                            if (item.quantity < itemStock) {
+                              updateQuantity(item.productId, item.size, item.quantity + 1, item.variant);
+                            } else {
+                              toast.error(`Solo hay ${itemStock} unidades disponibles`);
+                            }
+                          }}
+                          disabled={item.quantity >= itemStock}
+                          className="p-2 hover:bg-muted rounded-full transition-colors disabled:opacity-30"
+                          aria-label="Aumentar cantidad"
+                        >
+                          <Plus className="w-4 h-4 text-foreground" />
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => removeItem(item.productId, item.size, item.variant)}
+                        className="p-2 hover:bg-destructive/10 rounded-full transition-colors text-destructive"
+                        aria-label="Eliminar item"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

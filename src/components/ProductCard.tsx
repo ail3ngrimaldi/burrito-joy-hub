@@ -3,7 +3,7 @@ import { ShoppingCart, Check, Plus, Minus, ImageOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
-import { productSizes, type ProductSize } from "@/config/site";
+import { productSizes, type ProductSize, type ProductVariant } from "@/config/site";
 import { type ProductStockMap, getStockForProduct } from "@/hooks/useProductStock";
 import notFoundImage from "@/assets/not_found.png";
 
@@ -30,6 +30,7 @@ interface ProductCardProps {
     enabled: boolean;
     label: string;
   };
+  variants?: ProductVariant[];
 }
 
 const ProductCard = ({
@@ -43,15 +44,22 @@ const ProductCard = ({
   isLoadingStock,
   nutrition,
   newRecipe,
+  variants,
 }: ProductCardProps) => {
   const [selectedSize, setSelectedSize] = useState<ProductSize>("M");
+  const [selectedVariant, setSelectedVariant] = useState<string | undefined>(
+    variants && variants.length > 0 ? undefined : undefined
+  );
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const { addItem } = useCart();
 
+  const hasVariants = variants && variants.length > 0;
+  const stockProductId = hasVariants && selectedVariant ? `${id}-${selectedVariant}` : id;
+
   const selectedSizeData = productSizes[selectedSize];
   const currentPrice = prices[selectedSize];
-  const currentStock = getStockForProduct(stockMap, id, selectedSize);
+  const currentStock = getStockForProduct(stockMap, stockProductId, selectedSize);
   const maxQuantity = isLoadingStock ? 99 : currentStock;
 
   useEffect(() => {
@@ -68,18 +76,27 @@ const ProductCard = ({
   };
 
   const handleAddToCart = () => {
+    if (hasVariants && !selectedVariant) {
+      toast.error("Seleccioná el tipo de queso");
+      return;
+    }
+
     if (!isLoadingStock && currentStock < quantity) {
       toast.error(`Solo hay ${currentStock} unidades disponibles`);
       return;
     }
 
+    const variantData = hasVariants ? variants.find((v) => v.id === selectedVariant) : undefined;
+
     addItem(
       {
         productId: id,
-        productName: name,
+        productName: variantData ? `${name} (${variantData.label})` : name,
         size: selectedSize,
         weight: selectedSizeData.weight,
         price: currentPrice,
+        variant: selectedVariant,
+        variantLabel: variantData?.label,
       },
       quantity
     );
@@ -97,7 +114,7 @@ const ProductCard = ({
   };
 
   const sizes: ProductSize[] = ["M", "L"];
-  const getSizeStock = (size: ProductSize) => getStockForProduct(stockMap, id, size);
+  const getSizeStock = (size: ProductSize) => getStockForProduct(stockMap, stockProductId, size);
 
   return (
     <div
@@ -170,17 +187,42 @@ const ProductCard = ({
 
         {available && (
           <>
+            {/* Variant selector (e.g. cheese type) */}
+            {hasVariants && (
+              <div className="mb-4">
+                <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider">Elegí tu queso</p>
+                <div className="flex gap-2">
+                  {variants.map((variant) => (
+                    <button
+                      key={variant.id}
+                      onClick={() => {
+                        setSelectedVariant(variant.id);
+                        setQuantity(1);
+                      }}
+                      className={`flex-1 py-2 text-xs uppercase tracking-wider font-medium transition-all border ${
+                        selectedVariant === variant.id
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border text-foreground hover:border-foreground"
+                      }`}
+                    >
+                      {variant.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Size selector */}
             <div className="flex gap-2 mb-4">
               {sizes.map((size) => {
                 const sizeStock = getSizeStock(size);
-                const isOutOfStock = !isLoadingStock && sizeStock === 0;
+                const isOutOfStock = !isLoadingStock && sizeStock === 0 && (!hasVariants || selectedVariant);
 
                 return (
                   <button
                     key={size}
                     onClick={() => !isOutOfStock && setSelectedSize(size)}
-                    disabled={isOutOfStock}
+                    disabled={isOutOfStock || false}
                     className={`flex-1 py-2 text-xs uppercase tracking-wider font-medium transition-all border ${
                       isOutOfStock
                         ? "border-border text-muted-foreground/40 cursor-not-allowed"
@@ -217,7 +259,7 @@ const ProductCard = ({
 
               <Button
                 onClick={handleAddToCart}
-                disabled={isAdding}
+                disabled={isAdding || (hasVariants && !selectedVariant)}
                 variant="default"
                 size="sm"
                 className="uppercase tracking-wider text-xs"
@@ -237,7 +279,7 @@ const ProductCard = ({
             </div>
 
             {/* Low stock warning */}
-            {!isLoadingStock && currentStock > 0 && currentStock <= 5 && (
+            {!isLoadingStock && (!hasVariants || selectedVariant) && currentStock > 0 && currentStock <= 5 && (
               <p className="text-xs text-accent font-medium mt-3">
                 Solo quedan {currentStock} unidades
               </p>
