@@ -26,9 +26,10 @@ interface ProductCardProps {
     M: { kcal: number; protein: number };
     L: { kcal: number; protein: number };
   };
-  newRecipe?: {
+  tag?: {
     enabled: boolean;
-    label: string;
+    text: string;
+    color?: string;
   };
   variants?: ProductVariant[];
 }

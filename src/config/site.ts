@@ -264,10 +264,13 @@ export interface Product {
     M: number;
     L: number;
   };
-  // Tag de nueva receta (opcional)
-  newRecipe?: {
+  // Tag promocional (opcional) — texto y color completamente personalizables
+  tag?: {
     enabled: boolean;
-    label: string;
+    // Texto completo que se muestra (ej: "✨ Nueva receta: Pollo en cubos")
+    text: string;
+    // Color de fondo en clase Tailwind (ej: "bg-burrito-orange", "bg-primary", "bg-green-600")
+    color?: string;
   };
   // Variantes del producto (ej: tipo de queso)
   variants?: ProductVariant[];
