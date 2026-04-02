@@ -44,7 +44,7 @@ const ProductCard = ({
   stockMap,
   isLoadingStock,
   nutrition,
-  newRecipe,
+  tag,
   variants,
 }: ProductCardProps) => {
   const [selectedSize, setSelectedSize] = useState<ProductSize>("M");
@@ -125,10 +125,10 @@ const ProductCard = ({
     >
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
-        {newRecipe?.enabled && (
+        {tag?.enabled && (
           <div className="absolute top-3 right-3 z-10">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold bg-burrito-orange text-white shadow-md">
-              ✨ Nueva receta: {newRecipe.label}
+            <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold ${tag.color || 'bg-burrito-orange'} text-white shadow-md`}>
+              {tag.text}
             </span>
           </div>
         )}
