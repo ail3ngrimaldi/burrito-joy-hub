@@ -264,10 +264,13 @@ export interface Product {
     M: number;
     L: number;
   };
-  // Tag de nueva receta (opcional)
-  newRecipe?: {
+  // Tag promocional (opcional) — texto y color completamente personalizables
+  tag?: {
     enabled: boolean;
-    label: string;
+    // Texto completo que se muestra (ej: "✨ Nueva receta: Pollo en cubos")
+    text: string;
+    // Color de fondo en clase Tailwind (ej: "bg-burrito-orange", "bg-primary", "bg-green-600")
+    color?: string;
   };
   // Variantes del producto (ej: tipo de queso)
   variants?: ProductVariant[];
@@ -303,9 +306,9 @@ export const products: Product[] = [
       M: { kcal: 726, protein: 54 },
       L: { kcal: 1054, protein: 78 },
     },
-    newRecipe: {
+    tag: {
       enabled: true,
-      label: "Pollo en cubos, sazón ajustado!",
+      text: "✨ Nueva receta: Pollo en cubos, sazón ajustado!",
     },
     variants: [
       { id: "cremalight", label: "Queso crema light" },
@@ -367,9 +370,10 @@ export const products: Product[] = [
       M: 6500,
       L: 8500,
     },
-    newRecipe: {
+    tag: {
       enabled: true,
-      label: "Nuevo gusto!",
+      text: "🌱 Nuevo gusto!",
+      color: "bg-green-600",
     },
   },
 ];
