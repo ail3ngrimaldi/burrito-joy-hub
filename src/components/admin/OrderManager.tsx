@@ -206,15 +206,14 @@ const OrderManager = () => {
                   const hasVariants = selectedProduct?.variants && selectedProduct.variants.length > 0;
                   return (
                     <div key={idx} className="space-y-2">
-                      <div className="flex gap-2 items-end">
+                      <div className="flex gap-2 items-end flex-wrap">
                         <Select value={item.productId} onValueChange={(v) => {
-                          updateItem(idx, "productId", v);
-                          // Reset variant when product changes
+                          // Atomically update productId AND reset variantId
                           const updated = [...items];
-                          updated[idx].variantId = undefined;
+                          updated[idx] = { ...updated[idx], productId: v, variantId: undefined };
                           setItems(updated);
                         }}>
-                          <SelectTrigger className="flex-1">
+                          <SelectTrigger className="flex-1 min-w-[140px]">
                             <SelectValue placeholder="Producto" />
                           </SelectTrigger>
                           <SelectContent>
@@ -223,18 +222,6 @@ const OrderManager = () => {
                             ))}
                           </SelectContent>
                         </Select>
-                        {hasVariants && (
-                          <Select value={item.variantId || ""} onValueChange={(v) => updateItem(idx, "variantId", v)}>
-                            <SelectTrigger className="w-36">
-                              <SelectValue placeholder="Variante" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {selectedProduct.variants!.map((v) => (
-                                <SelectItem key={v.id} value={v.id}>{v.label}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        )}
                         <Select value={item.size} onValueChange={(v) => updateItem(idx, "size", v)}>
                           <SelectTrigger className="w-20">
                             <SelectValue />
@@ -257,6 +244,20 @@ const OrderManager = () => {
                           </Button>
                         )}
                       </div>
+                      {hasVariants && (
+                        <div className="pl-1">
+                          <Select value={item.variantId || ""} onValueChange={(v) => updateItem(idx, "variantId", v)}>
+                            <SelectTrigger className={`w-full ${!item.variantId ? "border-destructive" : ""}`}>
+                              <SelectValue placeholder="⚠️ Elegí tipo de queso (obligatorio)" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {selectedProduct.variants!.map((v) => (
+                                <SelectItem key={v.id} value={v.id}>{v.label}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
