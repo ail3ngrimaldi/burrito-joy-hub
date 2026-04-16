@@ -73,6 +73,41 @@ const OrderManager = () => {
         }
       }
 
+      // Validate stock availability (aggregate same product+size+variant)
+      const stockNeeded = new Map<string, { qty: number; label: string; size: string }>();
+      for (const item of validItems) {
+        const product = products.find((p) => p.id === item.productId);
+        const variant = product?.variants?.find((v) => v.id === item.variantId);
+        const stockId = item.variantId ? `${item.productId}-${item.variantId}` : item.productId;
+        const key = `${stockId}|${item.size}`;
+        const label = variant ? `${product?.name} (${variant.label})` : (product?.name || item.productId);
+        const existing = stockNeeded.get(key);
+        stockNeeded.set(key, {
+          qty: (existing?.qty || 0) + item.quantity,
+          label,
+          size: item.size,
+        });
+      }
+
+      const stockIds = Array.from(stockNeeded.keys()).map((k) => k.split("|")[0]);
+      const { data: stockRows, error: stockError } = await supabase
+        .from("product_stock")
+        .select("product_id, size, quantity")
+        .in("product_id", stockIds);
+
+      if (stockError) throw new Error("No se pudo verificar el stock");
+
+      for (const [key, need] of stockNeeded.entries()) {
+        const [pid, size] = key.split("|");
+        const row = stockRows?.find((r) => r.product_id === pid && r.size === size);
+        const available = row?.quantity ?? 0;
+        if (available < need.qty) {
+          throw new Error(
+            `Stock insuficiente: ${need.label} ${size === "M" ? "REGULAR" : "XL"} (disponible: ${available}, pedido: ${need.qty})`
+          );
+        }
+      }
+
       // Calculate total
       let total = 0;
       const orderItems = validItems.map((item) => {
