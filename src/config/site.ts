@@ -318,12 +318,22 @@ export const products: Product[] = [
   {
     id: "bolognesa",
     name: "Bolognesa",
-    description: "Carne picada baja en grasa con salsa bolognesa casera, ricota baja en grasas procesada, queso fundido y especias. Proteína y calorías en su medida justa.",
+    description: "Carne picada baja en grasa con salsa bolognesa casera, ricota baja en grasas procesada, muzzarella fundida y especias. Proteína y calorías en su medida justa.",
     image: imgBologn,
     available: true,
     prices: {
-      M: 10000,
-      L: 14000,
+      M: 11500,
+      L: 15500,
+    },
+    {
+    id: "bolognesa-lowfat",
+    name: "Bolognesa low fat",
+    description: "Carne picada baja en grasa con salsa bolognesa casera, ricota baja en grasas procesada y especias. Bajísimo en grasas.",
+    image: imgBologn,
+    available: true,
+    prices: {
+      M: 10500,
+      L: 15500,
     },
     nutrition: {
       M: { kcal: 641, protein: 54 },
@@ -337,7 +347,7 @@ export const products: Product[] = [
     image: imgCarneDesm,
     available: true,
     prices: {
-      M: 10500,
+      M: 11000,
       L: 14500,
     },
     nutrition: {
@@ -367,7 +377,7 @@ export const products: Product[] = [
     image: notFound,
     available: true,
     prices: {
-      M: 6500,
+      M: 7000,
       L: 8500,
     },
     tag: {
