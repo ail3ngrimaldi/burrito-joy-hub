@@ -236,7 +236,7 @@ const ProductCard = ({
                         : "border-border text-foreground hover:border-foreground"
                     }`}
                   >
-                    {productSizes[size].label} · {isOutOfStock ? "Agotado" : productSizes[size].weight}
+                    {productSizes[size].label} · {isOutOfStock ? "Agotado" : getSizeWeight(size)}
                   </button>
                 );
               })}
