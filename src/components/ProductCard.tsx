@@ -169,6 +169,10 @@ const ProductCard = ({
           <p className="font-display text-lg font-bold text-foreground">
             ${currentPrice.toLocaleString("es-AR")}
           </p>
+          ) : singleSize ? (
+          <p className="font-display text-sm font-bold text-muted-foreground">
+            ${prices.M.toLocaleString("es-AR")}
+          </p>
           ) : (
           <p className="font-display text-sm font-bold text-muted-foreground">
             ${prices.M.toLocaleString("es-AR")} — ${prices.L.toLocaleString("es-AR")}
