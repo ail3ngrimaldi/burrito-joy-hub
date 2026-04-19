@@ -325,7 +325,12 @@ export const products: Product[] = [
       M: 11500,
       L: 15500,
     },
-    {
+    nutrition: {
+      M: { kcal: 641, protein: 54 },
+      L: { kcal: 922, protein: 74 },
+    }
+  },
+  {
     id: "bolognesa-lowfat",
     name: "Bolognesa low fat",
     description: "Carne picada baja en grasa con salsa bolognesa casera, ricota baja en grasas procesada y especias. Bajísimo en grasas.",
