@@ -117,8 +117,9 @@ const ProductCard = ({
     }, 1000);
   };
 
-  const sizes: ProductSize[] = ["M", "L"];
+  const sizes: ProductSize[] = singleSize ? ["M"] : ["M", "L"];
   const getSizeStock = (size: ProductSize) => getStockForProduct(stockMap, stockProductId, size);
+  const getSizeWeight = (size: ProductSize) => customSizeWeights[id]?.[size] ?? productSizes[size].weight;
 
   return (
     <div
