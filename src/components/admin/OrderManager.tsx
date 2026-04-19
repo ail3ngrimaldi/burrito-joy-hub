@@ -239,13 +239,20 @@ const OrderManager = () => {
                 {items.map((item, idx) => {
                   const selectedProduct = products.find((p) => p.id === item.productId);
                   const hasVariants = selectedProduct?.variants && selectedProduct.variants.length > 0;
+                  const isSingleSize = !!selectedProduct?.singleSize;
                   return (
                     <div key={idx} className="space-y-2">
                       <div className="flex gap-2 items-end flex-wrap">
                         <Select value={item.productId} onValueChange={(v) => {
-                          // Atomically update productId AND reset variantId
+                          // Atomically update productId, reset variantId, force size M if singleSize
+                          const product = products.find((p) => p.id === v);
                           const updated = [...items];
-                          updated[idx] = { ...updated[idx], productId: v, variantId: undefined };
+                          updated[idx] = {
+                            ...updated[idx],
+                            productId: v,
+                            variantId: undefined,
+                            size: product?.singleSize ? "M" : updated[idx].size,
+                          };
                           setItems(updated);
                         }}>
                           <SelectTrigger className="flex-1 min-w-[140px]">
@@ -257,13 +264,17 @@ const OrderManager = () => {
                             ))}
                           </SelectContent>
                         </Select>
-                        <Select value={item.size} onValueChange={(v) => updateItem(idx, "size", v)}>
+                        <Select
+                          value={item.size}
+                          onValueChange={(v) => updateItem(idx, "size", v)}
+                          disabled={isSingleSize}
+                        >
                           <SelectTrigger className="w-20">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="M">M</SelectItem>
-                            <SelectItem value="L">L</SelectItem>
+                            {!isSingleSize && <SelectItem value="L">L</SelectItem>}
                           </SelectContent>
                         </Select>
                         <Input
