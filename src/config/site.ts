@@ -344,13 +344,14 @@ export const products: Product[] = [
     description: "Carne picada baja en grasa con salsa bolognesa casera, ricota baja en grasas procesada y especias. Bajísimo en grasas.",
     image: imgBologn,
     available: true,
+    singleSize: true,
     prices: {
       M: 10500,
-      L: 15500,
+      L: 10500,
     },
     nutrition: {
       M: { kcal: 641, protein: 54 },
-      L: { kcal: 922, protein: 74 },
+      L: { kcal: 641, protein: 54 },
     }
   },
   {
