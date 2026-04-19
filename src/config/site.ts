@@ -232,6 +232,12 @@ export const productSizes = {
 
 export type ProductSize = keyof typeof productSizes;
 
+// Pesos personalizados por producto (override del default)
+// Si el producto está acá, se usa este peso para M (y L si aplica)
+export const customSizeWeights: Record<string, Partial<Record<ProductSize, string>>> = {
+  "bolognesa-lowfat": { M: "300g" },
+};
+
 // ==========================================
 // PRODUCTOS Y PRECIOS - FÁCIL DE EDITAR
 // ==========================================
@@ -255,6 +261,8 @@ export interface Product {
   description: string;
   image: string;
   available: boolean;
+  // Si es true, el producto solo se vende en tamaño M (REGULAR)
+  singleSize?: boolean;
   nutrition?: {
     M: { kcal: number; protein: number };
     L: { kcal: number; protein: number };
