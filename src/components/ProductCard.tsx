@@ -3,7 +3,7 @@ import { ShoppingCart, Check, Plus, Minus, ImageOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
-import { productSizes, type ProductSize, type ProductVariant } from "@/config/site";
+import { productSizes, customSizeWeights, type ProductSize, type ProductVariant } from "@/config/site";
 import { type ProductStockMap, getStockForProduct } from "@/hooks/useProductStock";
 import notFoundImage from "@/assets/not_found.png";
 
@@ -22,6 +22,7 @@ interface ProductCardProps {
   stockMap?: ProductStockMap;
   isLoadingStock?: boolean;
   onClick?: () => void;
+  singleSize?: boolean;
   nutrition?: {
     M: { kcal: number; protein: number };
     L: { kcal: number; protein: number };
@@ -46,6 +47,7 @@ const ProductCard = ({
   nutrition,
   tag,
   variants,
+  singleSize,
 }: ProductCardProps) => {
   const [selectedSize, setSelectedSize] = useState<ProductSize>("M");
   const [selectedVariant, setSelectedVariant] = useState<string | undefined>(
@@ -58,7 +60,8 @@ const ProductCard = ({
   const hasVariants = variants && variants.length > 0;
   const stockProductId = hasVariants && selectedVariant ? `${id}-${selectedVariant}` : id;
 
-  const selectedSizeData = productSizes[selectedSize];
+  const sizeWeight = customSizeWeights[id]?.[selectedSize] ?? productSizes[selectedSize].weight;
+  const selectedSizeData = { ...productSizes[selectedSize], weight: sizeWeight };
   const currentPrice = prices[selectedSize];
   const currentStock = getStockForProduct(stockMap, stockProductId, selectedSize);
   const maxQuantity = isLoadingStock ? 99 : currentStock;
@@ -114,8 +117,9 @@ const ProductCard = ({
     }, 1000);
   };
 
-  const sizes: ProductSize[] = ["M", "L"];
+  const sizes: ProductSize[] = singleSize ? ["M"] : ["M", "L"];
   const getSizeStock = (size: ProductSize) => getStockForProduct(stockMap, stockProductId, size);
+  const getSizeWeight = (size: ProductSize) => customSizeWeights[id]?.[size] ?? productSizes[size].weight;
 
   return (
     <div
@@ -164,6 +168,10 @@ const ProductCard = ({
          {available ? (
           <p className="font-display text-lg font-bold text-foreground">
             ${currentPrice.toLocaleString("es-AR")}
+          </p>
+          ) : singleSize ? (
+          <p className="font-display text-sm font-bold text-muted-foreground">
+            ${prices.M.toLocaleString("es-AR")}
           </p>
           ) : (
           <p className="font-display text-sm font-bold text-muted-foreground">
@@ -232,7 +240,7 @@ const ProductCard = ({
                         : "border-border text-foreground hover:border-foreground"
                     }`}
                   >
-                    {productSizes[size].label} · {isOutOfStock ? "Agotado" : productSizes[size].weight}
+                    {productSizes[size].label} · {isOutOfStock ? "Agotado" : getSizeWeight(size)}
                   </button>
                 );
               })}
