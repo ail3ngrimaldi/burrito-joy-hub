@@ -70,17 +70,55 @@ const StockManager = () => {
     return edits[row.id] !== undefined ? edits[row.id] : row.quantity;
   };
 
+  const getUnitPrice = (productId: string, size: string): number => {
+    // Resolve compound IDs (e.g. "mexican-chicken-cheddar") to base product
+    const direct = products.find((p) => p.id === productId);
+    const base = direct ?? products.find((p) => productId.startsWith(`${p.id}-`));
+    if (!base) return 0;
+    return base.prices[size as ProductSize] ?? 0;
+  };
+
+  const potentialRevenue = useMemo(() => {
+    if (!stock) return 0;
+    return stock.reduce((sum, row) => {
+      const qty = getValue(row);
+      return sum + qty * getUnitPrice(row.product_id, row.size);
+    }, 0);
+  }, [stock, edits]);
+
   if (isLoading) return <p>Cargando stock...</p>;
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Gestión de Stock</CardTitle>
-        <Button onClick={handleSaveAll} disabled={Object.keys(edits).length === 0}>
-          <Save className="h-4 w-4 mr-2" /> Guardar cambios
-        </Button>
-      </CardHeader>
-      <CardContent>
+    <div className="space-y-4">
+      <Card className="bg-primary/5 border-primary/20">
+        <CardContent className="pt-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-full">
+              <TrendingUp className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                Potencial de ingresos
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Si vendiéramos todo el stock actual
+              </p>
+            </div>
+          </div>
+          <p className="text-3xl font-bold text-primary">
+            ${potentialRevenue.toLocaleString("es-AR")}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Gestión de Stock</CardTitle>
+          <Button onClick={handleSaveAll} disabled={Object.keys(edits).length === 0}>
+            <Save className="h-4 w-4 mr-2" /> Guardar cambios
+          </Button>
+        </CardHeader>
+        <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
