@@ -150,8 +150,9 @@ const StockManager = () => {
             ))}
           </TableBody>
         </Table>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
