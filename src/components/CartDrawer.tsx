@@ -116,6 +116,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
       }
 
       orderSaved = true;
+      await markCartConverted();
       console.log("Order saved successfully:", orderId);
     } catch (error) {
       console.error("Error saving order:", error);
