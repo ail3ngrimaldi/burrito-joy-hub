@@ -14,7 +14,7 @@ interface CartDrawerProps {
 }
 
 const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
-  const { items, updateQuantity, removeItem, clearCart, totalItems, totalPrice } = useCart();
+  const { items, updateQuantity, removeItem, clearCart, markCartConverted, totalItems, totalPrice } = useCart();
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [orderData, setOrderData] = useState<OrderFormData | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
