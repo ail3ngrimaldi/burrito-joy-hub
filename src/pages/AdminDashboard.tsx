@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { LogOut, Package, ShoppingCart, BarChart3 } from "lucide-react";
+import { LogOut, Package, ShoppingCart, BarChart3, ShoppingBag } from "lucide-react";
 import StockManager from "@/components/admin/StockManager";
 import OrderManager from "@/components/admin/OrderManager";
 import AnalyticsManager from "@/components/admin/AnalyticsManager";
+import AbandonedCartsManager from "@/components/admin/AbandonedCartsManager";
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -43,7 +44,7 @@ const AdminDashboard = () => {
 
       <div className="max-w-5xl mx-auto p-4">
         <Tabs defaultValue="orders">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="orders">
               <ShoppingCart className="h-4 w-4 mr-2" /> Pedidos
             </TabsTrigger>
@@ -52,6 +53,9 @@ const AdminDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="analytics">
               <BarChart3 className="h-4 w-4 mr-2" /> Métricas
+            </TabsTrigger>
+            <TabsTrigger value="carts">
+              <ShoppingBag className="h-4 w-4 mr-2" /> Carritos
             </TabsTrigger>
           </TabsList>
 
@@ -65,6 +69,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="analytics" className="mt-4">
             <AnalyticsManager />
+          </TabsContent>
+
+          <TabsContent value="carts" className="mt-4">
+            <AbandonedCartsManager />
           </TabsContent>
         </Tabs>
       </div>

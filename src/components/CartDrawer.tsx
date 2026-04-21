@@ -14,7 +14,7 @@ interface CartDrawerProps {
 }
 
 const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
-  const { items, updateQuantity, removeItem, clearCart, totalItems, totalPrice } = useCart();
+  const { items, updateQuantity, removeItem, clearCart, markCartConverted, totalItems, totalPrice } = useCart();
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [orderData, setOrderData] = useState<OrderFormData | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -116,6 +116,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
       }
 
       orderSaved = true;
+      await markCartConverted();
       console.log("Order saved successfully:", orderId);
     } catch (error) {
       console.error("Error saving order:", error);

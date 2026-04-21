@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_carts: {
+        Row: {
+          converted: boolean
+          created_at: string
+          id: string
+          items: Json
+          last_activity: string
+          session_id: string
+          total_amount: number
+          total_items: number
+        }
+        Insert: {
+          converted?: boolean
+          created_at?: string
+          id?: string
+          items?: Json
+          last_activity?: string
+          session_id: string
+          total_amount?: number
+          total_items?: number
+        }
+        Update: {
+          converted?: boolean
+          created_at?: string
+          id?: string
+          items?: Json
+          last_activity?: string
+          session_id?: string
+          total_amount?: number
+          total_items?: number
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -126,6 +159,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_old_abandoned_carts: { Args: never; Returns: undefined }
       decrement_stock: {
         Args: { p_product_id: string; p_quantity: number; p_size: string }
         Returns: boolean
