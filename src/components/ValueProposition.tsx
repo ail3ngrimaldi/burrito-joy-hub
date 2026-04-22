@@ -1,25 +1,16 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-
-const faqs = [
-  {
-    question: "¿Vienen congelados?",
-    answer: "Sí, los burritos vienen congelados y listos para calentar. Duran 3 meses en el freezer y en 5 minutos tenés un platazo.",
-  },
-  {
-    question: "¿Dónde entregan?",
-    answer: "Zona norte y CABA, con bonificación por envío de $2000 según la distancia desde nuestra sucursal.",
-  },
-  {
-    question: "¿Cómo pago?",
-    answer: "Transferencia bancaria o efectivo al momento de la entrega.",
-  },
-  {
-    question: "¿Cuándo entregan?",
-    answer: "Las entregas son los viernes. Los pedidos ingresan hasta el jueves a las 18hs.",
-  },
-];
+import { useI18n } from "@/contexts/I18nContext";
 
 const ValueProposition = () => {
+  const { t } = useI18n();
+
+  const faqs = [
+    { question: t("faq.q1"), answer: t("faq.a1") },
+    { question: t("faq.q2"), answer: t("faq.a2") },
+    { question: t("faq.q3"), answer: t("faq.a3") },
+    { question: t("faq.q4"), answer: t("faq.a4") },
+  ];
+
   return (
     <section id="propuesta" className="py-24 bg-background">
       <div className="container mx-auto px-6 md:px-8">
@@ -27,10 +18,10 @@ const ValueProposition = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
-              Preguntas frecuentes
+              {t("faq.eyebrow")}
             </p>
             <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-              Todo lo que necesitás saber
+              {t("faq.title")}
             </h2>
           </div>
 
@@ -51,14 +42,14 @@ const ValueProposition = () => {
           {/* WhatsApp CTA */}
           <div className="mt-12 text-center">
             <p className="text-sm text-muted-foreground">
-              ¿Más dudas?{" "}
+              {t("faq.moreQuestions")}{" "}
               <a
                 href="https://wa.me/5491124003293"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground font-medium underline underline-offset-4 hover:opacity-70 transition-opacity"
               >
-                Escribinos por WhatsApp
+                {t("faq.writeWhatsapp")}
               </a>
             </p>
           </div>

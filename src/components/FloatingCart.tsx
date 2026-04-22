@@ -1,5 +1,6 @@
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface FloatingCartProps {
   onClick: () => void;
@@ -7,12 +8,13 @@ interface FloatingCartProps {
 
 const FloatingCart = ({ onClick }: FloatingCartProps) => {
   const { totalItems } = useCart();
+  const { t } = useI18n();
 
   return (
     <button
       onClick={onClick}
       className="fixed bottom-6 right-6 z-40 p-4 bg-foreground text-background rounded-full transition-all duration-200 hover:scale-105 hover:opacity-90"
-      aria-label="Ver carrito"
+      aria-label={t("floating.cart")}
     >
       <ShoppingCart className="w-5 h-5" />
       {totalItems > 0 && (

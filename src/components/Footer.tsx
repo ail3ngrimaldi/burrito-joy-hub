@@ -1,6 +1,8 @@
 import { Instagram } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
 
 const Footer = () => {
+  const { t } = useI18n();
   const whatsappUrl = "https://wa.me/5491124003293";
   const instagramUrl = "https://www.instagram.com/losburritosdedulcinea/";
 
@@ -42,7 +44,7 @@ const Footer = () => {
           {/* Copyright */}
           <div className="mt-8 pt-8 border-t border-background/10 text-center">
             <p className="text-xs text-background/40 uppercase tracking-widest">
-              © {new Date().getFullYear()} Los Burritos de Dulcinea
+              {t("footer.copyright", { year: new Date().getFullYear() })}
             </p>
           </div>
         </div>

@@ -1,9 +1,11 @@
 import ProductCard from "./ProductCard";
 import { products } from "@/config/site";
 import { useProductStock, hasAnyStock } from "@/hooks/useProductStock";
+import { useI18n } from "@/contexts/I18nContext";
 
 const ProductsSection = () => {
   const { data: stockMap, isLoading } = useProductStock();
+  const { t } = useI18n();
 
   return (
     <section id="productos" className="py-24 bg-secondary">
@@ -12,10 +14,10 @@ const ProductsSection = () => {
           {/* Section header */}
           <div className="text-center mb-16">
             <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
-              Nuestros sabores
+              {t("products.eyebrow")}
             </p>
             <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-              Elegí los que más te tientan
+              {t("products.title")}
             </h2>
           </div>
 
