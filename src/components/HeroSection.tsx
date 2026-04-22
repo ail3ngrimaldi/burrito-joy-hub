@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/losburritosdedulcinea.svg";
+import { useI18n } from "@/contexts/I18nContext";
 
 const HeroSection = () => {
+  const { t } = useI18n();
+
   const scrollToProducts = () => {
     document.getElementById("productos")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -13,34 +16,34 @@ const HeroSection = () => {
           {/* Text content */}
           <div className="text-center lg:text-left">
             <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-8">
-              Burritos congelados artesanales
+              {t("hero.tagline")}
             </p>
 
             <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[0.95] mb-8 tracking-tight">
-              Stockeá el<br />
-              freezer,<br />
-              <span className="text-accent">comé rico.</span>
+              {t("hero.title.line1")}<br />
+              {t("hero.title.line2")}<br />
+              <span className="text-accent">{t("hero.title.line3")}</span>
             </h1>
 
             <p className="text-lg text-muted-foreground mb-10 max-w-md mx-auto lg:mx-0 leading-relaxed">
-              Caseros, nutritivos y abundantes. Duran meses en el freezer. En minutos tenés un platazo.
+              {t("hero.subtitle")}
             </p>
 
             {/* Minimal info tags */}
             <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-10">
               <span className="text-xs uppercase tracking-widest text-muted-foreground">
-                🧊 Congelados
+                {t("hero.tag.frozen")}
               </span>
               <span className="text-xs uppercase tracking-widest text-muted-foreground">
-                🚚 Envío Viernes
+                {t("hero.tag.delivery")}
               </span>
               <span className="text-xs uppercase tracking-widest text-muted-foreground">
-                📍 Zona Norte
+                {t("hero.tag.zone")}
               </span>
             </div>
 
             <Button variant="hero" size="xl" onClick={scrollToProducts}>
-              Ver productos →
+              {t("hero.cta")}
             </Button>
           </div>
 

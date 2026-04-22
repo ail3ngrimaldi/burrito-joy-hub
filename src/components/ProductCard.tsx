@@ -5,6 +5,8 @@ import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { productSizes, customSizeWeights, type ProductSize, type ProductVariant } from "@/config/site";
 import { type ProductStockMap, getStockForProduct } from "@/hooks/useProductStock";
+import { useI18n } from "@/contexts/I18nContext";
+import { getProductI18n, getProductTag, getVariantLabel } from "@/i18n/products";
 import notFoundImage from "@/assets/not_found.png";
 
 interface ProductPrices {
@@ -49,10 +51,10 @@ const ProductCard = ({
   variants,
   singleSize,
 }: ProductCardProps) => {
+  const { t, lang } = useI18n();
+  const localized = getProductI18n(id, lang, { name, description });
   const [selectedSize, setSelectedSize] = useState<ProductSize>("M");
-  const [selectedVariant, setSelectedVariant] = useState<string | undefined>(
-    variants && variants.length > 0 ? undefined : undefined
-  );
+  const [selectedVariant, setSelectedVariant] = useState<string | undefined>(undefined);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const { addItem } = useCart();
@@ -81,33 +83,40 @@ const ProductCard = ({
 
   const handleAddToCart = () => {
     if (hasVariants && !selectedVariant) {
-      toast.error("Seleccioná el tipo de queso");
+      toast.error(t("products.selectCheese"));
       return;
     }
 
     if (!isLoadingStock && currentStock < quantity) {
-      toast.error(`Solo hay ${currentStock} unidades disponibles`);
+      toast.error(t("products.onlyAvailable", { n: currentStock }));
       return;
     }
 
     const variantData = hasVariants ? variants.find((v) => v.id === selectedVariant) : undefined;
+    const variantLabelLocalized = variantData
+      ? getVariantLabel(variantData.id, lang, variantData.label)
+      : undefined;
 
     addItem(
       {
         productId: id,
-        productName: variantData ? `${name} (${variantData.label})` : name,
+        productName: variantLabelLocalized ? `${localized.name} (${variantLabelLocalized})` : localized.name,
         size: selectedSize,
         weight: selectedSizeData.weight,
         price: currentPrice,
         variant: selectedVariant,
-        variantLabel: variantData?.label,
+        variantLabel: variantLabelLocalized,
       },
       quantity
     );
 
     setIsAdding(true);
     toast.success(
-      `${quantity}x ${name} (${selectedSizeData.label}) agregado${quantity > 1 ? "s" : ""} al carrito`,
+      t("products.addedToCart", {
+        n: quantity,
+        name: localized.name,
+        size: selectedSizeData.label,
+      }),
       { duration: 2000 }
     );
 
@@ -121,6 +130,8 @@ const ProductCard = ({
   const getSizeStock = (size: ProductSize) => getStockForProduct(stockMap, stockProductId, size);
   const getSizeWeight = (size: ProductSize) => customSizeWeights[id]?.[size] ?? productSizes[size].weight;
 
+  const tagText = tag?.enabled ? getProductTag(id, lang, tag.text) : "";
+
   return (
     <div
       className={`group bg-card border border-border overflow-hidden transition-all duration-300 ${
@@ -132,19 +143,19 @@ const ProductCard = ({
         {tag?.enabled && (
           <div className="absolute top-3 right-3 z-10">
             <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold ${tag.color || 'bg-burrito-orange'} text-white shadow-md`}>
-              {tag.text}
+              {tagText}
             </span>
           </div>
         )}
         {image === notFoundImage ? (
           <div className="w-full h-full flex flex-col items-center justify-center gap-2">
             <ImageOff className="w-10 h-10 text-muted-foreground/40" />
-            <span className="text-muted-foreground/60 text-xs">Imagen no disponible</span>
+            <span className="text-muted-foreground/60 text-xs">{t("products.imageUnavailable")}</span>
           </div>
         ) : (
           <img
             src={image}
-            alt={`Burrito ${name}`}
+            alt={`Burrito ${localized.name}`}
             className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
               available ? "" : "grayscale"
             }`}
@@ -153,7 +164,7 @@ const ProductCard = ({
         {!available && (
           <div className="absolute inset-0 bg-background/70 flex items-center justify-center">
             <span className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
-              Sin stock
+              {t("products.outOfStock")}
             </span>
           </div>
         )}
@@ -163,7 +174,7 @@ const ProductCard = ({
       <div className="p-5">
         <div className="flex items-start justify-between mb-2">
           <h3 className="font-display text-lg font-bold text-foreground">
-            {name}
+            {localized.name}
           </h3>
          {available ? (
           <p className="font-display text-lg font-bold text-foreground">
@@ -180,16 +191,16 @@ const ProductCard = ({
           )}
         </div>
         <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-          {description}
+          {localized.description}
         </p>
 
         {nutrition && (
         <div className="flex gap-2 mb-4">
           <span className="text-xs px-2 py-1 bg-secondary border border-border text-muted-foreground">
-            🔥 {nutrition[selectedSize].kcal} kcal
+            {t("products.kcal", { n: nutrition[selectedSize].kcal })}
           </span>
           <span className="text-xs px-2 py-1 bg-secondary border border-border text-muted-foreground">
-            💪 {nutrition[selectedSize].protein}g proteína
+            {t("products.protein", { n: nutrition[selectedSize].protein })}
           </span>
         </div>
         )}
@@ -199,7 +210,7 @@ const ProductCard = ({
             {/* Variant selector (e.g. cheese type) */}
             {hasVariants && (
               <div className="mb-4">
-                <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider">Elegí tu queso</p>
+                <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider">{t("products.chooseCheese")}</p>
                 <div className="flex gap-2">
                   {variants.map((variant) => (
                     <button
@@ -214,7 +225,7 @@ const ProductCard = ({
                           : "border-border text-foreground hover:border-foreground"
                       }`}
                     >
-                      {variant.label}
+                      {getVariantLabel(variant.id, lang, variant.label)}
                     </button>
                   ))}
                 </div>
@@ -240,7 +251,7 @@ const ProductCard = ({
                         : "border-border text-foreground hover:border-foreground"
                     }`}
                   >
-                    {productSizes[size].label} · {isOutOfStock ? "Agotado" : getSizeWeight(size)}
+                    {productSizes[size].label} · {isOutOfStock ? t("products.sold.out") : getSizeWeight(size)}
                   </button>
                 );
               })}
@@ -276,12 +287,12 @@ const ProductCard = ({
                 {isAdding ? (
                   <>
                     <Check className="w-3 h-3" />
-                    Listo
+                    {t("products.added")}
                   </>
                 ) : (
                   <>
                     <ShoppingCart className="w-3 h-3" />
-                    Agregar
+                    {t("products.add")}
                   </>
                 )}
               </Button>
@@ -290,7 +301,7 @@ const ProductCard = ({
             {/* Low stock warning */}
             {!isLoadingStock && (!hasVariants || selectedVariant) && currentStock > 0 && currentStock <= 5 && (
               <p className="text-xs text-accent font-medium mt-3">
-                Solo quedan {currentStock} unidades
+                {t("products.lowStock", { n: currentStock })}
               </p>
             )}
           </>
@@ -298,7 +309,7 @@ const ProductCard = ({
 
         {!available && (
           <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">
-            En producción
+            {t("products.inProduction")}
           </p>
         )}
       </div>

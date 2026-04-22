@@ -2,9 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { siteConfig } from "@/config/site";
+import { useI18n } from "@/contexts/I18nContext";
+import LanguageToggle from "./LanguageToggle";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useI18n();
 
   const scrollToProducts = () => {
     document.getElementById("productos")?.scrollIntoView({ behavior: "smooth" });
@@ -25,24 +28,28 @@ const Navbar = () => {
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
             <a href="#productos" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
-              Productos
+              {t("nav.products")}
             </a>
             <a href="#propuesta" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
-              FAQ
+              {t("nav.faq")}
             </a>
+            <LanguageToggle />
             <Button variant="hero" size="sm" onClick={scrollToProducts}>
-              Pedir
+              {t("nav.order")}
             </Button>
           </nav>
 
           {/* Mobile menu button */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
-          >
-            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          <div className="md:hidden flex items-center gap-3">
+            <LanguageToggle />
+            <button
+              className="p-2"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
+            >
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
@@ -50,13 +57,13 @@ const Navbar = () => {
           <div className="md:hidden py-6 border-t border-border">
             <nav className="flex flex-col gap-4">
               <a href="#productos" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>
-                Productos
+                {t("nav.products")}
               </a>
               <a href="#propuesta" className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground" onClick={() => setIsMenuOpen(false)}>
-                FAQ
+                {t("nav.faq")}
               </a>
               <Button variant="hero" size="default" onClick={scrollToProducts} className="w-full mt-2">
-                Pedir ahora
+                {t("nav.orderNow")}
               </Button>
             </nav>
           </div>

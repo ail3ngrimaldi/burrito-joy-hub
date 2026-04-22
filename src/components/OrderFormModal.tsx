@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getShippingCost } from "@/config/site";
+import { useI18n } from "@/contexts/I18nContext";
 import { toast } from "sonner";
 
 interface OrderFormModalProps {
@@ -21,6 +22,7 @@ export interface OrderFormData {
 }
 
 const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
+  const { t } = useI18n();
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -44,9 +46,9 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = "El nombre es requerido";
-    if (needsAddress && !formData.address.trim()) newErrors.address = "La dirección es requerida";
-    if (!formData.postalCode.trim()) newErrors.postalCode = "El código postal o localidad es requerido";
+    if (!formData.name.trim()) newErrors.name = t("order.error.name");
+    if (needsAddress && !formData.address.trim()) newErrors.address = t("order.error.address");
+    if (!formData.postalCode.trim()) newErrors.postalCode = t("order.error.postal");
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -61,7 +63,7 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
         shippingCost: isPickup || isFreeDelivery ? 0 : shippingPrice,
       });
     } else {
-      toast.error("Por favor completá todos los campos correctamente");
+      toast.error(t("order.error.complete"));
     }
   };
 
@@ -72,6 +74,8 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
   };
 
   if (!isOpen) return null;
+
+  const priceFmt = (p: number) => p.toLocaleString("es-AR");
 
   return (
     <div
@@ -85,12 +89,12 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h2 className="font-display text-xl font-bold text-foreground">
-            Datos de entrega 📍
+            {t("order.title")}
           </h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-muted rounded-full transition-colors"
-            aria-label="Cerrar"
+            aria-label={t("cart.close")}
           >
             <X className="w-5 h-5 text-foreground" />
           </button>
@@ -102,12 +106,12 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
           <div className="space-y-2">
             <Label htmlFor="name" className="text-foreground font-medium flex items-center gap-2">
               <User className="w-4 h-4" />
-              Nombre completo
+              {t("order.name")}
             </Label>
             <Input
               id="name"
               type="text"
-              placeholder="Juan Pérez"
+              placeholder={t("order.namePlaceholder")}
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
               className={errors.name ? "border-destructive" : ""}
@@ -119,12 +123,12 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
           <div className="space-y-2">
             <Label htmlFor="postalCode" className="text-foreground font-medium flex items-center gap-2">
               <Mail className="w-4 h-4" />
-              Código Postal o Localidad
+              {t("order.postal")}
             </Label>
             <Input
               id="postalCode"
               type="text"
-              placeholder="Ej: 1640 o Belgrano"
+              placeholder={t("order.postalPlaceholder")}
               value={formData.postalCode}
               onChange={(e) => handleChange("postalCode", e.target.value)}
               className={errors.postalCode ? "border-destructive" : ""}
@@ -135,7 +139,7 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
             {isFreeDelivery && (
               <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
                 <p className="text-sm text-primary font-medium flex items-center gap-1">
-                  <Truck className="w-4 h-4" /> ¡Envío gratis a tu zona!
+                  <Truck className="w-4 h-4" /> {t("order.freeShipping")}
                 </p>
               </div>
             )}
@@ -143,7 +147,7 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
             {hasPaidDelivery && (
               <div className="p-3 bg-accent/30 border border-accent rounded-lg space-y-2">
                 <p className="text-sm text-foreground font-medium flex items-center gap-1">
-                  <Truck className="w-4 h-4" /> Envío a tu zona: ${shippingPrice.toLocaleString("es-AR")}
+                  <Truck className="w-4 h-4" /> {t("order.shippingTo", { price: priceFmt(shippingPrice) })}
                 </p>
                 <div className="flex gap-2">
                   <Button
@@ -153,7 +157,7 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
                     onClick={() => setWantsPickup(false)}
                     className="flex-1 text-xs"
                   >
-                    Envío (${shippingPrice.toLocaleString("es-AR")})
+                    {t("order.delivery", { price: priceFmt(shippingPrice) })}
                   </Button>
                   <Button
                     type="button"
@@ -162,7 +166,7 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
                     onClick={() => setWantsPickup(true)}
                     className="flex-1 text-xs"
                   >
-                    Retiro gratis
+                    {t("order.pickupFree")}
                   </Button>
                 </div>
               </div>
@@ -171,17 +175,17 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
             {isUnknownZone && (
               <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-lg">
                 <p className="text-sm text-destructive font-medium">
-                  ⚠️ Tu zona no tiene envío configurado aún
+                  {t("order.unknownZone")}
                 </p>
                 <p className="text-xs text-destructive/80 mt-1">
-                  Podés retirar sin cargo en Olivos, o consultanos por WhatsApp para coordinar envío.
+                  {t("order.unknownZoneHint")}
                 </p>
               </div>
             )}
 
             {!shipping && (
               <p className="text-xs text-muted-foreground">
-                Ingresá tu código postal o localidad para ver las opciones de envío
+                {t("order.enterPostal")}
               </p>
             )}
           </div>
@@ -191,12 +195,12 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
             <div className="space-y-2">
               <Label htmlFor="address" className="text-foreground font-medium flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                Dirección completa
+                {t("order.address")}
               </Label>
               <Input
                 id="address"
                 type="text"
-                placeholder="Av. Libertador 1234, Piso 5, Depto A"
+                placeholder={t("order.addressPlaceholder")}
                 value={formData.address}
                 onChange={(e) => handleChange("address", e.target.value)}
                 className={errors.address ? "border-destructive" : ""}
@@ -207,7 +211,7 @@ const OrderFormModal = ({ isOpen, onClose, onSubmit }: OrderFormModalProps) => {
 
           {/* Submit Button */}
           <Button type="submit" className="w-full" size="lg">
-            {(isUnknownZone || wantsPickup) ? "Continuar (Retiro en local)" : "Continuar al pedido"}
+            {(isUnknownZone || wantsPickup) ? t("order.continuePickup") : t("order.continue")}
           </Button>
         </form>
       </div>
