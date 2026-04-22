@@ -6,6 +6,7 @@ import { siteConfig } from "@/config/site";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useProductStock, getStockForProduct } from "@/hooks/useProductStock";
+import { useI18n } from "@/contexts/I18nContext";
 import OrderFormModal, { type OrderFormData } from "./OrderFormModal";
 
 interface CartDrawerProps {
@@ -15,12 +16,14 @@ interface CartDrawerProps {
 
 const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const { items, updateQuantity, removeItem, clearCart, markCartConverted, totalItems, totalPrice } = useCart();
+  const { t } = useI18n();
   const [showOrderForm, setShowOrderForm] = useState(false);
   const [orderData, setOrderData] = useState<OrderFormData | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const { data: stockMap, isLoading: isLoadingStock } = useProductStock();
 
   const getSizeLabel = (size: "M" | "L") => size === "M" ? "REGULAR" : "XL";
+  const unitLabel = (n: number) => n === 1 ? t("cart.unit.singular") : t("cart.unit.plural");
 
   const getStockProductId = (productId: string, variant?: string) =>
     variant ? `${productId}-${variant}` : productId;
@@ -35,30 +38,30 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
       .map((item) => `- ${item.productName} ${getSizeLabel(item.size)} x${item.quantity}`)
       .join("\n");
 
-    const shippingLine = formData.shippingCost > 0 
-      ? `\nEnvío: $${formData.shippingCost.toLocaleString("es-AR")}` 
-      : (formData.isPickup ? "" : "\nEnvío: GRATIS");
+    const shippingLine = formData.shippingCost > 0
+      ? `\n${t("wa.shipping")}: $${formData.shippingCost.toLocaleString("es-AR")}`
+      : (formData.isPickup ? "" : `\n${t("wa.shipping")}: ${t("wa.shippingFree")}`);
 
-    const deliveryInfo = formData.isPickup 
-      ? `🏠 *RETIRO EN LOCAL*
-Nombre: ${formData.name}
-Código Postal: ${formData.postalCode}`
-      : `🚚 *ENVÍO A DOMICILIO*
-Nombre: ${formData.name}
-Dirección: ${formData.address}
-Código Postal: ${formData.postalCode}`;
+    const deliveryInfo = formData.isPickup
+      ? `${t("wa.pickup")}
+${t("wa.name")}: ${formData.name}
+${t("wa.postal")}: ${formData.postalCode}`
+      : `${t("wa.shipTo")}
+${t("wa.name")}: ${formData.name}
+${t("wa.address")}: ${formData.address}
+${t("wa.postal")}: ${formData.postalCode}`;
 
     const orderTotal = totalPrice + formData.shippingCost;
 
-    const message = `¡Hola! Quiero hacer el siguiente pedido:
+    const message = `${t("wa.greeting")}
 
 ${deliveryInfo}
 
-Productos:
+${t("wa.products")}:
 ${itemsList}
 ${shippingLine}
 
-Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTotal.toLocaleString("es-AR")}`;
+${t("wa.total")}: ${totalItems} ${unitLabel(totalItems)} - $${orderTotal.toLocaleString("es-AR")}`;
 
     return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(message)}`;
   };
@@ -120,13 +123,13 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
       console.log("Order saved successfully:", orderId);
     } catch (error) {
       console.error("Error saving order:", error);
-      toast.error("Hubo un problema guardando el pedido. Intentá de nuevo o contactanos por WhatsApp.");
+      toast.error(t("cart.error.save"));
       setIsProcessing(false);
       return;
     }
 
     if (orderSaved) {
-      toast.success("¡Pedido registrado! Redirigiendo a WhatsApp...");
+      toast.success(t("cart.success.redirect"));
       const link = document.createElement("a");
       link.href = whatsAppUrl;
       link.target = "_blank";
@@ -159,12 +162,12 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-border">
             <h2 className="font-display text-2xl font-bold text-foreground">
-              Tu pedido 🌯
+              {t("cart.title")}
             </h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-muted rounded-full transition-colors"
-              aria-label="Cerrar"
+              aria-label={t("cart.close")}
             >
               <X className="w-5 h-5 text-foreground" />
             </button>
@@ -174,8 +177,8 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
           <div className="flex-1 overflow-y-auto p-6">
             {items.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg mb-2">Tu carrito está vacío</p>
-                <p className="text-muted-foreground text-sm">¡Agregá algunos burritos deliciosos!</p>
+                <p className="text-muted-foreground text-lg mb-2">{t("cart.empty")}</p>
+                <p className="text-muted-foreground text-sm">{t("cart.emptyHint")}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -202,7 +205,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
                         <button
                           onClick={() => updateQuantity(item.productId, item.size, item.quantity - 1, item.variant)}
                           className="p-2 hover:bg-muted rounded-full transition-colors"
-                          aria-label="Disminuir cantidad"
+                          aria-label={t("cart.decrease")}
                         >
                           <Minus className="w-4 h-4 text-foreground" />
                         </button>
@@ -214,12 +217,12 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
                             if (item.quantity < itemStock) {
                               updateQuantity(item.productId, item.size, item.quantity + 1, item.variant);
                             } else {
-                              toast.error(`Solo hay ${itemStock} unidades disponibles`);
+                              toast.error(t("products.onlyAvailable", { n: itemStock }));
                             }
                           }}
                           disabled={item.quantity >= itemStock}
                           className="p-2 hover:bg-muted rounded-full transition-colors disabled:opacity-30"
-                          aria-label="Aumentar cantidad"
+                          aria-label={t("cart.increase")}
                         >
                           <Plus className="w-4 h-4 text-foreground" />
                         </button>
@@ -228,7 +231,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
                       <button
                         onClick={() => removeItem(item.productId, item.size, item.variant)}
                         className="p-2 hover:bg-destructive/10 rounded-full transition-colors text-destructive"
-                        aria-label="Eliminar item"
+                        aria-label={t("cart.remove")}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -244,7 +247,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
             <div className="p-6 border-t border-border bg-muted/30">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-foreground font-medium">
-                  Total ({totalItems} {totalItems === 1 ? "burrito" : "burritos"})
+                  {t("cart.total", { n: totalItems, unit: unitLabel(totalItems) })}
                 </span>
                 <span className="text-2xl font-display font-bold text-primary">
                   ${totalPrice.toLocaleString("es-AR")}
@@ -257,7 +260,7 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
                 onClick={handleOrderClick}
               >
                 <MessageCircle className="w-5 h-5" />
-                Enviar pedido por WhatsApp
+                {t("cart.checkout")}
               </Button>
             </div>
           )}
@@ -270,10 +273,10 @@ Total: ${totalItems} ${totalItems === 1 ? "burrito" : "burritos"} - $${orderTota
           <div className="bg-card rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-4 max-w-xs mx-4">
             <Loader2 className="w-10 h-10 text-primary animate-spin" />
             <p className="text-foreground font-display text-xl font-bold text-center">
-              Preparando tu pedido... 🌯
+              {t("cart.processing.title")}
             </p>
             <p className="text-muted-foreground text-sm text-center">
-              Ya casi te mandamos a WhatsApp
+              {t("cart.processing.sub")}
             </p>
           </div>
         </div>
