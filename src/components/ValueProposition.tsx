@@ -16,7 +16,7 @@ const ValueProposition = () => {
       <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
+          <div className="reveal-on-scroll text-center mb-12">
             <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
               {t("faq.eyebrow")}
             </p>
@@ -26,7 +26,7 @@ const ValueProposition = () => {
           </div>
 
           {/* FAQ Accordion */}
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion type="single" collapsible className="w-full reveal-on-scroll">
             {faqs.map((faq, index) => (
               <AccordionItem key={index} value={`item-${index}`} className="border-border">
                 <AccordionTrigger className="text-left font-display text-base font-semibold hover:no-underline py-5">
@@ -40,7 +40,7 @@ const ValueProposition = () => {
           </Accordion>
 
           {/* WhatsApp CTA */}
-          <div className="mt-12 text-center">
+          <div className="reveal-on-scroll mt-12 text-center">
             <p className="text-sm text-muted-foreground">
               {t("faq.moreQuestions")}{" "}
               <a

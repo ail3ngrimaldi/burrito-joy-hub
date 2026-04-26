@@ -162,11 +162,102 @@
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
+
+  /* Smooth Bites — staggered reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: smooth-bite-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .reveal-delay-1 { animation-delay: 0.08s; }
+  .reveal-delay-2 { animation-delay: 0.18s; }
+  .reveal-delay-3 { animation-delay: 0.28s; }
+  .reveal-delay-4 { animation-delay: 0.38s; }
+  .reveal-delay-5 { animation-delay: 0.48s; }
+  .reveal-delay-6 { animation-delay: 0.58s; }
+
+  /* IntersectionObserver-driven reveal */
+  .reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .reveal-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .animate-burrito-wiggle {
+    animation: burrito-wiggle 1.4s ease-in-out infinite;
+    transform-origin: center bottom;
+  }
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
+}
+
+@keyframes smooth-bite-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Loader: progressive bite via clip-path steps */
+.burrito-bite-container {
+  animation: burrito-bite 2.4s steps(1) infinite;
+}
+
+@keyframes burrito-bite {
+  0%   { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  20%  { clip-path: polygon(0 0, 80% 0, 80% 22%, 100% 22%, 100% 100%, 0 100%); }
+  40%  { clip-path: polygon(0 0, 65% 0, 65% 38%, 100% 38%, 100% 100%, 0 100%); }
+  60%  { clip-path: polygon(0 0, 50% 0, 50% 55%, 100% 55%, 100% 100%, 0 100%); }
+  80%  { clip-path: polygon(0 0, 35% 0, 35% 75%, 100% 75%, 100% 100%, 0 100%); }
+  95%  { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); opacity: 0.3; }
+  100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 1; }
+}
+
+@keyframes burrito-wiggle {
+  0%, 100% { transform: rotate(-3deg) translateY(0); }
+  50%      { transform: rotate(3deg) translateY(-4px); }
+}
+
+/* Crumbs */
+.crumb {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: hsl(var(--burrito-orange));
+  border-radius: 50%;
+  opacity: 0;
+  top: 50%;
+  left: 50%;
+}
+.crumb-1 {
+  animation: crumb-fall 2.4s ease-in infinite;
+  animation-delay: 0.2s;
+  --tx: -30px;
+}
+.crumb-2 {
+  animation: crumb-fall 2.4s ease-in infinite;
+  animation-delay: 0.8s;
+  --tx: 20px;
+  background: hsl(var(--burrito-yellow));
+}
+.crumb-3 {
+  animation: crumb-fall 2.4s ease-in infinite;
+  animation-delay: 1.4s;
+  --tx: -10px;
+  background: hsl(var(--burrito-green));
+}
+
+@keyframes crumb-fall {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--tx), 80px) scale(1); }
 }
 
 @keyframes slide-in-right {
