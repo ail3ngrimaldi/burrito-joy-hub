@@ -14,7 +14,7 @@ const TestimonialsSection = () => {
       <div className="container mx-auto px-6 md:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16">
+          <div className="reveal-on-scroll text-center mb-16">
             <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
               {t("testimonials.eyebrow")}
             </p>
@@ -25,8 +25,12 @@ const TestimonialsSection = () => {
 
           {/* Testimonials */}
           <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((tm) => (
-              <div key={tm.author} className="text-center">
+            {testimonials.map((tm, idx) => (
+              <div
+                key={tm.author}
+                className="reveal-on-scroll text-center"
+                style={{ transitionDelay: `${idx * 100}ms` }}
+              >
                 <p className="text-foreground leading-relaxed mb-6 italic text-lg">
                   "{tm.text}"
                 </p>
