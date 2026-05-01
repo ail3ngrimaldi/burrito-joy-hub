@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { products } from "@/config/site";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, CartesianGrid, ReferenceLine } from "recharts";
 
 const COLORS = ["#f97316", "#ef4444", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899"];
 
@@ -12,7 +12,7 @@ const AnalyticsManager = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("order_items")
-        .select("product_id, product_name, size, quantity, unit_price, order_id, orders!inner(status)");
+        .select("product_id, product_name, size, quantity, unit_price, order_id, orders!inner(status, created_at)");
       if (error) throw error;
       return data as any[];
     },
