@@ -1,17 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { products } from "@/config/site";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Pencil } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type OrderStatus = Database["public"]["Enums"]["order_status"];
@@ -37,15 +46,35 @@ const statusColors: Record<string, string> = {
   cancelado: "bg-red-500/20 text-red-700 border-red-500/30",
 };
 
+// Convert a stored product_id (which may include variant suffix) back to base+variant
+const splitStoredProductId = (storedId: string): { productId: string; variantId?: string } => {
+  // Try exact match first
+  const direct = products.find((p) => p.id === storedId);
+  if (direct) return { productId: storedId };
+  // Try matching as base-variant
+  for (const p of products) {
+    if (p.variants && storedId.startsWith(p.id + "-")) {
+      const variantId = storedId.slice(p.id.length + 1);
+      const variant = p.variants.find((v) => v.id === variantId);
+      if (variant) return { productId: p.id, variantId };
+    }
+  }
+  return { productId: storedId };
+};
+
 const OrderManager = () => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editingOrderId, setEditingOrderId] = useState<string | null>(null);
+  const [originalItems, setOriginalItems] = useState<Array<{ product_id: string; size: string; quantity: number }>>([]);
+  const [originalStatus, setOriginalStatus] = useState<OrderStatus | null>(null);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [notes, setNotes] = useState("");
   const [items, setItems] = useState<OrderItem[]>([{ productId: "", size: "M", quantity: 1 }]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const { data: orders, isLoading } = useQuery({
     queryKey: ["admin-orders"],
@@ -59,7 +88,43 @@ const OrderManager = () => {
     },
   });
 
-  const createOrderMutation = useMutation({
+  const resetForm = () => {
+    setEditingOrderId(null);
+    setOriginalItems([]);
+    setOriginalStatus(null);
+    setCustomerName("");
+    setCustomerPhone("");
+    setDeliveryDate("");
+    setNotes("");
+    setItems([{ productId: "", size: "M", quantity: 1 }]);
+  };
+
+  const openEditDialog = (order: any) => {
+    setEditingOrderId(order.id);
+    setOriginalStatus(order.status);
+    setCustomerName(order.customer_name || "");
+    setCustomerPhone(order.customer_phone || "");
+    setDeliveryDate(order.delivery_date || "");
+    setNotes(order.notes || "");
+    const orig = (order.order_items || []).map((i: any) => ({
+      product_id: i.product_id,
+      size: i.size,
+      quantity: i.quantity,
+    }));
+    setOriginalItems(orig);
+    const formItems: OrderItem[] = (order.order_items || []).map((i: any) => {
+      const { productId, variantId } = splitStoredProductId(i.product_id);
+      return { productId, variantId, size: i.size, quantity: i.quantity };
+    });
+    setItems(formItems.length ? formItems : [{ productId: "", size: "M", quantity: 1 }]);
+    setOpen(true);
+  };
+
+  useEffect(() => {
+    if (!open) resetForm();
+  }, [open]);
+
+  const saveOrderMutation = useMutation({
     mutationFn: async () => {
       const validItems = items.filter((i) => i.productId);
       if (validItems.length === 0) throw new Error("Agregá al menos un producto");
@@ -73,44 +138,60 @@ const OrderManager = () => {
         }
       }
 
-      // Validate stock availability (aggregate same product+size+variant)
-      const stockNeeded = new Map<string, { qty: number; label: string; size: string }>();
+      // Compute new aggregated needs
+      const newNeeds = new Map<string, { qty: number; label: string; size: string }>();
       for (const item of validItems) {
         const product = products.find((p) => p.id === item.productId);
         const variant = product?.variants?.find((v) => v.id === item.variantId);
         const stockId = item.variantId ? `${item.productId}-${item.variantId}` : item.productId;
         const key = `${stockId}|${item.size}`;
         const label = variant ? `${product?.name} (${variant.label})` : (product?.name || item.productId);
-        const existing = stockNeeded.get(key);
-        stockNeeded.set(key, {
+        const existing = newNeeds.get(key);
+        newNeeds.set(key, {
           qty: (existing?.qty || 0) + item.quantity,
           label,
           size: item.size,
         });
       }
 
-      const stockIds = Array.from(stockNeeded.keys()).map((k) => k.split("|")[0]);
+      // Compute old contributions (only if editing AND original status was not cancelado)
+      const oldContrib = new Map<string, number>();
+      if (editingOrderId && originalStatus !== "cancelado") {
+        for (const oi of originalItems) {
+          const key = `${oi.product_id}|${oi.size}`;
+          oldContrib.set(key, (oldContrib.get(key) || 0) + oi.quantity);
+        }
+      }
+
+      // Compute net delta needed per stock key (new - old). Validate availability for positive deltas.
+      const allKeys = new Set<string>([...newNeeds.keys(), ...oldContrib.keys()]);
+      const stockIds = Array.from(allKeys).map((k) => k.split("|")[0]);
       const { data: stockRows, error: stockError } = await supabase
         .from("product_stock")
         .select("product_id, size, quantity")
         .in("product_id", stockIds);
-
       if (stockError) throw new Error("No se pudo verificar el stock");
 
-      for (const [key, need] of stockNeeded.entries()) {
+      for (const key of allKeys) {
         const [pid, size] = key.split("|");
-        const row = stockRows?.find((r) => r.product_id === pid && r.size === size);
-        const available = row?.quantity ?? 0;
-        if (available < need.qty) {
-          throw new Error(
-            `Stock insuficiente: ${need.label} ${size === "M" ? "REGULAR" : "XL"} (disponible: ${available}, pedido: ${need.qty})`
-          );
+        const need = newNeeds.get(key)?.qty || 0;
+        const old = oldContrib.get(key) || 0;
+        const delta = need - old;
+        if (delta > 0) {
+          const row = stockRows?.find((r) => r.product_id === pid && r.size === size);
+          const available = row?.quantity ?? 0;
+          if (available < delta) {
+            const label = newNeeds.get(key)?.label || pid;
+            throw new Error(
+              `Stock insuficiente: ${label} ${size === "M" ? "REGULAR" : "XL"} (disponible: ${available}, faltan: ${delta})`
+            );
+          }
         }
       }
 
-      // Calculate total
+      // Build items to insert
       let total = 0;
-      const orderItems = validItems.map((item) => {
+      const orderItemsRows = validItems.map((item) => {
         const product = products.find((p) => p.id === item.productId);
         const variant = product?.variants?.find((v) => v.id === item.variantId);
         const price = product?.prices[item.size as "M" | "L"] || 0;
@@ -124,45 +205,85 @@ const OrderManager = () => {
         };
       });
 
-      // Create order
-      const { data: order, error: orderError } = await supabase
-        .from("orders")
-        .insert({
-          customer_name: customerName.trim(),
-          customer_phone: customerPhone.trim() || null,
-          delivery_date: deliveryDate || null,
-          notes: notes.trim() || null,
-          total_amount: total,
-          status: "pendiente" as OrderStatus,
-        })
-        .select()
-        .single();
+      let orderId = editingOrderId;
 
-      if (orderError) throw orderError;
+      if (editingOrderId) {
+        // Update order base fields
+        const { error: updErr } = await supabase
+          .from("orders")
+          .update({
+            customer_name: customerName.trim(),
+            customer_phone: customerPhone.trim() || null,
+            delivery_date: deliveryDate || null,
+            notes: notes.trim() || null,
+            total_amount: total,
+          })
+          .eq("id", editingOrderId);
+        if (updErr) throw updErr;
 
-      // Create order items
+        // Replace items: delete old then insert new
+        const { error: delErr } = await supabase
+          .from("order_items")
+          .delete()
+          .eq("order_id", editingOrderId);
+        if (delErr) throw delErr;
+      } else {
+        // Create new order
+        const { data: order, error: orderError } = await supabase
+          .from("orders")
+          .insert({
+            customer_name: customerName.trim(),
+            customer_phone: customerPhone.trim() || null,
+            delivery_date: deliveryDate || null,
+            notes: notes.trim() || null,
+            total_amount: total,
+            status: "pendiente" as OrderStatus,
+          })
+          .select()
+          .single();
+        if (orderError) throw orderError;
+        orderId = order.id;
+      }
+
       const { error: itemsError } = await supabase
         .from("order_items")
-        .insert(orderItems.map((i) => ({ ...i, order_id: order.id })));
-
+        .insert(orderItemsRows.map((i) => ({ ...i, order_id: orderId! })));
       if (itemsError) throw itemsError;
 
-      // Decrement stock for each item (use compound ID for variants)
-      for (const item of validItems) {
-        const stockId = item.variantId ? `${item.productId}-${item.variantId}` : item.productId;
-        await supabase.rpc("decrement_stock", {
-          p_product_id: stockId,
-          p_size: item.size,
-          p_quantity: item.quantity,
-        });
+      // Apply stock deltas
+      for (const key of allKeys) {
+        const [pid, size] = key.split("|");
+        const need = newNeeds.get(key)?.qty || 0;
+        const old = oldContrib.get(key) || 0;
+        const delta = need - old;
+        if (delta > 0) {
+          await supabase.rpc("decrement_stock", {
+            p_product_id: pid,
+            p_size: size,
+            p_quantity: delta,
+          });
+        } else if (delta < 0) {
+          // Restore stock by negative decrement is not supported; use direct update
+          const { data: row } = await supabase
+            .from("product_stock")
+            .select("quantity")
+            .eq("product_id", pid)
+            .eq("size", size)
+            .maybeSingle();
+          const current = row?.quantity ?? 0;
+          await supabase
+            .from("product_stock")
+            .update({ quantity: current + (-delta) })
+            .eq("product_id", pid)
+            .eq("size", size);
+        }
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
       queryClient.invalidateQueries({ queryKey: ["admin-stock"] });
       queryClient.invalidateQueries({ queryKey: ["product-stock"] });
-      toast.success("Pedido registrado");
-      resetForm();
+      toast.success(editingOrderId ? "Pedido actualizado" : "Pedido registrado");
       setOpen(false);
     },
     onError: (err: Error) => {
@@ -180,17 +301,60 @@ const OrderManager = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-stock"] });
+      queryClient.invalidateQueries({ queryKey: ["product-stock"] });
       toast.success("Estado actualizado");
     },
   });
 
-  const resetForm = () => {
-    setCustomerName("");
-    setCustomerPhone("");
-    setDeliveryDate("");
-    setNotes("");
-    setItems([{ productId: "", size: "M", quantity: 1 }]);
-  };
+  const deleteOrderMutation = useMutation({
+    mutationFn: async (orderId: string) => {
+      const order = orders?.find((o) => o.id === orderId);
+      if (!order) throw new Error("Pedido no encontrado");
+
+      // If the order was active (not cancelado), restore stock for each item
+      if (order.status !== "cancelado") {
+        for (const oi of (order.order_items || []) as any[]) {
+          const { data: row } = await supabase
+            .from("product_stock")
+            .select("quantity")
+            .eq("product_id", oi.product_id)
+            .eq("size", oi.size)
+            .maybeSingle();
+          const current = row?.quantity ?? 0;
+          await supabase
+            .from("product_stock")
+            .update({ quantity: current + oi.quantity })
+            .eq("product_id", oi.product_id)
+            .eq("size", oi.size);
+        }
+      }
+
+      // Delete items first, then the order
+      const { error: delItemsErr } = await supabase
+        .from("order_items")
+        .delete()
+        .eq("order_id", orderId);
+      if (delItemsErr) throw delItemsErr;
+
+      const { error: delOrderErr } = await supabase
+        .from("orders")
+        .delete()
+        .eq("id", orderId);
+      if (delOrderErr) throw delOrderErr;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-stock"] });
+      queryClient.invalidateQueries({ queryKey: ["product-stock"] });
+      toast.success("Pedido eliminado");
+      setDeleteConfirmId(null);
+    },
+    onError: (err: Error) => {
+      toast.error(err.message);
+      setDeleteConfirmId(null);
+    },
+  });
 
   const addItem = () => setItems([...items, { productId: "", size: "M", quantity: 1 }]);
   const removeItem = (idx: number) => setItems(items.filter((_, i) => i !== idx));
@@ -206,11 +370,13 @@ const OrderManager = () => {
         <h2 className="text-lg font-semibold">Pedidos</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-2" /> Nuevo Pedido</Button>
+            <Button onClick={() => { resetForm(); setOpen(true); }}>
+              <Plus className="h-4 w-4 mr-2" /> Nuevo Pedido
+            </Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Registrar Pedido</DialogTitle>
+              <DialogTitle>{editingOrderId ? "Editar Pedido" : "Registrar Pedido"}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -244,7 +410,6 @@ const OrderManager = () => {
                     <div key={idx} className="space-y-2">
                       <div className="flex gap-2 items-end flex-wrap">
                         <Select value={item.productId} onValueChange={(v) => {
-                          // Atomically update productId, reset variantId, force size M if singleSize
                           const product = products.find((p) => p.id === v);
                           const updated = [...items];
                           updated[idx] = {
@@ -314,10 +479,14 @@ const OrderManager = () => {
 
               <Button
                 className="w-full"
-                onClick={() => createOrderMutation.mutate()}
-                disabled={createOrderMutation.isPending}
+                onClick={() => saveOrderMutation.mutate()}
+                disabled={saveOrderMutation.isPending}
               >
-                {createOrderMutation.isPending ? "Guardando..." : "Registrar Pedido"}
+                {saveOrderMutation.isPending
+                  ? "Guardando..."
+                  : editingOrderId
+                  ? "Guardar Cambios"
+                  : "Registrar Pedido"}
               </Button>
             </div>
           </DialogContent>
@@ -412,26 +581,67 @@ const OrderManager = () => {
                       Total: ${order.total_amount?.toLocaleString("es-AR")}
                     </div>
                   </div>
-                  <Select
-                    value={order.status}
-                    onValueChange={(v) => updateStatusMutation.mutate({ id: order.id, status: v })}
-                  >
-                    <SelectTrigger className="w-36">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pendiente">Pendiente</SelectItem>
-                      <SelectItem value="por_entregar">Por entregar</SelectItem>
-                      <SelectItem value="entregado">Entregado</SelectItem>
-                      <SelectItem value="cancelado">Cancelado</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex flex-col gap-2 items-end">
+                    <Select
+                      value={order.status}
+                      onValueChange={(v) => updateStatusMutation.mutate({ id: order.id, status: v })}
+                    >
+                      <SelectTrigger className="w-36">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pendiente">Pendiente</SelectItem>
+                        <SelectItem value="por_entregar">Por entregar</SelectItem>
+                        <SelectItem value="entregado">Entregado</SelectItem>
+                        <SelectItem value="cancelado">Cancelado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => openEditDialog(order)}
+                        title="Editar pedido"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setDeleteConfirmId(order.id)}
+                        title="Eliminar pedido"
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
       )}
+
+      <AlertDialog open={!!deleteConfirmId} onOpenChange={(o) => !o && setDeleteConfirmId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar este pedido?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. Si el pedido no estaba cancelado, el stock se devolverá automáticamente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteConfirmId && deleteOrderMutation.mutate(deleteConfirmId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
