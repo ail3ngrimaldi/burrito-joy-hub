@@ -64,8 +64,124 @@ const AnalyticsManager = () => {
   });
   const sizeData = Object.entries(sizeStats).map(([name, value]) => ({ name, value }));
 
+  // Weekly aggregation (ISO week starting Monday, in local time)
+  const getWeekKey = (d: Date) => {
+    const date = new Date(d);
+    const day = (date.getDay() + 6) % 7; // Mon=0..Sun=6
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() - day);
+    return date;
+  };
+  const fmtWeek = (d: Date) =>
+    d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit" });
+
+  const weekMap: Record<string, { weekStart: Date; cantidad: number; ingresos: number }> = {};
+  validItems.forEach((item) => {
+    const createdAt = item.orders?.created_at;
+    if (!createdAt) return;
+    const wk = getWeekKey(new Date(createdAt));
+    const key = wk.toISOString();
+    if (!weekMap[key]) weekMap[key] = { weekStart: wk, cantidad: 0, ingresos: 0 };
+    weekMap[key].cantidad += item.quantity;
+    weekMap[key].ingresos += item.quantity * item.unit_price;
+  });
+
+  // Fill missing weeks between min and max with zeros for a realistic timeline
+  const weekEntries = Object.values(weekMap).sort((a, b) => a.weekStart.getTime() - b.weekStart.getTime());
+  let weeklyData: { label: string; cantidad: number; ingresos: number; weekStart: Date }[] = [];
+  if (weekEntries.length > 0) {
+    const start = weekEntries[0].weekStart;
+    const end = weekEntries[weekEntries.length - 1].weekStart;
+    const cursor = new Date(start);
+    while (cursor.getTime() <= end.getTime()) {
+      const key = cursor.toISOString();
+      const entry = weekMap[key];
+      weeklyData.push({
+        label: fmtWeek(cursor),
+        cantidad: entry?.cantidad || 0,
+        ingresos: entry?.ingresos || 0,
+        weekStart: new Date(cursor),
+      });
+      cursor.setDate(cursor.getDate() + 7);
+    }
+  }
+
+  const weeksCount = weeklyData.length;
+  const avgPerWeek = weeksCount > 0 ? totalBurritos / weeksCount : 0;
+  const bestWeek = weeklyData.reduce<typeof weeklyData[number] | null>(
+    (best, w) => (!best || w.cantidad > best.cantidad ? w : best),
+    null,
+  );
+  const worstWeek = weeklyData.reduce<typeof weeklyData[number] | null>(
+    (worst, w) => (!worst || w.cantidad < worst.cantidad ? w : worst),
+    null,
+  );
+
   return (
     <div className="space-y-6">
+      {/* Summary cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-sm text-muted-foreground">Promedio semanal</p>
+            <p className="text-3xl font-bold text-foreground">{avgPerWeek.toFixed(1)}</p>
+            <p className="text-xs text-muted-foreground mt-1">burritos/semana ({weeksCount} sem.)</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-sm text-muted-foreground">Mejor semana</p>
+            <p className="text-2xl font-bold text-primary">{bestWeek?.cantidad ?? 0}</p>
+            <p className="text-xs text-muted-foreground mt-1">{bestWeek ? `Sem. del ${bestWeek.label}` : "—"}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-sm text-muted-foreground">Semana más floja</p>
+            <p className="text-2xl font-bold text-foreground">{worstWeek?.cantidad ?? 0}</p>
+            <p className="text-xs text-muted-foreground mt-1">{worstWeek ? `Sem. del ${worstWeek.label}` : "—"}</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Weekly trend */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Ventas por semana</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {weeklyData.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">No hay datos aún</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={280}>
+              <LineChart data={weeklyData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+                <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                <Tooltip
+                  formatter={(value: number) => [`${value} burritos`, "Vendidos"]}
+                  labelFormatter={(label) => `Semana del ${label}`}
+                />
+                <ReferenceLine
+                  y={avgPerWeek}
+                  stroke="hsl(var(--muted-foreground))"
+                  strokeDasharray="4 4"
+                  label={{ value: `Prom. ${avgPerWeek.toFixed(1)}`, position: "right", fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="cantidad"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth={2.5}
+                  dot={{ r: 4, fill: "hsl(var(--primary))" }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <Card>
