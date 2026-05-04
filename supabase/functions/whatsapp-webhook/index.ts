@@ -302,8 +302,44 @@ serve(async (req) => {
   // Handle incoming messages (POST request)
   if (req.method === "POST") {
     try {
-      const body = await req.json();
-      console.log("Received webhook:", JSON.stringify(body));
+      const rawBody = await req.text();
+
+      // Verify Meta webhook signature (x-hub-signature-256)
+      const APP_SECRET = Deno.env.get("WHATSAPP_APP_SECRET");
+      const signatureHeader = req.headers.get("x-hub-signature-256") || "";
+      if (!APP_SECRET) {
+        console.error("Webhook rejected: app secret not configured");
+        return new Response("Unauthorized", { status: 401 });
+      }
+      try {
+        const enc = new TextEncoder();
+        const key = await crypto.subtle.importKey(
+          "raw",
+          enc.encode(APP_SECRET),
+          { name: "HMAC", hash: "SHA-256" },
+          false,
+          ["sign"],
+        );
+        const sigBytes = await crypto.subtle.sign("HMAC", key, enc.encode(rawBody));
+        const expected = "sha256=" + Array.from(new Uint8Array(sigBytes))
+          .map((b) => b.toString(16).padStart(2, "0")).join("");
+        // Constant-time comparison
+        if (signatureHeader.length !== expected.length) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+        let diff = 0;
+        for (let i = 0; i < expected.length; i++) {
+          diff |= expected.charCodeAt(i) ^ signatureHeader.charCodeAt(i);
+        }
+        if (diff !== 0) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+      } catch (_e) {
+        console.error("Signature verification failed");
+        return new Response("Unauthorized", { status: 401 });
+      }
+
+      const body = JSON.parse(rawBody);
 
       // Validate it's a WhatsApp message
       if (body.object !== "whatsapp_business_account") {
@@ -315,6 +351,17 @@ serve(async (req) => {
       const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
       const supabase = createClient(supabaseUrl, supabaseKey);
 
+      const VALID_PRODUCT_IDS = new Set([
+        "bondiocheddar",
+        "pollo-mex",
+        "bolognesa-veggie",
+        "bolognesa",
+        "roast-beef",
+      ]);
+      const MAX_QUANTITY_PER_ITEM = 20;
+      const MAX_ITEMS_PER_ORDER = 10;
+      const MAX_MESSAGE_LENGTH = 2000;
+
       // Process each entry
       for (const entry of body.entry as WebhookEntry[]) {
         for (const change of entry.changes) {
@@ -323,38 +370,50 @@ serve(async (req) => {
           if (value.messages && value.messages.length > 0) {
             const message = value.messages[0];
             const contact = value.contacts?.[0];
-            const customerName = contact?.profile?.name || "Cliente";
+            const customerName = (contact?.profile?.name || "Cliente").slice(0, 80);
             const from = message.from;
 
             // Only process text messages
             if (message.type === "text" && message.text?.body) {
-              const incomingMessage = message.text.body;
-              console.log(`Message from ${customerName} (${from}): ${incomingMessage}`);
+              // Sanitize and limit user input before passing to AI
+              const incomingMessage = String(message.text.body)
+                .slice(0, MAX_MESSAGE_LENGTH)
+                .replace(/[\u0000-\u001F\u007F]/g, " ");
+              console.log(`Message received from ${from.slice(-4)}`);
 
-              // Get current stock
               const stockData = await getProductStock(supabase);
               const stockInfo = stockData
                 ? stockData.map((s: any) => `${s.product_id} ${s.size}: ${s.quantity} unidades`).join("\n")
                 : "Stock no disponible";
 
-              // Generate AI response with order detection
               const aiResult = await generateAIResponse(
                 incomingMessage,
                 customerName,
-                stockInfo
+                stockInfo,
               );
 
-              // If it's an order, process stock decrement
-              if (aiResult.isOrder && aiResult.orderItems.length > 0) {
-                console.log("Order detected, processing stock:", aiResult.orderItems);
-                const stockResult = await processOrderStock(supabase, aiResult.orderItems);
-                
-                if (!stockResult.success) {
-                  console.warn("Some items failed to decrement:", stockResult.failedItems);
+              // Validate AI order items strictly before touching stock
+              if (aiResult.isOrder && Array.isArray(aiResult.orderItems)) {
+                const safeItems = aiResult.orderItems.filter((item) =>
+                  item &&
+                  typeof item.productId === "string" &&
+                  VALID_PRODUCT_IDS.has(item.productId) &&
+                  (item.size === "M" || item.size === "L") &&
+                  Number.isInteger(item.quantity) &&
+                  item.quantity > 0 &&
+                  item.quantity <= MAX_QUANTITY_PER_ITEM
+                ).slice(0, MAX_ITEMS_PER_ORDER);
+
+                if (safeItems.length > 0 && safeItems.length === aiResult.orderItems.length) {
+                  const stockResult = await processOrderStock(supabase, safeItems);
+                  if (!stockResult.success) {
+                    console.warn("Some items failed to decrement");
+                  }
+                } else {
+                  console.warn("Order rejected: failed validation");
                 }
               }
 
-              // Send response
               await sendWhatsAppMessage(from, aiResult.response);
             }
           }
@@ -365,8 +424,8 @@ serve(async (req) => {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
-    } catch (error) {
-      console.error("Error processing webhook:", error);
+    } catch (_error) {
+      console.error("Webhook processing failed");
       return new Response(JSON.stringify({ error: "Internal error" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

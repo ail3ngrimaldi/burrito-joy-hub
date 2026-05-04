@@ -18,13 +18,12 @@ export const useProductStock = () => {
   return useQuery({
     queryKey: ["product-stock"],
     queryFn: async (): Promise<ProductStockMap> => {
-      const { data, error } = await supabase
-        .from("product_stock")
-        .select("product_id, size, quantity");
+      const { data, error } = await supabase.rpc("get_public_stock");
 
       if (error) {
-        console.error("Error fetching stock:", error);
-        throw error;
+        // Generic message — avoid leaking backend details to the browser console
+        console.error("Stock fetch failed");
+        throw new Error("Unable to load product availability");
       }
 
       // Transform array to nested object for easy lookup

@@ -164,6 +164,14 @@ export type Database = {
         Args: { p_product_id: string; p_quantity: number; p_size: string }
         Returns: boolean
       }
+      get_public_stock: {
+        Args: never
+        Returns: {
+          product_id: string
+          quantity: number
+          size: string
+        }[]
+      }
     }
     Enums: {
       order_status: "pendiente" | "por_entregar" | "entregado" | "cancelado"
