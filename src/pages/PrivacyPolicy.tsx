@@ -61,7 +61,7 @@ const PrivacyPolicy = () => {
           <p>
             Podés solicitar acceso, rectificación o eliminación de tus datos personales en
             cualquier momento. Consultá las{" "}
-            <a href="/data-deletion" className="underline">
+            <a href="/eliminacion-datos" className="underline">
               instrucciones de eliminación de datos
             </a>
             .
