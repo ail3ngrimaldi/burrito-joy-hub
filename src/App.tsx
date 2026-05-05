@@ -26,6 +26,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/gestion-d8k2/acceso" element={<AdminLogin />} />
               <Route path="/gestion-d8k2" element={<AdminDashboard />} />
+              <Route path="/privacidad-lbd-9q4x" element={<PrivacyPolicy />} />
+              <Route path="/eliminacion-datos-lbd-7m2v" element={<DataDeletion />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
