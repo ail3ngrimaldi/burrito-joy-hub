@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
     const { task, token } = await req.json();
 
     const GAS_URL = Deno.env.get("GAS_URL");
-    const SECRET_TOKEN = Deno.env.get("SECRET_TOKEN");
+    const SECRET_TOKEN = Deno.env.get("GAS_SECRET_TOKEN");
 
     if (token !== SECRET_TOKEN) {
       return new Response(
