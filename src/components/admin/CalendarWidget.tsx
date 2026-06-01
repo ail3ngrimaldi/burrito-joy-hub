@@ -1,11 +1,9 @@
 import { useState, useRef } from "react";
-
-const GAS_URL = "https://script.google.com/macros/library/d/19WLtR7UXOKfUMD1KV7X2VAw5YGpNC-bkCxdrx3a9fEr6GGVKXwXSG1vT/9";
-const SECRET_TOKEN = "burritos2026!DULC1";
+import { supabase } from "@/integrations/supabase/client";
 
 const TIPOS = [
   { letra: "P", label: "Producción", color: "#e67e22" },
-  { letra: "C", label: "Compras", color: "#7f8c8d" },
+  { letra: "C", label: "Compras",    color: "#7f8c8d" },
   { letra: "O", label: "Organización", color: "#2980b9" },
   { letra: "R", label: "Redes", color: "#27ae60" },
 ];
@@ -33,19 +31,19 @@ export default function CalendarWidget() {
     setStatus(null);
 
     try {
-      const res = await fetch(GAS_URL, {
-        method: "POST",
-        body: JSON.stringify({ task, token: SECRET_TOKEN }),
+      const { data, error } = await supabase.functions.invoke("gas-calendar", {
+        body: { task },
       });
-      const data = await res.json();
-      if (data.error) {
+
+      if (error) throw error;
+      if (data?.error) {
         setStatus({ ok: false, msg: data.error });
       } else {
         setStatus({ ok: true, msg: data.message });
         setFrase("");
       }
-    } catch (e) {
-      setStatus({ ok: false, msg: "Error de conexión con Google Apps Script." });
+    } catch (e: any) {
+      setStatus({ ok: false, msg: e.message || "Error de conexión con el servidor." });
     } finally {
       setLoading(false);
     }
