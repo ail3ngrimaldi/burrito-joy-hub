@@ -8,6 +8,7 @@ import StockManager from "@/components/admin/StockManager";
 import OrderManager from "@/components/admin/OrderManager";
 import AnalyticsManager from "@/components/admin/AnalyticsManager";
 import AbandonedCartsManager from "@/components/admin/AbandonedCartsManager";
+import CalendarWidget from "@/components/admin/CalendarWidget";
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
