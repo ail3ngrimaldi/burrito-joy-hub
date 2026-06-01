@@ -8,6 +8,7 @@ import StockManager from "@/components/admin/StockManager";
 import OrderManager from "@/components/admin/OrderManager";
 import AnalyticsManager from "@/components/admin/AnalyticsManager";
 import AbandonedCartsManager from "@/components/admin/AbandonedCartsManager";
+import CalendarWidget from "@/components/admin/CalendarWidget";
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,10 @@ const AdminDashboard = () => {
       </header>
 
       <div className="max-w-5xl mx-auto p-4">
+        <div className="mb-6 border rounded-lg bg-card">
+          <CalendarWidget />
+        </div>
+
         <Tabs defaultValue="orders">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="orders">
