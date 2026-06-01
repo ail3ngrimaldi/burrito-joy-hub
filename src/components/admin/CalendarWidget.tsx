@@ -32,7 +32,7 @@ export default function CalendarWidget() {
 
     try {
       const { data, error } = await supabase.functions.invoke("gas-calendar", {
-        body: { task },
+        body: { task, token: "burritos2026!DULC1" },
       });
 
       if (error) throw error;
