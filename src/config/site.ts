@@ -319,7 +319,7 @@ export const products: Product[] = [
       text: "✨ Nueva receta: Pollo en cubos, sazón ajustado!",
     },
     variants: [
-      { id: "cremalight", label: "Queso crema light" },
+      { id: "cremalight", label: "Queso cremoso" },
       { id: "cheddar", label: "Queso cheddar" },
     ],
   },
