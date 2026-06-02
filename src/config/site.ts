@@ -292,7 +292,7 @@ export const products: Product[] = [
     image: imgBondioCheddar,
     available: true,
     prices: {
-      M: 9500,
+      M: 10000,
       L: 13000,
     },
     nutrition: {
@@ -307,8 +307,8 @@ export const products: Product[] = [
     image: imgPolloPalta,
     available: true,
     prices: {
-      M: 9500,
-      L: 12000,
+      M: 10000,
+      L: 13000,
     },
     nutrition: {
       M: { kcal: 726, protein: 54 },
@@ -330,8 +330,8 @@ export const products: Product[] = [
     image: imgBologn,
     available: true,
     prices: {
-      M: 11500,
-      L: 15500,
+      M: 10000,
+      L: 13000,
     },
     nutrition: {
       M: { kcal: 641, protein: 54 },
@@ -339,30 +339,14 @@ export const products: Product[] = [
     }
   },
   {
-    id: "bolognesa-lowfat",
-    name: "Bolognesa low fat",
-    description: "Carne picada baja en grasa con salsa bolognesa casera, ricota baja en grasas procesada y especias. Bajísimo en grasas.",
-    image: imgBologn,
-    available: true,
-    singleSize: true,
-    prices: {
-      M: 10500,
-      L: 10500,
-    },
-    nutrition: {
-      M: { kcal: 641, protein: 54 },
-      L: { kcal: 641, protein: 54 },
-    }
-  },
-  {
     id: "the-bear",
     name: "Carne desmechada",
-    description: "Carne roja desmechada, mezclada en salsa robert con cebolla y morron salteados más muzzarella fundida. Clásico que no falla.",
+    description: "Roast beef desmechado, mezclado en salsa robert con cebolla y morron salteados más muzzarella fundida. Clásico que no falla.",
     image: imgCarneDesm,
     available: true,
     prices: {
-      M: 11000,
-      L: 14500,
+      M: 10000,
+      L: 13000,
     },
     nutrition: {
       M: { kcal: 688, protein: 51 },
@@ -376,8 +360,8 @@ export const products: Product[] = [
     image: imgHoneyPin,
     available: true,
     prices: {
-      M: 9500,
-      L: 12000,
+      M: 10000,
+      L: 13000,
     },
     nutrition: {
       M: { kcal: 700, protein: 51 },
