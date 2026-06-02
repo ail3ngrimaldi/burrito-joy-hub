@@ -72,7 +72,7 @@ const OrderManager = () => {
   const [customerPhone, setCustomerPhone] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [notes, setNotes] = useState("");
-  const [items, setItems] = useState<OrderItem[]>([{ productId: "", size: "M", quantity: 1 }]);
+  const [items, setItems] = useState<OrderItem[]>([{ productId: "", size: "R", quantity: 1 }]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
@@ -96,7 +96,7 @@ const OrderManager = () => {
     setCustomerPhone("");
     setDeliveryDate("");
     setNotes("");
-    setItems([{ productId: "", size: "M", quantity: 1 }]);
+    setItems([{ productId: "", size: "R", quantity: 1 }]);
   };
 
   const openEditDialog = (order: any) => {
@@ -116,7 +116,7 @@ const OrderManager = () => {
       const { productId, variantId } = splitStoredProductId(i.product_id);
       return { productId, variantId, size: i.size, quantity: i.quantity };
     });
-    setItems(formItems.length ? formItems : [{ productId: "", size: "M", quantity: 1 }]);
+    setItems(formItems.length ? formItems : [{ productId: "", size: "R", quantity: 1 }]);
     setOpen(true);
   };
 
@@ -183,7 +183,7 @@ const OrderManager = () => {
           if (available < delta) {
             const label = newNeeds.get(key)?.label || pid;
             throw new Error(
-              `Stock insuficiente: ${label} ${size === "M" ? "REGULAR" : "XL"} (disponible: ${available}, faltan: ${delta})`
+              `Stock insuficiente: ${label} ${size === "R" ? "REGULAR" : "XL"} (disponible: ${available}, faltan: ${delta})`
             );
           }
         }
