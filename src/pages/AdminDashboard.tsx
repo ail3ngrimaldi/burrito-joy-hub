@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { LogOut, Package, ShoppingCart, BarChart3, ShoppingBag } from "lucide-react";
+import { LogOut, Package, ShoppingCart, BarChart3, ShoppingBag, ClipboardList } from "lucide-react";
 import StockManager from "@/components/admin/StockManager";
 import OrderManager from "@/components/admin/OrderManager";
 import AnalyticsManager from "@/components/admin/AnalyticsManager";
 import AbandonedCartsManager from "@/components/admin/AbandonedCartsManager";
 import CalendarWidget from "@/components/admin/CalendarWidget";
+import ProductionWeekly from "@/components/admin/ProductionWeekly";
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -49,7 +50,7 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs defaultValue="orders">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="orders">
               <ShoppingCart className="h-4 w-4 mr-2" /> Pedidos
             </TabsTrigger>
@@ -61,6 +62,9 @@ const AdminDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="carts">
               <ShoppingBag className="h-4 w-4 mr-2" /> Carritos
+            </TabsTrigger>
+            <TabsTrigger value="production">
+              <ClipboardList className="h-4 w-4 mr-2" /> Producción
             </TabsTrigger>
           </TabsList>
 
@@ -78,6 +82,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="carts" className="mt-4">
             <AbandonedCartsManager />
+          </TabsContent>
+
+          <TabsContent value="production" className="mt-4">
+            <ProductionWeekly />
           </TabsContent>
         </Tabs>
       </div>
