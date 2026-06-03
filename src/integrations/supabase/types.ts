@@ -154,6 +154,45 @@ export type Database = {
         }
         Relationships: []
       }
+      production_tasks: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          date: string
+          id: string
+          status: string
+          time_end: string | null
+          time_start: string | null
+          title: string
+          type: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          date: string
+          id?: string
+          status?: string
+          time_end?: string | null
+          time_start?: string | null
+          title: string
+          type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          date?: string
+          id?: string
+          status?: string
+          time_end?: string | null
+          time_start?: string | null
+          title?: string
+          type?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
