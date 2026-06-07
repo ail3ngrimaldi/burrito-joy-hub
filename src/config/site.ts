@@ -375,8 +375,8 @@ export const products: Product[] = [
     image: notFound,
     available: true,
     prices: {
-      M: 7000,
-      L: 8500,
+      M: 6000,
+      L: 7500,
     },
     tag: {
       enabled: true,
